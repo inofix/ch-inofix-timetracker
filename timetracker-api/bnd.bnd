@@ -1,0 +1,7 @@
+Bundle-SymbolicName: Inofix Timetracker API
+Bundle-Version: 1.0.0
+Export-Package:\
+	ch.inofix.timetracker.exception,\
+	ch.inofix.timetracker.model,\
+	ch.inofix.timetracker.service,\
+	ch.inofix.timetracker.service.persistence
