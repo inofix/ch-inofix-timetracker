@@ -1,0 +1,114 @@
+<%--
+    search_columns.jspf: Configurable search columns
+    for the main view of the timetracker portlet.
+
+    Created:     2013-10-07 14:41 by Christian Berndt
+    Modified:    2016-11-26 16:15 by Christian Berndt
+    Version:     1.1.6
+--%>
+
+<%
+    String dateFormatPattern =
+        ((SimpleDateFormat) (DateFormat.getDateTimeInstance(
+            DateFormat.MEDIUM, DateFormat.SHORT, locale))).toPattern();
+
+    Date endDate = taskRecord.getEndDate();
+    Date startDate = taskRecord.getStartDate();
+
+    String startDateString = "not available";
+    String endDateString = "not available";
+
+    if (startDate != null) {
+        startDateString =
+            DateUtil.getDate(startDate, dateFormatPattern, locale);
+    }
+
+    if (endDate != null) {
+        endDateString =
+            DateUtil.getDate(endDate, dateFormatPattern, locale);
+    }
+           
+    String durationInMinutes = String.valueOf(taskRecord.getDuration() / (60 * 1000)); 
+%>
+
+<%
+    // Crop workpackages if they are too long
+    
+    String workPackageString = taskRecord.getWorkPackage();
+    
+    if (Validator.isNotNull(workPackageString)) {
+        
+        // TODO: Make the preferred workpackage
+        // display length configurable.
+        if (workPackageString.length() > maxLength) {
+            workPackageString = workPackageString.substring(0,
+                    maxLength) + " ...";
+        }
+    } 
+
+    // Compose the string used as title attribute
+    String title = taskRecord.getWorkPackage() + ": "
+            + taskRecord.getDescription();
+%>
+
+<%
+    for (String column : columns) {
+%>
+
+<c:if test='<%="create-date".equals(column)%>'>
+    <liferay-ui:search-container-column-date property="createDate"
+        name="create-date" orderable="true" href="<%=detailURL%>"
+        orderableProperty="createDate" />
+</c:if>
+<c:if test='<%="description".equals(column)%>'>
+    <liferay-ui:search-container-column-text property="description"
+        name="description" orderable="true" href="<%=detailURL%>"
+        orderableProperty="description" />
+</c:if>                         
+<c:if test='<%="duration".equals(column)%>'>
+    <liferay-ui:search-container-column-text value="<%= durationInMinutes %>"
+        name="duration" orderable="true" href="<%=detailURL%>"
+        orderableProperty="duration" />
+</c:if>
+<c:if test='<%="end-date".equals(column)%>'>
+    <liferay-ui:search-container-column-text value="<%= endDateString %>"
+        name="end-date" orderable="true" href="<%=detailURL%>"
+        orderableProperty="endDate" />
+</c:if>
+<c:if test='<%="modified-date".equals(column)%>'>
+    <liferay-ui:search-container-column-date property="modifiedDate"
+        name="modified-date" orderable="true" href="<%=detailURL%>"
+        orderableProperty="modifiedDate"  />
+</c:if>
+<c:if test='<%="start-date".equals(column)%>'>
+    <liferay-ui:search-container-column-text value="<%= startDateString %>"
+        name="start-date" orderable="true" href="<%=detailURL%>"
+        orderableProperty="startDate" />
+</c:if>
+<c:if test='<%="status".equals(column)%>'>
+    <liferay-ui:search-container-column-status property="status"
+        orderable="true" orderableProperty="status" />
+</c:if>
+<c:if test='<%="task-record-id".equals(column)%>'>
+    <liferay-ui:search-container-column-text property="taskRecordId"
+        name="task-record-id" orderable="true" href="<%=detailURL%>"
+        orderableProperty="taskRecordId" />
+</c:if>
+<c:if test='<%="ticket-url".equals(column)%>'>
+    <liferay-ui:search-container-column-text property="ticketURL"
+        name="ticket-url" orderable="true" href="<%=detailURL%>"
+        orderableProperty="ticketURL" />
+</c:if>
+<c:if test='<%="user-name".equals(column)%>'>
+    <liferay-ui:search-container-column-text property="userName"
+        name="user-name" orderable="true" href="<%=detailURL%>"
+        orderableProperty="userName" />
+</c:if>
+<c:if test='<%="work-package".equals(column)%>'>
+    <liferay-ui:search-container-column-text 
+        name="work-package" orderable="true" href="<%=detailURL%>"
+        orderableProperty="workPackage" value="<%= workPackageString %>"/>
+</c:if>
+<%
+    }
+%>

@@ -1,0 +1,24 @@
+<%--
+    delete-task_records.jspf: Delete all task-records of this group
+    
+    Created:    2016-03-22 12:12 by Christian Berndt
+    Modified:   2016-11-27 11:45 by Christian Berndt
+    Version:    1.0.1
+--%>
+
+<portlet:actionURL name="deleteAllTaskRecords" var="deleteAllTaskRecordsURL"> 
+    <%-- We have to open the import-export tab        --%>
+    <%-- since while deleting the records             --%>
+    <%-- they are still found via the index, which    --%>
+    <%-- results in npe-issues in the searchcontainer --%>
+    <portlet:param name="tabs1" value="import-export"/>
+</portlet:actionURL>
+
+<aui:fieldset label="delete" cssClass="delete-section">
+    <aui:button-row>
+        <liferay-ui:icon-delete
+            url="<%=deleteAllTaskRecordsURL.toString()%>"
+            cssClass="btn btn-primary delete" message="delete-all-task-records"
+            label="true" />
+    </aui:button-row>
+</aui:fieldset>

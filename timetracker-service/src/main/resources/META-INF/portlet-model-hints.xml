@@ -11,11 +11,27 @@
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
 		<field name="status" type="int" />
-		<field name="workPackage" type="String" />
-		<field name="description" type="String" />
-		<field name="ticketURL" type="String" />
-		<field name="startDate" type="Date" />
-		<field name="endDate" type="Date" />
+		<field name="workPackage" type="String">
+			<hint name="display-width">500</hint>
+			<hint name="max-length">250</hint>
+			<validator name="required" />
+		</field>
+		<field name="description" type="String">
+			<hint name="display-height">105</hint>
+			<hint name="display-width">500</hint>
+			<hint name="max-length">5000</hint>
+			<validator name="required" />
+		</field>
+		<field name="ticketURL" type="String">
+			<hint name="display-width">500</hint>
+			<hint name="max-length">250</hint>
+		</field>
+		<field name="startDate" type="Date">
+			<hint name="show-time">false</hint>
+		</field>
+		<field name="endDate" type="Date">
+			<hint name="show-time">false</hint>
+		</field>
 		<field name="duration" type="long" />
 	</model>
 </model-hints>

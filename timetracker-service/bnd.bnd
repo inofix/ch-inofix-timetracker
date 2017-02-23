@@ -1,4 +1,9 @@
-Bundle-SymbolicName: timetracker-service
+Bundle-Name: Inofix Timetracker Service
+Bundle-SymbolicName: ch.inofix.timetracker.service
 Bundle-Version: 1.0.0
+Export-Package:\
+    ch.inofix.timetracker.model.impl,\
+    ch.inofix.timetracker.search,\
+    ch.inofix.timetracker.service.permission
 Liferay-Require-SchemaVersion: 1.0.0
 Liferay-Service: true

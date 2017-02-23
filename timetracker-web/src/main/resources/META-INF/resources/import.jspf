@@ -1,0 +1,54 @@
+<%--
+    import.jspf: Import taskRecords from an uploaded file. 
+    
+    Created:    2016-03-21 21:51 by Christian Berndt
+    Modified:   2016-11-26 17:13 by Christian Berndt
+    Version:    1.0.3
+--%>
+
+<portlet:actionURL var="importXMLURL" name="importXML" />
+
+<portlet:renderURL var="browseURL" />
+
+<aui:form action="<%=importXMLURL%>" enctype="multipart/form-data"
+    method="post" name="fm" cssClass="import-form">
+
+    <%
+        // TODO: Add error handling
+    %>
+
+    <aui:input name="tabs1" value="<%=tabs1%>" type="hidden" />
+
+    <aui:fieldset label="import">
+
+        <aui:input name="file" type="file" inlineField="true" label="" />
+
+        <%-- 
+            <aui:input name="updateExisting" label="update-existing-task-records" type="checkbox" inlineField="true" />
+        --%>
+        
+        <aui:button name="import" type="submit" value="import" disabled="true" />
+        <aui:button href="<%=browseURL%>" type="cancel" />
+
+    </aui:fieldset>
+
+</aui:form>
+
+<aui:script use="aui-base">
+    var input = A.one('#<portlet:namespace />file');
+    var button = A.one('#<portlet:namespace />import');
+
+    input.on('change', function(e) {
+
+        if (input.get('value')) {
+            button.removeClass('disabled');
+            button.removeAttribute('disabled');
+        } else {
+            button.addClass('disabled');
+            button.setAttrs({
+                disabled : 'disabled'
+            });
+        }
+
+    });
+</aui:script>
