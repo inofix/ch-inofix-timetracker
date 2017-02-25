@@ -1,0 +1,12 @@
+dependencies {
+    testCompile project(":modules:ch-inofix-timetracker:timetracker-api")
+
+    testIntegrationCompile group: "com.liferay", name: "com.liferay.arquillian.extension.junit.bridge", version: "1.0.7"
+    testIntegrationCompile group: "com.liferay", name: "com.liferay.registry.api", version: "1.0.0"
+
+    testIntegrationCompile group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "2.6.0"
+    testIntegrationCompile group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "2.0.0"
+    testIntegrationCompile group: "com.liferay.portal", name: "com.liferay.portal.test", version: "latest.release"
+    testIntegrationCompile group: "com.liferay.portal", name: "com.liferay.portal.test.integration", version: "latest.release"  
+    testIntegrationCompile group: "org.springframework", name: "spring-core", version: "4.1.9.RELEASE"
+}
