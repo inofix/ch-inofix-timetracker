@@ -7,7 +7,7 @@ A timetracker plugin for Liferay.
 1. Setup tomcat-bundle for testing: `cd [WORKSPACE_NAME]; gradle initBundle`
 1. Checkout timetracker sources to the workspace's module directory: `cd modules; git clone https://github.com/inofix/ch-inofix-timetracker.git`
 1. Run ServiceBuilder: `gradle buildService`
-1. Build: `gradle build`
+1. Build: `gradle jar`
 
 
 ## How To Test
