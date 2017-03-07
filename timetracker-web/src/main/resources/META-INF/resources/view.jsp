@@ -2,8 +2,8 @@
     view.jsp: Default view of Inofix' timetracker.
     
     Created:     2013-10-06 16:52 by Christian Berndt
-    Modified:    2017-02-25 14:33 by Christian Berndt
-    Version:     1.5.4
+    Modified:    2017-03-07 15:38 by Christian Berndt
+    Version:     1.5.5
  --%>
 
 <%@ include file="/init.jsp" %>
@@ -98,21 +98,11 @@
             
         </c:when>
 
-        <c:otherwise>
+        <c:otherwise> 
 
-            <%
-                // TODO: enable toolbar
-            %>  
-            <%--             
-            <liferay-ui:app-view-toolbar includeDisplayStyle="<%=true%>"
-                includeSelectAll="<%=true%>">
-
-                <liferay-util:include
-                    servletContext="<%=session.getServletContext()%>"
-                    page="/toolbar.jsp" />
-
-            </liferay-ui:app-view-toolbar>
-            --%>
+            <liferay-util:include
+                servletContext="<%=session.getServletContext()%>"
+                page="/toolbar.jsp" />
             
             <portlet:actionURL name="editSet" var="editSetURL">
             </portlet:actionURL>
@@ -220,8 +210,6 @@
                             %>
         
                             <%@ include file="/search_columns.jspf"%>
-                            <%-- 
-                            --%>
 
                             <liferay-ui:search-container-column-text align="right">
         
