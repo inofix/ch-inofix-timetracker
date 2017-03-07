@@ -17,7 +17,8 @@ A timetracker plugin for Liferay.
 1. Stay up-to-date:
 1. Change the current working directory to your local project.
 1. Configure https://github.com/inofix/ch-inofix-timetracker as additional upstream remote (see: https://help.github.com/articles/configuring-a-remote-for-a-fork/)
-1. Fetch upstream/master to your local copy: 'git fetch upstream'
+1. Sync inofix-master with your individual fork (see: https://help.github.com/articles/syncing-a-fork/): 
+1. Fetch upstream/master to your local copy: 'git fetch upstream' 
 1. Check out your fork's local 'master' branch: 'git checkout master'
 1. Merge the changes from 'upstream/master' into your local master branch. This brings your fork's master branch into sync with the upstream repository, without losing your local changes: 'git merge upstream/master'
 1. Push merged master to your individual github account and 
