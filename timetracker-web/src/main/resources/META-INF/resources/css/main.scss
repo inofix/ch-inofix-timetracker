@@ -1,0 +1,33 @@
+/**
+ * main.scss: css specific to the timetracker-portlet.
+ *
+ * Created:     2013-10-09 22:44 by Christian Berndt
+ * Modified:    2017-03-07 17:08 by Christian Berndt
+ * Version:     1.1.2
+ * 
+ */
+@import "bourbon";
+@import "mixins";
+
+
+.portlet-timetracker {
+    
+    .clear-btn {
+        margin: 8px 0 8px 8px;
+    }
+    
+    .toolbar-container {
+    
+        margin: 8px 0;
+        
+        a {
+            &.dropdown-toggle {
+                padding: 6px 8px 8px;           
+            }
+        }
+    
+        li {
+            display: inline-block; 
+        }
+    }
+}

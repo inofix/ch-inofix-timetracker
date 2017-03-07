@@ -55,10 +55,11 @@ import org.osgi.service.component.annotations.Reference;
  *
  * @author Christian Berndt
  * @created 2013-10-07 10:47
- * @modified 2016-11-27 17:35
- * @version 1.5.5
+ * @modified 2017-03-07 17:11
+ * @version 1.5.6
  */
-@Component(immediate = true, property = { "com.liferay.portlet.display-category=category.inofix",
+@Component(immediate = true, property = { "com.liferay.portlet.css-class-wrapper=portlet-timetracker",
+        "com.liferay.portlet.display-category=category.inofix", "com.liferay.portlet.header-portlet-css=/css/main.css",
         "com.liferay.portlet.instanceable=false", "javax.portlet.display-name=Timetracker",
         "javax.portlet.init-param.template-path=/", "javax.portlet.init-param.view-template=/view.jsp",
         "javax.portlet.resource-bundle=content.Language",

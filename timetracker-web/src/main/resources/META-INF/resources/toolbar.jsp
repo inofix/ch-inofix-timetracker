@@ -2,8 +2,8 @@
     toolbar.jsp: The toolbar of the timetracker portlet
     
     Created:    2016-03-20 16:58 by Christian Berndt
-    Modified:   2017-03-07 15:08 by Christian Berndt
-    Version:    1.0.9
+    Modified:   2017-03-07 17:42 by Christian Berndt
+    Version:    1.1.0
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -31,7 +31,7 @@
 
 <aui:nav-bar>
 
-    <aui:nav id="toolbarContainer" cssClass="nav-display-style-buttons">
+    <aui:nav id="toolbarContainer" cssClass="pull-left toolbar-container">
 
         <aui:nav-item cssClass="hide" dropdown="<%=true%>"
             id="actionsButtonContainer" label="actions">
@@ -79,9 +79,11 @@
                             + HtmlUtil.escapeJS(addURL) + "'});";
         %>
 
-        <aui:button type="submit" value="add-task-record"
+        <aui:nav-item>
+            <aui:button type="submit" value="add-task-record"
                 href="<%=taglibAddURL%>"
-                cssClass="pull-left add-task-record" />
+                cssClass="add-task-record" />
+        </aui:nav-item>
 
         <%-- 
         </c:if>
@@ -122,6 +124,14 @@
                     message="export-xml" />
             </aui:nav-item>
         </aui:nav-item>
+    </aui:nav>
+    
+    <aui:nav cssClass="pull-right">
+            
+        <portlet:renderURL var="clearURL" />
+    
+        <aui:button value="reset" href="<%=clearURL%>"
+            cssClass="clear-btn" />
     </aui:nav>
 
     <aui:nav-bar-search cssClass="pull-right">
@@ -209,10 +219,6 @@
 
                 </aui:fieldset>
             </liferay-ui:search-toggle>
-            <portlet:renderURL var="clearURL" />
-
-            <aui:button value="reset" href="<%=clearURL%>"
-                cssClass="clear-btn" />
 
         </aui:form>
 
