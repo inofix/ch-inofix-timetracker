@@ -68,7 +68,7 @@
     
     <liferay-ui:panel id="timetrackerMiscellaneousPanel" title="miscellaneous" extended="true">
             <aui:fieldset>
-                <aui:field-wrapper label="time-format" helpMessage="time-format-help">
+                <aui:field-wrapper label="time-display" helpMessage="time-format-help" inlineField="false">
                     <aui:input name="time-format"
                         type="radio" value="time-format"
                         checked="<%=Validator.equals(timeFormat, "time-format")%>"
@@ -92,7 +92,7 @@
 
 <aui:script>
     function <portlet:namespace />saveConfiguration() {
-//         var Util = Liferay.Util;
+        var Util = Liferay.Util;
 
         var form = AUI.$(document.<portlet:namespace />fm);
 
