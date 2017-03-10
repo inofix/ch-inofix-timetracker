@@ -19,10 +19,12 @@
 <%@page import="ch.inofix.timetracker.model.TaskRecord"%>
 <%@page import="ch.inofix.timetracker.service.permission.TaskRecordPermission"%>
 <%@page import="ch.inofix.timetracker.service.TaskRecordLocalServiceUtil"%>
-<%@page import="ch.inofix.timetracker.web.internal.constants.TimetrackerWebKeys"%>
 <%@page import="ch.inofix.timetracker.web.internal.search.TaskRecordDisplayTerms"%>
 <%@page import="ch.inofix.timetracker.web.internal.search.TaskRecordSearch"%>
 <%@page import="ch.inofix.timetracker.web.internal.search.TaskRecordSearchTerms"%>
+<%@page import="ch.inofix.timetracker.web.internal.constants.TimetrackerWebKeys"%>
+<%@page import="ch.inofix.timetracker.constants.TimetrackerPortletKeys"%>
+<%@page import="ch.inofix.timetracker.web.configuration.TimetrackerConfiguration"%>
 
 <%@page import="com.liferay.portal.kernel.dao.search.SearchContainer"%>
 <%@page import="com.liferay.portal.kernel.language.LanguageUtil"%>
@@ -67,10 +69,13 @@
 <%
     PortletURL portletURL = renderResponse.createRenderURL();
 
-    String[] columns = portletPreferences.getValues("columns", new String[] { "task-record-id", "work-package",
-            "start-date", "duration", "create-date", "modified-date", "user-name", "status" });
+//     String[] columns = portletPreferences.getValues("columns", new String[] { "task-record-id", "work-package",
+//             "start-date", "duration", "create-date", "modified-date", "user-name", "status" });
     
     String currentURL = portletURL.toString();
     
-    String timeFormat = portletPreferences.getValue("time-format", "from-until");
+//     String timeFormat = portletPreferences.getValue("time-format", "from-until");
+    
+    TimetrackerConfiguration timetrackerConfiguration = (TimetrackerConfiguration) renderRequest
+            .getAttribute(TimetrackerConfiguration.class.getName());
 %>

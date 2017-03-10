@@ -15,6 +15,11 @@
     String keywords = ParamUtil.getString(request, "keywords");
     String tabs1 = ParamUtil.getString(request, "tabs1", "browse");
     
+    String [] columns = new String[] {"task-record-id", "work-package", "start-date"}; 
+    if (Validator.isNotNull(timetrackerConfiguration)) {
+        columns = portletPreferences.getValues("columns", timetrackerConfiguration.columns());
+    }
+    
     // TODO: read from configuration
     int maxLength = 50; 
     boolean viewByDefault = false; 

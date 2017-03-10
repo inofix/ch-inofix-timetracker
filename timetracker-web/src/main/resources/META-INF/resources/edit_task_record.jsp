@@ -9,6 +9,8 @@
 <%@ include file="/init.jsp"%>
 
 <%
+    String timeFormat = portletPreferences.getValue("time-format", "from-until");
+
     String redirect = ParamUtil.getString(request, "redirect");
 
     String backURL = ParamUtil.getString(request, "backURL", redirect);
