@@ -82,7 +82,7 @@
                 </aui:field-wrapper>
             </aui:fieldset> 
             
-            <aui:input name="max-length" value="35" helpMessage="max-length-help"/>
+            <aui:input name="max-length" value="<%= maxLength %>" helpMessage="max-length-help"/>
     </liferay-ui:panel> 
 
     <aui:button-row>
