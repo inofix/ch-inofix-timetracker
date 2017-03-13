@@ -2,7 +2,7 @@
     view.jsp: Default view of Inofix' timetracker.
     
     Created:     2013-10-06 16:52 by Christian Berndt
-    Modified:    2017-03-07 15:38 by Christian Berndt
+    Modified:    2017-03-12 00:44 by Stefan Luebbers
     Version:     1.5.5
  --%>
 
@@ -11,18 +11,37 @@
 <%@page import="com.liferay.portal.kernel.search.Sort"%>
 
 <%
+    
+    
+   // TODO: read from configuration
+    String [] columns = new String[] {"task-record-id", "work-package", "start-date"};
+    int maxLength = 50; 
+    boolean viewByDefault = false;
+    
+    System.out.println("view.jsp [20]--------------------Validator test------------------------------");
+    System.out.println("Validator exists: "+Validator.isNotNull(timetrackerConfiguration));
+    System.out.print("    Columns: ");
+        for (String col:columns) System.out.print(" "+col);
+        System.out.print("\n");
+    System.out.println("    maxLength: "+maxLength);
+    
+    if (Validator.isNotNull(timetrackerConfiguration)) {
+        columns = portletPreferences.getValues("columns", timetrackerConfiguration.columns());
+        maxLength = Integer.parseInt(portletPreferences.getValue("max-length", timetrackerConfiguration.maxLength()));
+        //timeFormat = portletPreferences.getValue("time-format", timetrackerConfiguration.timeFormat());
+    }
+    
+    System.out.println("view.jsp [34]---------after changes---------");
+    System.out.println("Validator exists: "+Validator.isNotNull(timetrackerConfiguration));
+    System.out.print("    Columns: ");
+        for (String col:columns) System.out.print(" "+col);
+        System.out.print("\n");
+    System.out.println("    maxLength: "+maxLength);
+    
+    
     String backURL = ParamUtil.getString(request, "backURL");
     String keywords = ParamUtil.getString(request, "keywords");
     String tabs1 = ParamUtil.getString(request, "tabs1", "browse");
-    
-    String [] columns = new String[] {"task-record-id", "work-package", "start-date"}; 
-    if (Validator.isNotNull(timetrackerConfiguration)) {
-        columns = portletPreferences.getValues("columns", timetrackerConfiguration.columns());
-    }
-    
-    // TODO: read from configuration
-    int maxLength = 50; 
-    boolean viewByDefault = false; 
     
     
     SearchContainer taskRecordSearch = new TaskRecordSearch(renderRequest, "cur", portletURL);
