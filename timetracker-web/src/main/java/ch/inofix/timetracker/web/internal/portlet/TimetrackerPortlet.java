@@ -23,6 +23,7 @@ import com.liferay.portal.kernel.xml.Node;
 import com.liferay.portal.kernel.xml.SAXReaderUtil;
 import com.thoughtworks.xstream.XStream;
 
+import aQute.bnd.annotation.metatype.Configurable;
 import ch.inofix.timetracker.constants.TimetrackerPortletKeys;
 import ch.inofix.timetracker.exception.NoSuchTaskRecordException;
 import ch.inofix.timetracker.exception.TaskRecordEndDateException;
@@ -31,6 +32,7 @@ import ch.inofix.timetracker.model.TaskRecord;
 import ch.inofix.timetracker.model.impl.TaskRecordImpl;
 import ch.inofix.timetracker.service.TaskRecordLocalService;
 import ch.inofix.timetracker.service.TaskRecordService;
+import ch.inofix.timetracker.web.configuration.TimetrackerConfiguration;
 import ch.inofix.timetracker.web.internal.constants.TimetrackerWebKeys;
 import ch.inofix.timetracker.web.internal.portlet.util.PortletUtil;
 
@@ -38,6 +40,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
@@ -47,7 +50,9 @@ import javax.portlet.PortletRequest;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 
 /**
@@ -55,8 +60,8 @@ import org.osgi.service.component.annotations.Reference;
  *
  * @author Christian Berndt
  * @created 2013-10-07 10:47
- * @modified 2017-03-07 17:11
- * @version 1.5.6
+ * @modified 2017-03-13 10:48
+ * @version 1.5.7
  */
 @Component(immediate = true, property = { "com.liferay.portlet.css-class-wrapper=portlet-timetracker",
         "com.liferay.portlet.display-category=category.inofix", "com.liferay.portlet.header-portlet-css=/css/main.css",
@@ -321,6 +326,12 @@ public class TimetrackerPortlet extends MVCPortlet {
         actionRequest.setAttribute(WebKeys.REDIRECT, redirect);
     }
 
+    @Activate
+    @Modified
+    protected void activate(Map<Object, Object> properties) {
+        _timetrackerConfiguration = Configurable.createConfigurable(TimetrackerConfiguration.class, properties);
+    }
+
     @Override
     protected void doDispatch(RenderRequest renderRequest, RenderResponse renderResponse)
             throws IOException, PortletException {
@@ -333,6 +344,15 @@ public class TimetrackerPortlet extends MVCPortlet {
         } else {
             super.doDispatch(renderRequest, renderResponse);
         }
+    }
+
+    @Override
+    public void doView(RenderRequest renderRequest, RenderResponse renderResponse)
+            throws IOException, PortletException {
+
+        renderRequest.setAttribute(TimetrackerConfiguration.class.getName(), _timetrackerConfiguration);
+
+        super.doView(renderRequest, renderResponse);
     }
 
     protected String getEditTaskRecordURL(ActionRequest actionRequest, ActionResponse actionResponse,
@@ -378,6 +398,7 @@ public class TimetrackerPortlet extends MVCPortlet {
         portletRequest.setAttribute(TimetrackerWebKeys.TASK_RECORD, taskRecord);
     }
 
+    // TODO: Remove local service from portlet
     @Reference
     protected void setTaskRecordLocalService(TaskRecordLocalService taskRecordLocalService) {
         this._taskRecordLocalService = taskRecordLocalService;
@@ -388,11 +409,14 @@ public class TimetrackerPortlet extends MVCPortlet {
         this._taskRecordService = taskRecordService;
     }
 
+    // TODO: Remove local service from portlet
+    private TaskRecordLocalService _taskRecordLocalService;
+    private TaskRecordService _taskRecordService;
+
+    private volatile TimetrackerConfiguration _timetrackerConfiguration;
+
     private static final String REQUEST_PROCESSED = "request_processed";
 
     private static final Log _log = LogFactoryUtil.getLog(TimetrackerPortlet.class.getName());
-
-    private TaskRecordLocalService _taskRecordLocalService;
-    private TaskRecordService _taskRecordService;
 
 }
