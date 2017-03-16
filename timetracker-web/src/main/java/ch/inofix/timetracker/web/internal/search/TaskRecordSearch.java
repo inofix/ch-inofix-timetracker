@@ -26,9 +26,9 @@ import ch.inofix.timetracker.model.TaskRecord;
 
 /**
  * 
- * @author Christian Berndt
+ * @author Christian Berndt, Stefan Luebbers
  * @created 2013-10-06 18:26
- * @modified 2016-11-26 14:04
+ * @modified 2017-03-16 15:28
  * @version 1.0.1
  * 
  */
@@ -79,7 +79,10 @@ public class TaskRecordSearch extends SearchContainer<TaskRecord> {
         }
 
         // TODO: add other iterator relevant parameters
+        _log.info("TaskRecordSearch [82] uebergabe staus:'"+displayTerms.getStatus()+"' workpackage:'"+displayTerms.getWorkPackage()+"'");
         iteratorURL.setParameter(TaskRecordDisplayTerms.STATUS, String.valueOf(displayTerms.getStatus()));
+        iteratorURL.setParameter(TaskRecordDisplayTerms.WORK_PACKAGE, displayTerms.getWorkPackage());;
+        iteratorURL.setParameter(TaskRecordDisplayTerms.START_DATE, displayTerms.getStartDate());;
 
         try {
             PortalPreferences preferences = PortletPreferencesFactoryUtil.getPortalPreferences(portletRequest);
