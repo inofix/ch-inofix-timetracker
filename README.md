@@ -3,8 +3,8 @@ A timetracker plugin for Liferay.
 
 ## How To Build
 1. Install blade: `curl https://raw.githubusercontent.com/liferay/liferay-blade-cli/master/installers/local | sh`
-1. Create a liferay workspace: `blade init [WORKSPACE_NAME]`
-1. Checkout timetracker sources to the workspace's module directory: `cd [WORKSPACE_NAME]/modules; git clone https://github.com/inofix/ch-inofix-timetracker.git`
+1. Create a liferay workspace: `WORKSPACE=my-workspace; blade init $WORKSPACE`
+1. Checkout timetracker sources to the workspace's module directory: `cd $WORKSPACE/modules; git clone https://github.com/inofix/ch-inofix-timetracker.git`
 1. Run ServiceBuilder: `gradle buildService`
 1. Build: `gradle jar`
 
