@@ -2,8 +2,8 @@
     delete-task_records.jspf: Delete all task-records of this group
     
     Created:    2016-03-22 12:12 by Christian Berndt
-    Modified:   2016-11-27 11:45 by Christian Berndt
-    Version:    1.0.1
+    Modified:   2017-03-16 15:41 by Christian Berndt
+    Version:    1.0.2
 --%>
 
 <portlet:actionURL name="deleteAllTaskRecords" var="deleteAllTaskRecordsURL"> 
@@ -18,7 +18,7 @@
     <aui:button-row>
         <liferay-ui:icon-delete
             url="<%=deleteAllTaskRecordsURL.toString()%>"
-            cssClass="btn btn-primary delete" message="delete-all-task-records"
+            cssClass="btn btn-danger delete" message="delete-all-task-records"
             label="true" />
     </aui:button-row>
 </aui:fieldset>
