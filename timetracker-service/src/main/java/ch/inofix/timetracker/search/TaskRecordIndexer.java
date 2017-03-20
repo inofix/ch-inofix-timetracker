@@ -111,7 +111,7 @@ public class TaskRecordIndexer extends BaseIndexer<TaskRecord> {
     @Override
     protected void doReindex(String[] ids) throws Exception {
         long companyId = GetterUtil.getLong(ids[0]);
-
+        _log.info("doReindex:"+ids[0]+" - "+companyId);
         // TODO: what about the group?
         reindexTaskRecords(companyId);
         // reindexTaskRecords(companyId, groupId);
