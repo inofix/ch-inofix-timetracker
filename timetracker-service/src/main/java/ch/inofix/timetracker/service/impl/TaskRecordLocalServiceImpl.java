@@ -63,8 +63,8 @@ import ch.inofix.timetracker.service.base.TaskRecordLocalServiceBaseImpl;
  *
  * @author Christian Berndt
  * @created 2013-10-06 21:24
- * @modified 2016-11-27 11:41
- * @version 1.5.2
+ * @modified 2017-03-21 18:28
+ * @version 1.5.3
  * @see TaskRecordLocalServiceBaseImpl
  * @see ch.inofix.timetracker.service.TaskRecordLocalServiceUtil
  */
@@ -109,7 +109,7 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
         taskRecord.setStatus(status);
         taskRecord.setDuration(duration);
 
-        taskRecordPersistence.update(taskRecord);
+        taskRecord = taskRecordPersistence.update(taskRecord);
 
         // Resources
 
@@ -124,6 +124,7 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
 
         updateAsset(userId, taskRecord, serviceContext.getAssetCategoryIds(), serviceContext.getAssetTagNames(),
                 serviceContext.getAssetLinkEntryIds(), serviceContext.getAssetPriority());
+
         return taskRecord;
 
     }
@@ -213,14 +214,9 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
     public Hits search(long userId, long groupId, String keywords, int start, int end, Sort sort)
             throws PortalException {
 
-        _log.info("search()");
-
         if (sort == null) {
             sort = new Sort(Field.MODIFIED_DATE, true);
         }
-
-        _log.info(sort.getFieldName());
-        _log.info(sort.isReverse());
 
         Indexer<TaskRecord> indexer = IndexerRegistryUtil.getIndexer(TaskRecord.class.getName());
 
@@ -263,11 +259,13 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
 
         String summary = HtmlUtil.extractText(StringUtil.shorten(taskRecord.getWorkPackage(), 500));
 
+        String className = TaskRecord.class.getName();
+        long classPK = taskRecord.getTaskRecordId();
+
         AssetEntry assetEntry = assetEntryLocalService.updateEntry(userId, taskRecord.getGroupId(),
-                taskRecord.getCreateDate(), taskRecord.getModifiedDate(), TaskRecord.class.getName(),
-                taskRecord.getTaskRecordId(), taskRecord.getUuid(), 0, assetCategoryIds, assetTagNames, true, visible,
-                null, null, publishDate, null, ContentTypes.TEXT_HTML, taskRecord.getWorkPackage(),
-                taskRecord.getWorkPackage(), summary, null, null, 0, 0, priority);
+                taskRecord.getCreateDate(), taskRecord.getModifiedDate(), className, classPK, taskRecord.getUuid(), 0,
+                assetCategoryIds, assetTagNames, true, visible, null, null, publishDate, null, ContentTypes.TEXT_HTML,
+                taskRecord.getWorkPackage(), taskRecord.getWorkPackage(), summary, null, null, 0, 0, priority);
 
         assetLinkLocalService.updateLinks(userId, assetEntry.getEntryId(), assetLinkEntryIds,
                 AssetLinkConstants.TYPE_RELATED);
