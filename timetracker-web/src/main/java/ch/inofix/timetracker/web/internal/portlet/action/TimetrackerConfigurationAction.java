@@ -18,7 +18,7 @@ import com.liferay.portal.kernel.portlet.DefaultConfigurationAction;
 import com.liferay.portal.kernel.util.ParamUtil;
 
 import aQute.bnd.annotation.metatype.Configurable;
-import ch.inofix.timetracker.constants.TimetrackerPortletKeys;
+import ch.inofix.timetracker.constants.PortletKeys;
 import ch.inofix.timetracker.web.configuration.TimetrackerConfiguration;
 
 /**
@@ -26,8 +26,8 @@ import ch.inofix.timetracker.web.configuration.TimetrackerConfiguration;
  * 
  * @author Stefan Luebbers
  * @created 2017-03-09 14:20
- * @modified 2017-03-09 14:20
- * @version 1.0.0
+ * @modified 2017-03-21 14:58
+ * @version 1.0.1
  */
 
 @Component(
@@ -35,7 +35,7 @@ import ch.inofix.timetracker.web.configuration.TimetrackerConfiguration;
         configurationPolicy = ConfigurationPolicy.OPTIONAL, 
         immediate = true, 
         property = {
-            "javax.portlet.name=" + TimetrackerPortletKeys.TIMETRACKER 
+            "javax.portlet.name=" + PortletKeys.TIMETRACKER 
         }, 
         service = ConfigurationAction.class
     )

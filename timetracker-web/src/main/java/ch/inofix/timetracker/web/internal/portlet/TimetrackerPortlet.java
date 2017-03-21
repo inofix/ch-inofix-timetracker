@@ -1,5 +1,24 @@
 package ch.inofix.timetracker.web.internal.portlet;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import javax.portlet.ActionRequest;
+import javax.portlet.ActionResponse;
+import javax.portlet.Portlet;
+import javax.portlet.PortletException;
+import javax.portlet.PortletRequest;
+import javax.portlet.RenderRequest;
+import javax.portlet.RenderResponse;
+
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Modified;
+import org.osgi.service.component.annotations.Reference;
+
 import com.liferay.portal.kernel.exception.NoSuchResourceException;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.log.Log;
@@ -24,7 +43,7 @@ import com.liferay.portal.kernel.xml.SAXReaderUtil;
 import com.thoughtworks.xstream.XStream;
 
 import aQute.bnd.annotation.metatype.Configurable;
-import ch.inofix.timetracker.constants.TimetrackerPortletKeys;
+import ch.inofix.timetracker.constants.PortletKeys;
 import ch.inofix.timetracker.exception.NoSuchTaskRecordException;
 import ch.inofix.timetracker.exception.TaskRecordEndDateException;
 import ch.inofix.timetracker.exception.TaskRecordStartDateException;
@@ -36,32 +55,13 @@ import ch.inofix.timetracker.web.configuration.TimetrackerConfiguration;
 import ch.inofix.timetracker.web.internal.constants.TimetrackerWebKeys;
 import ch.inofix.timetracker.web.internal.portlet.util.PortletUtil;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
-import javax.portlet.ActionRequest;
-import javax.portlet.ActionResponse;
-import javax.portlet.Portlet;
-import javax.portlet.PortletException;
-import javax.portlet.PortletRequest;
-import javax.portlet.RenderRequest;
-import javax.portlet.RenderResponse;
-
-import org.osgi.service.component.annotations.Activate;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Modified;
-import org.osgi.service.component.annotations.Reference;
-
 /**
  * View Controller of Inofix' timetracker.
  *
  * @author Christian Berndt
  * @created 2013-10-07 10:47
- * @modified 2017-03-13 10:48
- * @version 1.5.7
+ * @modified 2017-03-21 14:57
+ * @version 1.5.8
  */
 @Component(immediate = true, property = { "com.liferay.portlet.css-class-wrapper=portlet-timetracker",
         "com.liferay.portlet.display-category=category.inofix", "com.liferay.portlet.header-portlet-css=/css/main.css",
@@ -100,7 +100,7 @@ public class TimetrackerPortlet extends MVCPortlet {
     }
 
     /**
-     * 
+     *
      * @param actionRequest
      * @param actionResponse
      * @throws Exception
@@ -195,10 +195,10 @@ public class TimetrackerPortlet extends MVCPortlet {
                     if (importRecord.getTaskRecordId() == 0) {
 
                         // Insert the imported record as new
-                        _taskRecordLocalService.addTaskRecord(importRecord.getUserId(), importRecord.getGroupId(),
-                                importRecord.getWorkPackage(), importRecord.getDescription(),
-                                importRecord.getTicketURL(), importRecord.getEndDate(), importRecord.getStartDate(),
-                                importRecord.getStatus(), importRecord.getDuration(), serviceContext);
+                        _taskRecordLocalService.addTaskRecord(importRecord.getUserId(), importRecord.getWorkPackage(),
+                                importRecord.getDescription(), importRecord.getTicketURL(), importRecord.getEndDate(),
+                                importRecord.getStartDate(), importRecord.getStatus(), importRecord.getDuration(),
+                                serviceContext);
                     } else {
 
                         // Record already has an id but does not exist in this
@@ -237,7 +237,7 @@ public class TimetrackerPortlet extends MVCPortlet {
     }
 
     /**
-     * 
+     *
      * @param actionRequest
      * @param actionResponse
      * @throws Exception
@@ -307,8 +307,8 @@ public class TimetrackerPortlet extends MVCPortlet {
             _log.info("add taskRecord");
 
             // TODO: Use remote service
-            taskRecord = _taskRecordLocalService.addTaskRecord(userId, groupId, workPackage, description, ticketURL,
-                    endDate, startDate, status, duration, serviceContext);
+            taskRecord = _taskRecordLocalService.addTaskRecord(userId, workPackage, description, ticketURL, endDate,
+                    startDate, status, duration, serviceContext);
 
         } else {
 
@@ -317,8 +317,8 @@ public class TimetrackerPortlet extends MVCPortlet {
             _log.info("update taskRecord");
 
             // TODO: Use remote service
-            taskRecord = _taskRecordLocalService.updateTaskRecord(userId, groupId, taskRecordId, workPackage,
-                    description, ticketURL, endDate, startDate, status, duration, serviceContext);
+            taskRecord = _taskRecordLocalService.updateTaskRecord(userId, taskRecordId, workPackage, description,
+                    ticketURL, endDate, startDate, status, duration, serviceContext);
         }
 
         String redirect = getEditTaskRecordURL(actionRequest, actionResponse, taskRecord);
@@ -369,7 +369,7 @@ public class TimetrackerPortlet extends MVCPortlet {
         String namespace = actionResponse.getNamespace();
         String windowState = actionResponse.getWindowState().toString();
 
-        editTaskRecordURL = HttpUtil.setParameter(editTaskRecordURL, "p_p_id", TimetrackerPortletKeys.TIMETRACKER);
+        editTaskRecordURL = HttpUtil.setParameter(editTaskRecordURL, "p_p_id", PortletKeys.TIMETRACKER);
         editTaskRecordURL = HttpUtil.setParameter(editTaskRecordURL, "p_p_state", windowState);
         editTaskRecordURL = HttpUtil.setParameter(editTaskRecordURL, namespace + "mvcPath",
                 templatePath + "edit_task_record.jsp");

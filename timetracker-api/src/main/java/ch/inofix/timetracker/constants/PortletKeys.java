@@ -8,7 +8,7 @@ package ch.inofix.timetracker.constants;
  * @version 1.0.1
  *
  */
-public class TimetrackerPortletKeys {
+public class PortletKeys {
 
 	public static final String TIMETRACKER = "ch_inofix_timetracker_web_internal_portlet_TimetrackerPortlet";
 

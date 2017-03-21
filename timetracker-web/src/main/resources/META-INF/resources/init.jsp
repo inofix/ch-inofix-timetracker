@@ -23,7 +23,7 @@
 <%@page import="ch.inofix.timetracker.web.internal.search.TaskRecordSearch"%>
 <%@page import="ch.inofix.timetracker.web.internal.search.TaskRecordSearchTerms"%>
 <%@page import="ch.inofix.timetracker.web.internal.constants.TimetrackerWebKeys"%>
-<%@page import="ch.inofix.timetracker.constants.TimetrackerPortletKeys"%>
+<%-- <%@page import="ch.inofix.timetracker.constants.PortletKeys"%> --%>
 <%@page import="ch.inofix.timetracker.web.configuration.TimetrackerConfiguration"%>
 
 <%@page import="com.liferay.portal.kernel.dao.search.SearchContainer"%>

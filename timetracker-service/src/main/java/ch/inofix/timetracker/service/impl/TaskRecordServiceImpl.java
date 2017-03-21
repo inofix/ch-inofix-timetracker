@@ -44,8 +44,8 @@ import ch.inofix.timetracker.service.permission.TimetrackerPortletPermission;
  *
  * @author Christian Berndt
  * @created 2015-05-07 23:50
- * @modified 2016-11-13 17:43
- * @version 1.0.3
+ * @modified 2017-03-21 14:56
+ * @version 1.0.4
  * @see TaskRecordServiceBaseImpl
  * @see ch.inofix.timetracker.service.TaskRecordServiceUtil
  */
@@ -58,23 +58,26 @@ public class TaskRecordServiceImpl extends TaskRecordServiceBaseImpl {
      * ch.inofix.timetracker.service.TaskRecordServiceUtil} to access the task
      * record remote service.
      */
+    @Override
     public TaskRecord addTaskRecord(long groupId, String workPackage, String description, String ticketURL,
             Date endDate, Date startDate, int status, long duration, ServiceContext serviceContext)
             throws PortalException, SystemException {
 
         TimetrackerPortletPermission.check(getPermissionChecker(), groupId, ActionKeys.ADD_TASK_RECORD);
 
-        return taskRecordLocalService.addTaskRecord(getUserId(), groupId, workPackage, description, ticketURL, endDate,
+        return taskRecordLocalService.addTaskRecord(getUserId(), workPackage, description, ticketURL, endDate,
                 startDate, status, duration, serviceContext);
 
     }
 
+    @Override
     public TaskRecord createTaskRecord() throws PortalException, SystemException {
 
         // Create an empty taskRecord - no permission check required
         return TaskRecordLocalServiceUtil.createTaskRecord(0);
     }
 
+    @Override
     public TaskRecord deleteTaskRecord(long taskRecordId) throws PortalException, SystemException {
 
         TaskRecordPermission.check(getPermissionChecker(), taskRecordId, ActionKeys.DELETE);
@@ -85,6 +88,7 @@ public class TaskRecordServiceImpl extends TaskRecordServiceBaseImpl {
 
     }
 
+    @Override
     public TaskRecord getTaskRecord(long taskRecordId) throws PortalException, SystemException {
 
         TaskRecordPermission.check(getPermissionChecker(), taskRecordId, ActionKeys.VIEW);
@@ -93,14 +97,15 @@ public class TaskRecordServiceImpl extends TaskRecordServiceBaseImpl {
 
     }
 
+    @Override
     public TaskRecord updateTaskRecord(long groupId, long taskRecordId, String workPackage, String description,
             String ticketURL, Date endDate, Date startDate, int status, long duration, ServiceContext serviceContext)
             throws PortalException, SystemException {
 
         TaskRecordPermission.check(getPermissionChecker(), taskRecordId, ActionKeys.UPDATE);
 
-        return taskRecordLocalService.updateTaskRecord(getUserId(), groupId, taskRecordId, workPackage, description,
-                ticketURL, endDate, startDate, status, duration, serviceContext);
+        return taskRecordLocalService.updateTaskRecord(getUserId(), taskRecordId, workPackage, description, ticketURL,
+                endDate, startDate, status, duration, serviceContext);
 
     }
 }
