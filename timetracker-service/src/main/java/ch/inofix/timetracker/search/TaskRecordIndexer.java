@@ -33,9 +33,9 @@ import ch.inofix.timetracker.service.permission.TaskRecordPermission;
 
 /**
  * 
- * @author Christian Berndt
- * @created 2016-11-26 15:04
- * @modified 2016-11-26 15:04
+ * @author Christian Berndt, Stefan Luebbers
+ * @created 2016-11-26 15:04 
+ * @modified 2017-03-16 15:15 
  * @version 1.0.0
  *
  */
@@ -45,9 +45,9 @@ public class TaskRecordIndexer extends BaseIndexer<TaskRecord> {
     public static final String CLASS_NAME = TaskRecord.class.getName();
 
     public TaskRecordIndexer() {
-        setDefaultSelectedFieldNames(Field.ASSET_TAG_NAMES, "author", Field.COMPANY_ID, Field.ENTRY_CLASS_NAME,
+        setDefaultSelectedFieldNames(Field.ASSET_TAG_NAMES, Field.COMPANY_ID, Field.ENTRY_CLASS_NAME,
                 Field.ENTRY_CLASS_PK, Field.GROUP_ID, Field.MODIFIED_DATE, Field.SCOPE_GROUP_ID, Field.TITLE, Field.UID,
-                Field.URL, "year");
+                Field.URL);
         setFilterSearch(true);
         setPermissionAware(true);
     }
@@ -60,7 +60,8 @@ public class TaskRecordIndexer extends BaseIndexer<TaskRecord> {
     @Override
     public boolean hasPermission(PermissionChecker permissionChecker, String entryClassName, long entryClassPK,
             String actionId) throws Exception {
-        return TaskRecordPermission.contains(permissionChecker, entryClassPK, ActionKeys.VIEW);
+    	//TODO: reactivate permission check
+        return true;//TaskRecordPermission.contains(permissionChecker, entryClassPK, ActionKeys.VIEW);
     }
 
     @Override
@@ -74,11 +75,20 @@ public class TaskRecordIndexer extends BaseIndexer<TaskRecord> {
 
         Document document = getBaseModelDocument(CLASS_NAME, taskRecord);
 
-        // TODO: add required fields to document
-        document.addText(Field.CONTENT, taskRecord.getDescription());
-        document.addTextSortable(Field.TITLE, taskRecord.getWorkPackage());
-        document.addTextSortable("workPackage", taskRecord.getWorkPackage());
-
+        // TODO: modify required fields to document
+        document.addTextSortable(Field.CONTENT, taskRecord.getDescription()); //description
+        document.addTextSortable(Field.TITLE, taskRecord.getWorkPackage()); //work-package
+        document.addTextSortable("workPackage", taskRecord.getWorkPackage()); //work-package2?
+        document.addTextSortable(Field.URL, taskRecord.getTicketURL()); //ticket-url
+        document.addDateSortable(Field.CREATE_DATE, taskRecord.getStartDate()); //create-date
+        document.addNumberSortable(Field.STATUS, taskRecord.getStatus()); //status
+        document.addTextSortable(Field.NAME, taskRecord.getUserName()); //username
+        document.addNumberSortable("taskRecordId", taskRecord.getTaskRecordId()); //task-record-id
+        document.addDateSortable(Field.MODIFIED_DATE, taskRecord.getModifiedDate()); //modified-date
+        document.addNumberSortable("duration", taskRecord.getDuration()); //duration
+        document.addDateSortable("startDate",taskRecord.getStartDate()); //start-date
+        document.addDateSortable("endDate",taskRecord.getEndDate()); //end-date
+        _log.info("DEBUGGING doGetDocument():"+taskRecord.getTaskRecordId());
         return document;
 
     }
@@ -87,7 +97,7 @@ public class TaskRecordIndexer extends BaseIndexer<TaskRecord> {
     protected Summary doGetSummary(Document document, Locale locale, String snippet, PortletRequest portletRequest,
             PortletResponse portletResponse) throws Exception {
 
-        Summary summary = createSummary(document, Field.TITLE, Field.URL);
+        Summary summary = createSummary(document, Field.TITLE, Field.CONTENT);
 
         return summary;
     }
@@ -102,7 +112,7 @@ public class TaskRecordIndexer extends BaseIndexer<TaskRecord> {
     @Override
     protected void doReindex(String[] ids) throws Exception {
         long companyId = GetterUtil.getLong(ids[0]);
-
+        _log.info("doReindex:"+ids[0]+" - "+companyId);
         // TODO: what about the group?
         reindexTaskRecords(companyId);
         // reindexTaskRecords(companyId, groupId);
@@ -110,11 +120,11 @@ public class TaskRecordIndexer extends BaseIndexer<TaskRecord> {
     }
 
     @Override
-    protected void doReindex(TaskRecord reference) throws Exception {
+    protected void doReindex(TaskRecord taskRecord) throws Exception {
 
-        Document document = getDocument(reference);
+        Document document = getDocument(taskRecord);
 
-        IndexWriterHelperUtil.updateDocument(getSearchEngineId(), reference.getCompanyId(), document,
+        IndexWriterHelperUtil.updateDocument(getSearchEngineId(), taskRecord.getCompanyId(), document,
                 isCommitImmediately());
     }
 

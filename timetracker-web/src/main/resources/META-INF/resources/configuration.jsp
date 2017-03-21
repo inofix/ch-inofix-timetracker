@@ -12,8 +12,6 @@
     String[] columns = new String[0];
     String maxLength = "";
     String timeFormat = "";
-    System.out.println("--------------------------------------------------");
-    System.out.println("Validator exists: "+Validator.isNotNull(timetrackerConfiguration));
     if (Validator.isNotNull(timetrackerConfiguration)) {
         columns = portletPreferences.getValues("columns", timetrackerConfiguration.columns());
         maxLength = portletPreferences.getValue("max-length", timetrackerConfiguration.maxLength());

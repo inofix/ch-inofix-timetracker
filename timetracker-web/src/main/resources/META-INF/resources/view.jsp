@@ -9,6 +9,9 @@
 <%@ include file="/init.jsp" %>
 
 <%@page import="com.liferay.portal.kernel.search.Sort"%>
+<%@page import="com.liferay.portal.kernel.search.Field"%>
+<%@page import="java.util.Map.Entry"%>
+
 
 <%
     String [] columns = new String[] {"task-record-id", "work-package", "start-date"};
@@ -45,10 +48,22 @@
         
     List<TaskRecord> taskRecords = new ArrayList<TaskRecord>();
     
+//     System.out.println("[view.jsp 48]DEBUGGING: Sorting");
+//     System.out.println("[view.jsp 49]DEBUGGING: sort by col: "+taskRecordSearch.getOrderByCol());
+//     System.out.println("[view.jsp 50]DEBUGGING: reverse: "+reverse);
+//     System.out.println("[view.jsp 51]DEBUGGING: keywords: "+keywords);
+    
     for (Document document : documents) {
         try {
             long taskRecordId = GetterUtil.getLong(document.get("entryClassPK"));
             // TODO: use remote service
+            
+//             System.out.println("[view.jsp 57]DEBUGGING: document-taskRecordId: "+document.get("entryClassPK"));
+//             System.out.println("[view.jsp 58]DEBUGGING: document-values: "+document.get("status"));
+//             for(Entry<String, Field> f:document.getFields().entrySet()){
+//                 System.out.println("[view.jsp ..] document:"+f.getKey()+"  -  "+f.getValue().getValue());
+//             } 
+            
             TaskRecord taskRecord = TaskRecordLocalServiceUtil.getTaskRecord(taskRecordId);
             taskRecords.add(taskRecord); 
         } catch (Exception e) {
