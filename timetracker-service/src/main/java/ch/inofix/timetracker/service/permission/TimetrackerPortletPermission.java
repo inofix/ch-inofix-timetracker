@@ -5,14 +5,14 @@ import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.BaseResourcePermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 
-import ch.inofix.timetracker.constants.TimetrackerPortletKeys;
+import ch.inofix.timetracker.constants.PortletKeys;
 
 /**
  * 
  * @author Christian Berndt
  * @created 2016-11-13 18:09
- * @modified 2016-11-13 18:09
- * @version 1.0.0
+ * @modified 2017-03-21 14:56
+ * @version 1.0.1
  *
  */
 public class TimetrackerPortletPermission extends BaseResourcePermissionChecker {
@@ -29,7 +29,7 @@ public class TimetrackerPortletPermission extends BaseResourcePermissionChecker 
 
     public static boolean contains(PermissionChecker permissionChecker, long groupId, String actionId) {
 
-        return contains(permissionChecker, RESOURCE_NAME, TimetrackerPortletKeys.TIMETRACKER, groupId, actionId);
+        return contains(permissionChecker, RESOURCE_NAME, PortletKeys.TIMETRACKER, groupId, actionId);
     }
 
     @Override

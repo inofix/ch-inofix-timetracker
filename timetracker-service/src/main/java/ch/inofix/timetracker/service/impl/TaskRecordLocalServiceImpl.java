@@ -17,11 +17,14 @@ import java.util.Date;
 import java.util.List;
 
 import com.liferay.asset.kernel.model.AssetEntry;
+import com.liferay.asset.kernel.model.AssetLinkConstants;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.ResourceConstants;
+import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Hits;
@@ -33,6 +36,11 @@ import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.permission.ModelPermissions;
+import com.liferay.portal.kernel.systemevent.SystemEvent;
+import com.liferay.portal.kernel.util.ContentTypes;
+import com.liferay.portal.kernel.util.HtmlUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import aQute.bnd.annotation.ProviderType;
@@ -69,48 +77,133 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
      * ch.inofix.timetracker.service.TaskRecordLocalServiceUtil} to access the
      * task record local service.
      */
-	@Indexable(type = IndexableType.REINDEX)
-    public TaskRecord addTaskRecord(long userId, long groupId, String workPackage, String description, String ticketURL,
-            Date endDate, Date startDate, int status, long duration, ServiceContext serviceContext)
-            throws PortalException, SystemException {
+    @Override
+    @Indexable(type = IndexableType.REINDEX)
+    public TaskRecord addTaskRecord(long userId, String workPackage, String description, String ticketURL, Date endDate,
+            Date startDate, int status, long duration, ServiceContext serviceContext) throws PortalException {
 
-        TaskRecord taskRecord = saveTaskRecord(userId, groupId, 0, description, duration, endDate, startDate, status,
-                workPackage, serviceContext);
+        // TaskRecord
+
+        User user = userPersistence.findByPrimaryKey(userId);
+        long groupId = serviceContext.getScopeGroupId();
+
+        // TODO
+        // validate(groupId, urlTitle);
+
+        long taskRecordId = counterLocalService.increment();
+
+        TaskRecord taskRecord = taskRecordPersistence.create(taskRecordId);
+
+        taskRecord.setUuid(serviceContext.getUuid());
+        taskRecord.setGroupId(groupId);
+        taskRecord.setCompanyId(user.getCompanyId());
+        taskRecord.setUserId(user.getUserId());
+        taskRecord.setUserName(user.getFullName());
+        taskRecord.setExpandoBridgeAttributes(serviceContext);
+
+        taskRecord.setWorkPackage(workPackage);
+        taskRecord.setDescription(description);
+        taskRecord.setTicketURL(ticketURL);
+        taskRecord.setEndDate(endDate);
+        taskRecord.setStartDate(startDate);
+        taskRecord.setStatus(status);
+        taskRecord.setDuration(duration);
+
+        taskRecordPersistence.update(taskRecord);
+
+        // Resources
+
+        if (serviceContext.isAddGroupPermissions() || serviceContext.isAddGuestPermissions()) {
+            addTaskRecordResources(taskRecord, serviceContext.isAddGroupPermissions(),
+                    serviceContext.isAddGuestPermissions());
+        } else {
+            addTaskRecordResources(taskRecord, serviceContext.getModelPermissions());
+        }
 
         // Asset
 
-        // TODO: re-enable asset framework
-        //
-        // resourceLocalService.addResources(taskRecord.getCompanyId(), groupId,
-        // userId, TaskRecord.class.getName(),
-        // taskRecord.getTaskRecordId(), false, true, true);
-        //
-        // updateAsset(userId, taskRecord, serviceContext.getAssetCategoryIds(),
-        // serviceContext.getAssetTagNames(),
-        // serviceContext.getAssetLinkEntryIds());
-
+        updateAsset(userId, taskRecord, serviceContext.getAssetCategoryIds(), serviceContext.getAssetTagNames(),
+                serviceContext.getAssetLinkEntryIds(), serviceContext.getAssetPriority());
         return taskRecord;
 
     }
 
-    /**
-     * @param taskRecordId
-     * @return
-     */
-	@Indexable(type = IndexableType.DELETE)
-    public TaskRecord deleteTaskRecord(long taskRecordId) throws PortalException, SystemException {
+    @Override
+    public void addTaskRecordResources(TaskRecord taskRecord, boolean addGroupPermissions, boolean addGuestPermissions)
+            throws PortalException {
+
+        resourceLocalService.addResources(taskRecord.getCompanyId(), taskRecord.getGroupId(), taskRecord.getUserId(),
+                TaskRecord.class.getName(), taskRecord.getTaskRecordId(), false, addGroupPermissions,
+                addGuestPermissions);
+    }
+
+    @Override
+    public void addTaskRecordResources(TaskRecord taskRecord, ModelPermissions modelPermissions)
+            throws PortalException {
+
+        resourceLocalService.addModelResources(taskRecord.getCompanyId(), taskRecord.getGroupId(),
+                taskRecord.getUserId(), TaskRecord.class.getName(), taskRecord.getTaskRecordId(), modelPermissions);
+    }
+
+    @Override
+    public void addTaskRecordResources(long taskRecordId, boolean addGroupPermissions, boolean addGuestPermissions)
+            throws PortalException {
 
         TaskRecord taskRecord = taskRecordPersistence.findByPrimaryKey(taskRecordId);
 
-        return deleteTaskRecord(taskRecord);
+        addTaskRecordResources(taskRecord, addGroupPermissions, addGuestPermissions);
+    }
+
+    @Override
+    public void addTaskRecordResources(long taskRecordId, ModelPermissions modelPermissions) throws PortalException {
+
+        TaskRecord taskRecord = taskRecordPersistence.findByPrimaryKey(taskRecordId);
+
+        addTaskRecordResources(taskRecord, modelPermissions);
+    }
+
+    @Indexable(type = IndexableType.DELETE)
+    @Override
+    @SystemEvent(type = SystemEventConstants.TYPE_DELETE)
+    public TaskRecord deleteTaskRecord(TaskRecord taskRecord) throws PortalException {
+
+        // TaskRecord
+
+        taskRecordPersistence.remove(taskRecord);
+
+        // Resources
+
+        resourceLocalService.deleteResource(taskRecord.getCompanyId(), TaskRecord.class.getName(),
+                ResourceConstants.SCOPE_INDIVIDUAL, taskRecord.getTaskRecordId());
+
+        // Asset
+
+        assetEntryLocalService.deleteEntry(TaskRecord.class.getName(), taskRecord.getTaskRecordId());
+
+        // Workflow
+
+        // TODO: add workflow support
+        // workflowInstanceLinkLocalService.deleteWorkflowInstanceLinks(
+        // taskRecord.getCompanyId(), taskRecord.getGroupId(),
+        // TaskRecord.class.getName(), taskRecord.getTaskRecordId());
+
+        return taskRecord;
+    }
+
+    @Override
+    public TaskRecord deleteTaskRecord(long taskRecordId) throws PortalException {
+        TaskRecord taskRecord = taskRecordPersistence.findByPrimaryKey(taskRecordId);
+
+        return taskRecordLocalService.deleteTaskRecord(taskRecord);
     }
 
     /**
-     * 
+     *
      * @param groupId
      * @return
      * @since 1.5.2
      */
+    @Override
     public List<TaskRecord> getGroupTaskRecords(long groupId) throws PortalException, SystemException {
 
         return taskRecordPersistence.findByGroupId(groupId);
@@ -149,124 +242,92 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
 
     }
 
-    
+    @Override
     public void updateAsset(long userId, TaskRecord taskRecord, long[] assetCategoryIds, String[] assetTagNames,
-            long[] assetLinkEntryIds) throws PortalException, SystemException {
+            long[] assetLinkEntryIds, Double priority) throws PortalException {
 
+        // TODO
         boolean visible = true;
         // boolean visible = false;
-
         // if (taskRecord.isApproved()) {
         // visible = true;
+        // publishDate = taskRecord.getCreateDate();
         // }
 
-        // TODO: What's the classTypeId?
-        long classTypeId = 0;
-        Date startDate = null;
-        Date endDate = null;
-        Date expirationDate = null;
-        String mimeType = "text/text";
-        String title = taskRecord.getWorkPackage();
-        String description = taskRecord.getDescription();
-        String summary = taskRecord.getDescription();
-        // TODO: What does url mean in this context?
-        String url = null;
-        // TODO: What does layoutUuid mean in this context?
-        String layoutUuid = null;
-        int height = 0;
-        int width = 0;
-        Integer priority = null;
-        boolean sync = false;
+        Date publishDate = null;
+
+        String summary = HtmlUtil.extractText(StringUtil.shorten(taskRecord.getWorkPackage(), 500));
 
         AssetEntry assetEntry = assetEntryLocalService.updateEntry(userId, taskRecord.getGroupId(),
                 taskRecord.getCreateDate(), taskRecord.getModifiedDate(), TaskRecord.class.getName(),
-                taskRecord.getTaskRecordId(), taskRecord.getUuid(), classTypeId, assetCategoryIds, assetTagNames,
-                visible, startDate, endDate, expirationDate, mimeType, title, description, summary, url, layoutUuid,
-                height, width, priority, sync);
+                taskRecord.getTaskRecordId(), taskRecord.getUuid(), 0, assetCategoryIds, assetTagNames, true, visible,
+                null, null, publishDate, null, ContentTypes.TEXT_HTML, taskRecord.getWorkPackage(),
+                taskRecord.getWorkPackage(), summary, null, null, 0, 0, priority);
 
-        // TODO
-        // assetLinkLocalService.updateLinks(userId, assetEntry.getEntryId(),
-        // assetLinkEntryIds,
-        // AssetLinkConstants.TYPE_RELATED);
-
-        // Indexer indexer =
-        // IndexerRegistryUtil.nullSafeGetIndexer(TaskRecord.class);
-        // indexer.reindex(taskRecord);
+        assetLinkLocalService.updateLinks(userId, assetEntry.getEntryId(), assetLinkEntryIds,
+                AssetLinkConstants.TYPE_RELATED);
     }
 
+    @Override
     @Indexable(type = IndexableType.REINDEX)
-    public TaskRecord updateTaskRecord(long userId, long groupId, long taskRecordId, String workPackage,
-            String description, String ticketURL, Date endDate, Date startDate, int status, long duration,
-            ServiceContext serviceContext) throws PortalException, SystemException {
+    public TaskRecord updateTaskRecord(long taskRecordId, long userId, String workPackage, String description,
+            String ticketURL, Date endDate, Date startDate, int status, long duration, ServiceContext serviceContext)
+            throws PortalException {
 
-        // TODO
-        // Duration diff = new Duration(startDate.getTime(), endDate.getTime());
-        //
-        // if (duration == 0) {
-        // duration = diff.getMillis();
-        // }
-
-        // TODO: Implement input validation.
-        // either startDate / endDate or duration in milliseconds
-        // workPackage: required
-        // task: required
-
-        TaskRecord taskRecord = saveTaskRecord(userId, groupId, taskRecordId, description, duration, endDate, startDate,
-                status, workPackage, serviceContext);
-
-        // Asset
-
-        resourceLocalService.updateResources(serviceContext.getCompanyId(), serviceContext.getScopeGroupId(),
-                taskRecord.getWorkPackage(), taskRecordId, serviceContext.getGroupPermissions(),
-                serviceContext.getGuestPermissions());
-
-        updateAsset(userId, taskRecord, serviceContext.getAssetCategoryIds(), serviceContext.getAssetTagNames(),
-                serviceContext.getAssetLinkEntryIds());
-
-        return taskRecord;
-
-    }
-
-    private TaskRecord saveTaskRecord(long userId, long groupId, long taskRecordId, String description, long duration,
-            Date endDate, Date startDate, int status, String workPackage, ServiceContext serviceContext)
-            throws PortalException, SystemException {
-
-        _log.info("add saveTaskRecord");
+        // TaskRecord
 
         User user = userPersistence.findByPrimaryKey(userId);
-        Date now = new Date();
-        TaskRecord taskRecord = null;
 
-        // if (duration <= 0) {
-        // duration = endDate.getTime() - startDate.getTime();
-        // }
+        TaskRecord taskRecord = taskRecordPersistence.findByPrimaryKey(taskRecordId);
 
-        if (taskRecordId > 0) {
-            taskRecord = taskRecordLocalService.getTaskRecord(taskRecordId);
-        } else {
-            taskRecordId = counterLocalService.increment();
-            taskRecord = taskRecordPersistence.create(taskRecordId);
-            taskRecord.setCompanyId(user.getCompanyId());
-            taskRecord.setGroupId(groupId);
-            taskRecord.setUserId(user.getUserId());
-            taskRecord.setUserName(user.getFullName());
-            taskRecord.setCreateDate(now);
-        }
+        long groupId = serviceContext.getScopeGroupId();
 
-        taskRecord.setModifiedDate(now);
+        // TODO: validate taskRecord
 
+        taskRecord.setUuid(serviceContext.getUuid());
+        taskRecord.setGroupId(groupId);
+        taskRecord.setCompanyId(user.getCompanyId());
+        taskRecord.setUserId(user.getUserId());
+        taskRecord.setUserName(user.getFullName());
+        taskRecord.setExpandoBridgeAttributes(serviceContext);
+
+        taskRecord.setWorkPackage(workPackage);
         taskRecord.setDescription(description);
-        taskRecord.setDuration(duration);
+        taskRecord.setTicketURL(ticketURL);
         taskRecord.setEndDate(endDate);
         taskRecord.setStartDate(startDate);
         taskRecord.setStatus(status);
-        taskRecord.setWorkPackage(workPackage);
-        taskRecord.setExpandoBridgeAttributes(serviceContext);
+        taskRecord.setDuration(duration);
 
         taskRecordPersistence.update(taskRecord);
 
+        // Resources
+
+        resourceLocalService.addModelResources(taskRecord, serviceContext);
+
+        // Asset
+
+        updateAsset(userId, taskRecord, serviceContext.getAssetCategoryIds(), serviceContext.getAssetTagNames(),
+                serviceContext.getAssetLinkEntryIds(), serviceContext.getAssetPriority());
+
         return taskRecord;
 
+    }
+
+    @Override
+    public void updateTaskRecordResources(TaskRecord taskRecord, ModelPermissions modelPermissions)
+            throws PortalException {
+
+        resourceLocalService.updateResources(taskRecord.getCompanyId(), taskRecord.getGroupId(),
+                TaskRecord.class.getName(), taskRecord.getTaskRecordId(), modelPermissions);
+    }
+
+    @Override
+    public void updateTaskRecordResources(TaskRecord taskRecord, String[] groupPermissions, String[] guestPermissions)
+            throws PortalException {
+
+        resourceLocalService.updateResources(taskRecord.getCompanyId(), taskRecord.getGroupId(),
+                TaskRecord.class.getName(), taskRecord.getTaskRecordId(), groupPermissions, guestPermissions);
     }
 
     private static final Log _log = LogFactoryUtil.getLog(TaskRecordLocalServiceImpl.class.getName());
