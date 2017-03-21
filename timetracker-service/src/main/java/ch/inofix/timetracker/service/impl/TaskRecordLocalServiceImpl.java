@@ -25,6 +25,8 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Hits;
+import com.liferay.portal.kernel.search.Indexable;
+import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.search.SearchContext;
@@ -67,6 +69,7 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
      * ch.inofix.timetracker.service.TaskRecordLocalServiceUtil} to access the
      * task record local service.
      */
+	@Indexable(type = IndexableType.REINDEX)
     public TaskRecord addTaskRecord(long userId, long groupId, String workPackage, String description, String ticketURL,
             Date endDate, Date startDate, int status, long duration, ServiceContext serviceContext)
             throws PortalException, SystemException {
@@ -94,6 +97,7 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
      * @param taskRecordId
      * @return
      */
+	@Indexable(type = IndexableType.DELETE)
     public TaskRecord deleteTaskRecord(long taskRecordId) throws PortalException, SystemException {
 
         TaskRecord taskRecord = taskRecordPersistence.findByPrimaryKey(taskRecordId);
@@ -145,6 +149,7 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
 
     }
 
+    
     public void updateAsset(long userId, TaskRecord taskRecord, long[] assetCategoryIds, String[] assetTagNames,
             long[] assetLinkEntryIds) throws PortalException, SystemException {
 
@@ -189,6 +194,7 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
         // indexer.reindex(taskRecord);
     }
 
+    @Indexable(type = IndexableType.REINDEX)
     public TaskRecord updateTaskRecord(long userId, long groupId, long taskRecordId, String workPackage,
             String description, String ticketURL, Date endDate, Date startDate, int status, long duration,
             ServiceContext serviceContext) throws PortalException, SystemException {

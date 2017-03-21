@@ -122,7 +122,7 @@ public class TaskRecordIndexer extends BaseIndexer<TaskRecord> {
     @Override
     protected void doReindex(TaskRecord taskRecord) throws Exception {
 
-        Document document = doGetDocument(taskRecord);
+        Document document = getDocument(taskRecord);
 
         IndexWriterHelperUtil.updateDocument(getSearchEngineId(), taskRecord.getCompanyId(), document,
                 isCommitImmediately());
@@ -155,10 +155,10 @@ public class TaskRecordIndexer extends BaseIndexer<TaskRecord> {
                     @Override
                     public void performAction(TaskRecord taskRecord) {
                         try {
-                            Document document = doGetDocument(taskRecord);
+                            Document document = getDocument(taskRecord);
 
                             indexableActionableDynamicQuery.addDocuments(document);
-                        } catch (Exception pe) {
+                        } catch (PortalException pe) {
                             if (_log.isWarnEnabled()) {
                                 _log.warn("Unable to index taskRecord " + taskRecord.getTaskRecordId(), pe);
                             }

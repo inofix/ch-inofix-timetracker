@@ -58,11 +58,11 @@
             long taskRecordId = GetterUtil.getLong(document.get("entryClassPK"));
             // TODO: use remote service
             
-            System.out.println("[view.jsp 57]DEBUGGING: document-taskRecordId: "+document.get("entryClassPK"));
-            System.out.println("[view.jsp 58]DEBUGGING: document-values: "+document.get("status"));
-            for(Entry<String, Field> f:document.getFields().entrySet()){
-                System.out.println("[view.jsp ..] document:"+f.getKey()+"  -  "+f.getValue().getValue());
-            } 
+//             System.out.println("[view.jsp 57]DEBUGGING: document-taskRecordId: "+document.get("entryClassPK"));
+//             System.out.println("[view.jsp 58]DEBUGGING: document-values: "+document.get("status"));
+//             for(Entry<String, Field> f:document.getFields().entrySet()){
+//                 System.out.println("[view.jsp ..] document:"+f.getKey()+"  -  "+f.getValue().getValue());
+//             } 
             
             TaskRecord taskRecord = TaskRecordLocalServiceUtil.getTaskRecord(taskRecordId);
             taskRecords.add(taskRecord); 
