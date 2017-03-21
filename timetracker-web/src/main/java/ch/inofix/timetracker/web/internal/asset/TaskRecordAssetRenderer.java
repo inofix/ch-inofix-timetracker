@@ -95,16 +95,15 @@ public class TaskRecordAssetRenderer extends BaseJSPAssetRenderer<TaskRecord> {
         return TaskRecordAssetRendererFactory.TYPE;
     }
 
-//    @Override
-//    public PortletURL getURLEdit(LiferayPortletRequest liferayPortletRequest,
-//            LiferayPortletResponse liferayPortletResponse) throws Exception {
-//
-//        PortletURL portletURL = locateTaskRecordManager(liferayPortletRequest);
-//
-//        portletURL.setParameter("tabs1", "settings");
-//
-//        return portletURL;
-//    }
+    @Override
+    public PortletURL getURLEdit(LiferayPortletRequest liferayPortletRequest,
+            LiferayPortletResponse liferayPortletResponse) throws Exception {
+
+        PortletURL portletURL = locateTaskRecordManager(liferayPortletRequest);
+
+        return portletURL;
+
+    }
 
     @Override
     public String getURLView(LiferayPortletResponse liferayPortletResponse, WindowState windowState) {
