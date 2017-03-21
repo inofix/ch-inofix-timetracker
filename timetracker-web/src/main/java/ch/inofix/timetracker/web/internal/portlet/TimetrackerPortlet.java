@@ -60,8 +60,8 @@ import ch.inofix.timetracker.web.internal.portlet.util.PortletUtil;
  *
  * @author Christian Berndt
  * @created 2013-10-07 10:47
- * @modified 2017-03-21 14:57
- * @version 1.5.8
+ * @modified 2017-03-21 18:37
+ * @version 1.5.9
  */
 @Component(immediate = true, property = { "com.liferay.portlet.css-class-wrapper=portlet-timetracker",
         "com.liferay.portlet.display-category=category.inofix", "com.liferay.portlet.header-portlet-css=/css/main.css",
@@ -116,7 +116,9 @@ public class TimetrackerPortlet extends MVCPortlet {
      * @since 1.1.4
      * @param actionRequest
      * @param actionResponse
+     * @deprecated use importInBackground instead
      */
+    @Deprecated
     public void importXML(ActionRequest actionRequest, ActionResponse actionResponse) throws Exception {
 
         ServiceContext serviceContext = ServiceContextFactory.getInstance(TaskRecord.class.getName(), actionRequest);
@@ -192,18 +194,15 @@ public class TimetrackerPortlet extends MVCPortlet {
 
                 if (existingRecord == null) {
 
-                    if (importRecord.getTaskRecordId() == 0) {
+                    // Insert the imported record as new
 
-                        // Insert the imported record as new
-                        _taskRecordLocalService.addTaskRecord(importRecord.getUserId(), importRecord.getWorkPackage(),
-                                importRecord.getDescription(), importRecord.getTicketURL(), importRecord.getEndDate(),
-                                importRecord.getStartDate(), importRecord.getStatus(), importRecord.getDuration(),
-                                serviceContext);
-                    } else {
-
-                        // Record already has an id but does not exist in this
-                        // System.
-                        _taskRecordLocalService.addTaskRecord(importRecord);
+                    try {
+                    _taskRecordLocalService.addTaskRecord(importRecord.getUserId(), importRecord.getWorkPackage(),
+                            importRecord.getDescription(), importRecord.getTicketURL(), importRecord.getEndDate(),
+                            importRecord.getStartDate(), importRecord.getStatus(), importRecord.getDuration(),
+                            serviceContext);
+                    } catch (Exception e) {
+                        _log.error(e);
                     }
 
                 }
@@ -254,7 +253,6 @@ public class TimetrackerPortlet extends MVCPortlet {
 
         ThemeDisplay themeDisplay = (ThemeDisplay) actionRequest.getAttribute(WebKeys.THEME_DISPLAY);
 
-        long groupId = themeDisplay.getScopeGroupId();
         long userId = themeDisplay.getUserId();
 
         String workPackage = ParamUtil.getString(actionRequest, "workPackage");
@@ -335,8 +333,6 @@ public class TimetrackerPortlet extends MVCPortlet {
     @Override
     protected void doDispatch(RenderRequest renderRequest, RenderResponse renderResponse)
             throws IOException, PortletException {
-
-        _log.info("doDispatch()");
 
         if (SessionErrors.contains(renderRequest, PrincipalException.getNestedClasses())
                 || SessionErrors.contains(renderRequest, NoSuchTaskRecordException.class)) {
