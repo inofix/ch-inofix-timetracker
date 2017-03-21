@@ -48,10 +48,10 @@
         
     List<TaskRecord> taskRecords = new ArrayList<TaskRecord>();
     
-//     System.out.println("[view.jsp 48]DEBUGGING: Sorting");
-//     System.out.println("[view.jsp 49]DEBUGGING: sort by col: "+taskRecordSearch.getOrderByCol());
-//     System.out.println("[view.jsp 50]DEBUGGING: reverse: "+reverse);
-//     System.out.println("[view.jsp 51]DEBUGGING: keywords: "+keywords);
+    System.out.println("[view.jsp 48]DEBUGGING: Sorting");
+    System.out.println("[view.jsp 49]DEBUGGING: sort by col: "+taskRecordSearch.getOrderByCol());
+    System.out.println("[view.jsp 50]DEBUGGING: reverse: "+reverse);
+    System.out.println("[view.jsp 51]DEBUGGING: keywords: "+keywords);
     
     for (Document document : documents) {
         try {
