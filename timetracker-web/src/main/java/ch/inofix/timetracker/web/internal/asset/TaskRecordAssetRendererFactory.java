@@ -35,15 +35,15 @@ import ch.inofix.timetracker.service.permission.TimetrackerPortletPermission;
  *
  * @author Christian Berndt
  * @created 2017-03-21 13:52
- * @modified 2017-03-21 13:52
- * @version 1.0.0
+ * @modified 2017-03-21 17:36
+ * @version 1.0.1
  *
  */
 @Component(immediate = true, property = {
         "javax.portlet.name=" + PortletKeys.TIMETRACKER }, service = AssetRendererFactory.class)
 public class TaskRecordAssetRendererFactory extends BaseAssetRendererFactory<TaskRecord> {
 
-    public static final String TYPE = "taskRecord";
+    public static final String TYPE = "task_record";
 
     public TaskRecordAssetRendererFactory() {
         setClassName(TaskRecord.class.getName());
