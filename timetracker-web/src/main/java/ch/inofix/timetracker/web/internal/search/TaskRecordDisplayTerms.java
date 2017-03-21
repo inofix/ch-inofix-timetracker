@@ -21,6 +21,7 @@ public class TaskRecordDisplayTerms extends DisplayTerms {
     public static final String END_DATE = "endDate";
     public static final String GROUP_ID = "groupId";
     public static final String START_DATE = "startDate";
+    public static final String CREATE_DATE = "createDate";
     public static final String STATUS = "status";
     public static final String USER_ID = "userId";
     public static final String WORK_PACKAGE = "workPackage";
@@ -98,6 +99,15 @@ public class TaskRecordDisplayTerms extends DisplayTerms {
         this.userId = userId;
     }
 
+    public String getCreateDate() {
+		return createDate;
+	}
+
+	public void setCreateDate(String createDate) {
+		this.createDate = createDate;
+	}
+
+	protected String createDate;
     protected String description;
     protected String endDate;
     protected long groupId;
@@ -105,5 +115,6 @@ public class TaskRecordDisplayTerms extends DisplayTerms {
     protected int status;
     protected long userId;
     protected String workPackage;
+    
 
 }

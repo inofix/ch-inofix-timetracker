@@ -46,6 +46,7 @@ public class TaskRecordSearch extends SearchContainer<TaskRecord> {
         headerNames.add("startDate");
         headerNames.add("endDate");
         headerNames.add("duration");
+        headerNames.add("createDate");
 
         orderableHeaders.put("taskRecordId", "taskRecordId");
         orderableHeaders.put("workPackage", "workPackage");
@@ -53,6 +54,7 @@ public class TaskRecordSearch extends SearchContainer<TaskRecord> {
         orderableHeaders.put("startDate", "startDate");
         orderableHeaders.put("endDate", "endDate");
         orderableHeaders.put("duration", "duration");
+        orderableHeaders.put("createDate", "createDate");
     }
 
     public TaskRecordSearch(PortletRequest portletRequest, PortletURL iteratorURL) {
@@ -87,7 +89,7 @@ public class TaskRecordSearch extends SearchContainer<TaskRecord> {
         iteratorURL.setParameter(TaskRecordDisplayTerms.START_DATE, displayTerms.getStartDate());
         iteratorURL.setParameter(TaskRecordDisplayTerms.END_DATE, displayTerms.getEndDate());
         iteratorURL.setParameter(TaskRecordDisplayTerms.DESCRIPTION, displayTerms.getDescription());
-        //iteratorURL.setParameter(TaskRecordDisplayTerms.ID, displayTerms.getDescription());
+        iteratorURL.setParameter(TaskRecordDisplayTerms.CREATE_DATE, displayTerms.getCreateDate());
         
         try {
             PortalPreferences preferences = PortletPreferencesFactoryUtil.getPortalPreferences(portletRequest);
