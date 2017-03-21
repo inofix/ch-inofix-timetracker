@@ -37,9 +37,6 @@
     String workPackageString = taskRecord.getWorkPackage();
     
     if (Validator.isNotNull(workPackageString)) {
-        
-        // TODO: Make the preferred workpackage
-        // display length configurable.
         if (workPackageString.length() > maxLength) {
             workPackageString = workPackageString.substring(0,
                     maxLength) + " ...";

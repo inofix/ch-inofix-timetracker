@@ -83,10 +83,11 @@ public class TaskRecordSearch extends SearchContainer<TaskRecord> {
         _log.info("uebergabe workpackage:"+displayTerms.getWorkPackage());
         _log.info("uebergabe description:'"+displayTerms.getDescription());
         iteratorURL.setParameter(TaskRecordDisplayTerms.STATUS, String.valueOf(displayTerms.getStatus()));
-        iteratorURL.setParameter(TaskRecordDisplayTerms.WORK_PACKAGE, displayTerms.getWorkPackage());;
-        iteratorURL.setParameter(TaskRecordDisplayTerms.START_DATE, displayTerms.getStartDate());;
-        iteratorURL.setParameter(TaskRecordDisplayTerms.END_DATE, displayTerms.getEndDate());;
-        iteratorURL.setParameter(TaskRecordDisplayTerms.DESCRIPTION, displayTerms.getDescription());;
+        iteratorURL.setParameter(TaskRecordDisplayTerms.WORK_PACKAGE, displayTerms.getWorkPackage());
+        iteratorURL.setParameter(TaskRecordDisplayTerms.START_DATE, displayTerms.getStartDate());
+        iteratorURL.setParameter(TaskRecordDisplayTerms.END_DATE, displayTerms.getEndDate());
+        iteratorURL.setParameter(TaskRecordDisplayTerms.DESCRIPTION, displayTerms.getDescription());
+        //iteratorURL.setParameter(TaskRecordDisplayTerms.ID, displayTerms.getDescription());
         
         try {
             PortalPreferences preferences = PortletPreferencesFactoryUtil.getPortalPreferences(portletRequest);

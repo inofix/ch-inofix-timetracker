@@ -76,18 +76,19 @@ public class TaskRecordIndexer extends BaseIndexer<TaskRecord> {
         Document document = getBaseModelDocument(CLASS_NAME, taskRecord);
 
         // TODO: modify required fields to document
-        document.addText(Field.CONTENT, taskRecord.getDescription()); //description
+        document.addTextSortable(Field.CONTENT, taskRecord.getDescription()); //description
         document.addTextSortable(Field.TITLE, taskRecord.getWorkPackage()); //work-package
         document.addTextSortable("workPackage", taskRecord.getWorkPackage()); //work-package2?
         document.addTextSortable(Field.URL, taskRecord.getTicketURL()); //ticket-url
         document.addDateSortable(Field.CREATE_DATE, taskRecord.getStartDate()); //create-date
         document.addNumberSortable(Field.STATUS, taskRecord.getStatus()); //status
         document.addTextSortable(Field.NAME, taskRecord.getUserName()); //username
-        document.addKeyword("taskRecordId", taskRecord.getTaskRecordId()); //task-record-id
+        document.addNumberSortable("taskRecordId", taskRecord.getTaskRecordId()); //task-record-id
         document.addDateSortable(Field.MODIFIED_DATE, taskRecord.getModifiedDate()); //modified-date
         document.addNumberSortable("duration", taskRecord.getDuration()); //duration
         document.addDateSortable("startDate",taskRecord.getStartDate()); //start-date
         document.addDateSortable("endDate",taskRecord.getEndDate()); //end-date
+        _log.info("DEBUGGING doGetDocument():"+taskRecord.getTaskRecordId());
         return document;
 
     }
@@ -121,7 +122,7 @@ public class TaskRecordIndexer extends BaseIndexer<TaskRecord> {
     @Override
     protected void doReindex(TaskRecord taskRecord) throws Exception {
 
-        Document document = getDocument(taskRecord);
+        Document document = doGetDocument(taskRecord);
 
         IndexWriterHelperUtil.updateDocument(getSearchEngineId(), taskRecord.getCompanyId(), document,
                 isCommitImmediately());
@@ -154,10 +155,10 @@ public class TaskRecordIndexer extends BaseIndexer<TaskRecord> {
                     @Override
                     public void performAction(TaskRecord taskRecord) {
                         try {
-                            Document document = getDocument(taskRecord);
+                            Document document = doGetDocument(taskRecord);
 
                             indexableActionableDynamicQuery.addDocuments(document);
-                        } catch (PortalException pe) {
+                        } catch (Exception pe) {
                             if (_log.isWarnEnabled()) {
                                 _log.warn("Unable to index taskRecord " + taskRecord.getTaskRecordId(), pe);
                             }
