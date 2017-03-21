@@ -22,20 +22,18 @@ import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.IndexWriterHelperUtil;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.Summary;
-import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import ch.inofix.timetracker.model.TaskRecord;
 import ch.inofix.timetracker.service.TaskRecordLocalService;
-import ch.inofix.timetracker.service.permission.TaskRecordPermission;
 
 /**
- * 
+ *
  * @author Christian Berndt, Stefan Luebbers
- * @created 2016-11-26 15:04 
- * @modified 2017-03-16 15:15 
+ * @created 2016-11-26 15:04
+ * @modified 2017-03-16 15:15
  * @version 1.0.0
  *
  */
@@ -60,8 +58,9 @@ public class TaskRecordIndexer extends BaseIndexer<TaskRecord> {
     @Override
     public boolean hasPermission(PermissionChecker permissionChecker, String entryClassName, long entryClassPK,
             String actionId) throws Exception {
-    	//TODO: reactivate permission check
-        return true;//TaskRecordPermission.contains(permissionChecker, entryClassPK, ActionKeys.VIEW);
+        // TODO: reactivate permission check
+        return true;// TaskRecordPermission.contains(permissionChecker,
+                    // entryClassPK, ActionKeys.VIEW);
     }
 
     @Override
@@ -76,19 +75,19 @@ public class TaskRecordIndexer extends BaseIndexer<TaskRecord> {
         Document document = getBaseModelDocument(CLASS_NAME, taskRecord);
 
         // TODO: modify required fields to document
-        document.addTextSortable(Field.CONTENT, taskRecord.getDescription()); //description
-        document.addTextSortable(Field.TITLE, taskRecord.getWorkPackage()); //work-package
-        document.addTextSortable("workPackage", taskRecord.getWorkPackage()); //work-package2?
-        document.addTextSortable(Field.URL, taskRecord.getTicketURL()); //ticket-url
-        document.addDateSortable(Field.CREATE_DATE, taskRecord.getStartDate()); //create-date
-        document.addNumberSortable(Field.STATUS, taskRecord.getStatus()); //status
-        document.addTextSortable(Field.NAME, taskRecord.getUserName()); //username
-        document.addNumberSortable("taskRecordId", taskRecord.getTaskRecordId()); //task-record-id
-        document.addDateSortable(Field.MODIFIED_DATE, taskRecord.getModifiedDate()); //modified-date
-        document.addNumberSortable("duration", taskRecord.getDuration()); //duration
-        document.addDateSortable("startDate",taskRecord.getStartDate()); //start-date
-        document.addDateSortable("endDate",taskRecord.getEndDate()); //end-date
-        _log.info("DEBUGGING doGetDocument():"+taskRecord.getTaskRecordId());
+        document.addTextSortable(Field.CONTENT, taskRecord.getDescription()); // description
+        document.addTextSortable(Field.TITLE, taskRecord.getWorkPackage()); // work-package
+        document.addTextSortable("workPackage", taskRecord.getWorkPackage()); // work-package2?
+        document.addTextSortable(Field.URL, taskRecord.getTicketURL()); // ticket-url
+        document.addDateSortable(Field.CREATE_DATE, taskRecord.getStartDate()); // create-date
+        document.addNumberSortable(Field.STATUS, taskRecord.getStatus()); // status
+        document.addTextSortable(Field.NAME, taskRecord.getUserName()); // username
+        document.addNumberSortable("taskRecordId", taskRecord.getTaskRecordId()); // task-record-id
+        document.addDateSortable(Field.MODIFIED_DATE, taskRecord.getModifiedDate()); // modified-date
+        document.addNumberSortable("duration", taskRecord.getDuration()); // duration
+        document.addDateSortable("startDate", taskRecord.getStartDate()); // start-date
+        document.addDateSortable("endDate", taskRecord.getEndDate()); // end-date
+        _log.info("DEBUGGING doGetDocument():" + taskRecord.getTaskRecordId());
         return document;
 
     }
@@ -112,7 +111,7 @@ public class TaskRecordIndexer extends BaseIndexer<TaskRecord> {
     @Override
     protected void doReindex(String[] ids) throws Exception {
         long companyId = GetterUtil.getLong(ids[0]);
-        _log.info("doReindex:"+ids[0]+" - "+companyId);
+        _log.info("doReindex:" + ids[0] + " - " + companyId);
         // TODO: what about the group?
         reindexTaskRecords(companyId);
         // reindexTaskRecords(companyId, groupId);

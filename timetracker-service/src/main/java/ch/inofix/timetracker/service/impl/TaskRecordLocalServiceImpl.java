@@ -213,9 +213,14 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
     public Hits search(long userId, long groupId, String keywords, int start, int end, Sort sort)
             throws PortalException {
 
+        _log.info("search()");
+
         if (sort == null) {
             sort = new Sort(Field.MODIFIED_DATE, true);
         }
+
+        _log.info(sort.getFieldName());
+        _log.info(sort.isReverse());
 
         Indexer<TaskRecord> indexer = IndexerRegistryUtil.getIndexer(TaskRecord.class.getName());
 
