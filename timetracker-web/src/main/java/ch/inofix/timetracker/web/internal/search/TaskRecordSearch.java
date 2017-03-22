@@ -41,15 +41,25 @@ public class TaskRecordSearch extends SearchContainer<TaskRecord> {
 
     static {
         headerNames.add("taskRecordId");
+        headerNames.add("status");  //has no "name" in search_columns.jspf
         headerNames.add("workPackage");
+        headerNames.add("userName");
+        headerNames.add("ticketURL");
         headerNames.add("description");
+        headerNames.add("createDate");
+        headerNames.add("modifiedDate");
         headerNames.add("startDate");
         headerNames.add("endDate");
         headerNames.add("duration");
 
         orderableHeaders.put("taskRecordId", "taskRecordId");
+        orderableHeaders.put("status", "status");
         orderableHeaders.put("workPackage", "workPackage");
+        orderableHeaders.put("userName", "userName");
+        orderableHeaders.put("ticketURL", "ticketURL");
         orderableHeaders.put("description", "description");
+        orderableHeaders.put("createDate", "createDate");
+        orderableHeaders.put("modifiedDate", "modifiedDate");
         orderableHeaders.put("startDate", "startDate");
         orderableHeaders.put("endDate", "endDate");
         orderableHeaders.put("duration", "duration");
@@ -78,16 +88,20 @@ public class TaskRecordSearch extends SearchContainer<TaskRecord> {
             searchTerms.setStatus(WorkflowConstants.STATUS_APPROVED);
         }
 
-        // TODO: add other iterator relevant parameters
         _log.info("uebergabe status:'"+displayTerms.getStatus());
         _log.info("uebergabe workpackage:"+displayTerms.getWorkPackage());
         _log.info("uebergabe description:'"+displayTerms.getDescription());
+        iteratorURL.setParameter(TaskRecordDisplayTerms.TASKRECORDID, String.valueOf(displayTerms.getTaskRecordId()));
         iteratorURL.setParameter(TaskRecordDisplayTerms.STATUS, String.valueOf(displayTerms.getStatus()));
         iteratorURL.setParameter(TaskRecordDisplayTerms.WORK_PACKAGE, displayTerms.getWorkPackage());
+        iteratorURL.setParameter(TaskRecordDisplayTerms.DESCRIPTION, displayTerms.getDescription());
+        iteratorURL.setParameter(TaskRecordDisplayTerms.USER_NAME, displayTerms.getUserName());
+        iteratorURL.setParameter(TaskRecordDisplayTerms.TICKET_URL, displayTerms.getTicketURL());
+        iteratorURL.setParameter(TaskRecordDisplayTerms.CREATE_DATE, displayTerms.getCreateDate());
+        iteratorURL.setParameter(TaskRecordDisplayTerms.MODIFIED_DATE, displayTerms.getModifiedDate());
         iteratorURL.setParameter(TaskRecordDisplayTerms.START_DATE, displayTerms.getStartDate());
         iteratorURL.setParameter(TaskRecordDisplayTerms.END_DATE, displayTerms.getEndDate());
-        iteratorURL.setParameter(TaskRecordDisplayTerms.DESCRIPTION, displayTerms.getDescription());
-        //iteratorURL.setParameter(TaskRecordDisplayTerms.ID, displayTerms.getDescription());
+        iteratorURL.setParameter(TaskRecordDisplayTerms.DURATION, String.valueOf(displayTerms.getDuration()));
         
         try {
             PortalPreferences preferences = PortletPreferencesFactoryUtil.getPortalPreferences(portletRequest);
