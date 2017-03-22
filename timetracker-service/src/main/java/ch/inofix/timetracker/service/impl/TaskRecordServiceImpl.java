@@ -22,8 +22,8 @@ import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.service.ServiceContext;
 
 import aQute.bnd.annotation.ProviderType;
+import ch.inofix.timetracker.constants.TaskRecordActionKeys;
 import ch.inofix.timetracker.model.TaskRecord;
-import ch.inofix.timetracker.security.ActionKeys;
 import ch.inofix.timetracker.service.TaskRecordLocalServiceUtil;
 import ch.inofix.timetracker.service.base.TaskRecordServiceBaseImpl;
 import ch.inofix.timetracker.service.permission.TaskRecordPermission;
@@ -45,8 +45,8 @@ import ch.inofix.timetracker.service.permission.TimetrackerPortletPermission;
  *
  * @author Christian Berndt, Stefan Luebbers
  * @created 2015-05-07 23:50
- * @modified 2017-03-22 17:02
- * @version 1.0.6
+ * @modified 2017-03-22 17:24
+ * @version 1.0.7
  * @see TaskRecordServiceBaseImpl
  * @see ch.inofix.timetracker.service.TaskRecordServiceUtil
  */
@@ -60,11 +60,12 @@ public class TaskRecordServiceImpl extends TaskRecordServiceBaseImpl {
      * record remote service.
      */
     @Override
-    public TaskRecord addTaskRecord(String workPackage, String description, String ticketURL,
-            Date endDate, Date startDate, int status, long duration, ServiceContext serviceContext)
+    public TaskRecord addTaskRecord(String workPackage, String description, String ticketURL, Date endDate,
+            Date startDate, int status, long duration, ServiceContext serviceContext)
             throws PortalException, SystemException {
 
-        TimetrackerPortletPermission.check(getPermissionChecker(), serviceContext.getScopeGroupId(), ActionKeys.ADD_TASK_RECORD);
+        TimetrackerPortletPermission.check(getPermissionChecker(), serviceContext.getScopeGroupId(),
+                TaskRecordActionKeys.ADD_TASK_RECORD);
 
         return taskRecordLocalService.addTaskRecord(getUserId(), workPackage, description, ticketURL, endDate,
                 startDate, status, duration, serviceContext);
@@ -81,7 +82,7 @@ public class TaskRecordServiceImpl extends TaskRecordServiceBaseImpl {
     @Override
     public TaskRecord deleteTaskRecord(long taskRecordId) throws PortalException, SystemException {
 
-        TaskRecordPermission.check(getPermissionChecker(), taskRecordId, ActionKeys.DELETE);
+        TaskRecordPermission.check(getPermissionChecker(), taskRecordId, TaskRecordActionKeys.DELETE);
 
         TaskRecord taskRecord = TaskRecordLocalServiceUtil.deleteTaskRecord(taskRecordId);
 
@@ -92,30 +93,29 @@ public class TaskRecordServiceImpl extends TaskRecordServiceBaseImpl {
     @Override
     public TaskRecord getTaskRecord(long taskRecordId) throws PortalException, SystemException {
 
-        TaskRecordPermission.check(getPermissionChecker(), taskRecordId, ActionKeys.VIEW);
+        TaskRecordPermission.check(getPermissionChecker(), taskRecordId, TaskRecordActionKeys.VIEW);
 
         return TaskRecordLocalServiceUtil.getTaskRecord(taskRecordId);
 
     }
 
-
     @Override
     public List<TaskRecord> getGroupTaskRecords(long groupId) throws PortalException, SystemException {
 
-    	List<TaskRecord> taskRecordList = TaskRecordLocalServiceUtil.getGroupTaskRecords(groupId);
-    	for (TaskRecord taskRecord: taskRecordList){
-    		TaskRecordPermission.check(getPermissionChecker(), taskRecord.getTaskRecordId(), ActionKeys.VIEW);
-    	}
+        List<TaskRecord> taskRecordList = TaskRecordLocalServiceUtil.getGroupTaskRecords(groupId);
+        for (TaskRecord taskRecord : taskRecordList) {
+            TaskRecordPermission.check(getPermissionChecker(), taskRecord.getTaskRecordId(), TaskRecordActionKeys.VIEW);
+        }
 
         return taskRecordList;
     }
 
     @Override
-    public TaskRecord updateTaskRecord(long taskRecordId, String workPackage, String description,
-            String ticketURL, Date endDate, Date startDate, int status, long duration, ServiceContext serviceContext)
+    public TaskRecord updateTaskRecord(long taskRecordId, String workPackage, String description, String ticketURL,
+            Date endDate, Date startDate, int status, long duration, ServiceContext serviceContext)
             throws PortalException, SystemException {
 
-        TaskRecordPermission.check(getPermissionChecker(), taskRecordId, ActionKeys.UPDATE);
+        TaskRecordPermission.check(getPermissionChecker(), taskRecordId, TaskRecordActionKeys.UPDATE);
 
         return taskRecordLocalService.updateTaskRecord(taskRecordId, getUserId(), workPackage, description, ticketURL,
                 endDate, startDate, status, duration, serviceContext);
