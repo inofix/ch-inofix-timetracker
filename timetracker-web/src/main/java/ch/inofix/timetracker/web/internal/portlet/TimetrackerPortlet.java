@@ -83,7 +83,7 @@ public class TimetrackerPortlet extends MVCPortlet {
 
         ServiceContext serviceContext = ServiceContextFactory.getInstance(TaskRecord.class.getName(), actionRequest);
 
-        //TODO try-catch?
+        // TODO: use remote service
         List<TaskRecord> taskRecords = _taskRecordLocalService.getGroupTaskRecords(serviceContext.getScopeGroupId());
 
         int countFailedDeletions = 0;
@@ -91,10 +91,10 @@ public class TimetrackerPortlet extends MVCPortlet {
 
             // TODO: Add try-catch and count failed deletions
 
-            try{
-            	taskRecord = _taskRecordService.deleteTaskRecord(taskRecord.getTaskRecordId());
-            }catch(Exception e){
-            	countFailedDeletions++;
+            try {
+                taskRecord = _taskRecordService.deleteTaskRecord(taskRecord.getTaskRecordId());
+            } catch (Exception e) {
+                countFailedDeletions++;
             }
 
         }
@@ -178,18 +178,18 @@ public class TimetrackerPortlet extends MVCPortlet {
                     _log.warn(nsue.getMessage());
                 }
 
-//                if (systemUser == null) {
+                // if (systemUser == null) {
 
-                    // The record's user does not exist in this system.
-                    // Use the current user's id and userName instead.
-                    importRecord.setUserId(userId);
-                    importRecord.setUserName(userName);
+                // The record's user does not exist in this system.
+                // Use the current user's id and userName instead.
+                importRecord.setUserId(userId);
+                importRecord.setUserName(userName);
 
-//                } else {
-//
-//                    // Update the record with the system user's userName
-//                    importRecord.setUserName(systemUser.getFullName());
-//                }
+                // } else {
+                //
+                // // Update the record with the system user's userName
+                // importRecord.setUserName(systemUser.getFullName());
+                // }
 
                 TaskRecord existingRecord = null;
 
@@ -203,10 +203,9 @@ public class TimetrackerPortlet extends MVCPortlet {
                     // Insert the imported record as new
 
                     try {
-                    _taskRecordService.addTaskRecord(importRecord.getUserId(), importRecord.getWorkPackage(),
-                            importRecord.getDescription(), importRecord.getTicketURL(), importRecord.getEndDate(),
-                            importRecord.getStartDate(), importRecord.getStatus(), importRecord.getDuration(),
-                            serviceContext);
+                        _taskRecordService.addTaskRecord(importRecord.getWorkPackage(), importRecord.getDescription(),
+                                importRecord.getTicketURL(), importRecord.getEndDate(), importRecord.getStartDate(),
+                                importRecord.getStatus(), importRecord.getDuration(), serviceContext);
                     } catch (Exception e) {
                         _log.error(e);
                     }
@@ -310,9 +309,8 @@ public class TimetrackerPortlet extends MVCPortlet {
 
             _log.info("add taskRecord");
 
-
-            taskRecord = _taskRecordService.addTaskRecord(userId, workPackage, description, ticketURL, endDate,
-                    startDate, status, duration, serviceContext);
+            taskRecord = _taskRecordService.addTaskRecord(workPackage, description, ticketURL, endDate, startDate,
+                    status, duration, serviceContext);
 
         } else {
 
@@ -320,9 +318,8 @@ public class TimetrackerPortlet extends MVCPortlet {
 
             _log.info("update taskRecord");
 
-
-            taskRecord = _taskRecordService.updateTaskRecord(userId, taskRecordId, workPackage, description,
-                    ticketURL, endDate, startDate, status, duration, serviceContext);
+            taskRecord = _taskRecordService.updateTaskRecord(taskRecordId, workPackage, description, ticketURL, endDate,
+                    startDate, status, duration, serviceContext);
         }
 
         String redirect = getEditTaskRecordURL(actionRequest, actionResponse, taskRecord);
@@ -381,8 +378,6 @@ public class TimetrackerPortlet extends MVCPortlet {
                 ParamUtil.getString(actionRequest, "backURL"));
         editTaskRecordURL = HttpUtil.setParameter(editTaskRecordURL, namespace + "taskRecordId",
                 taskRecord.getTaskRecordId());
-
-        _log.info(editTaskRecordURL);
 
         return editTaskRecordURL;
     }
