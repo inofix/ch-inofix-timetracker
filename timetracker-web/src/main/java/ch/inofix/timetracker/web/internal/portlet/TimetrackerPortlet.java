@@ -60,8 +60,8 @@ import ch.inofix.timetracker.web.internal.portlet.util.PortletUtil;
  *
  * @author Christian Berndt, Stefan Luebbers
  * @created 2013-10-07 10:47
- * @modified 2017-03-22 13:47
- * @version 1.5.9
+ * @modified 2017-03-22 14:39
+ * @version 1.6.0
  */
 @Component(immediate = true, property = { "com.liferay.portlet.css-class-wrapper=portlet-timetracker",
         "com.liferay.portlet.display-category=category.inofix", "com.liferay.portlet.header-portlet-css=/css/main.css",
@@ -82,15 +82,15 @@ public class TimetrackerPortlet extends MVCPortlet {
         String tabs1 = ParamUtil.getString(actionRequest, "tabs1");
 
         ServiceContext serviceContext = ServiceContextFactory.getInstance(TaskRecord.class.getName(), actionRequest);
-        
+
         //TODO try-catch?
-        List<TaskRecord> taskRecords = _taskRecordService.getGroupTaskRecords(serviceContext.getScopeGroupId());
+        List<TaskRecord> taskRecords = _taskRecordLocalService.getGroupTaskRecords(serviceContext.getScopeGroupId());
 
         int countFailedDeletions = 0;
         for (TaskRecord taskRecord : taskRecords) {
 
             // TODO: Add try-catch and count failed deletions
-        	
+
             try{
             	taskRecord = _taskRecordService.deleteTaskRecord(taskRecord.getTaskRecordId());
             }catch(Exception e){
@@ -178,18 +178,18 @@ public class TimetrackerPortlet extends MVCPortlet {
                     _log.warn(nsue.getMessage());
                 }
 
-                if (systemUser == null) {
+//                if (systemUser == null) {
 
                     // The record's user does not exist in this system.
                     // Use the current user's id and userName instead.
                     importRecord.setUserId(userId);
                     importRecord.setUserName(userName);
 
-                } else {
-
-                    // Update the record with the system user's userName
-                    importRecord.setUserName(systemUser.getFullName());
-                }
+//                } else {
+//
+//                    // Update the record with the system user's userName
+//                    importRecord.setUserName(systemUser.getFullName());
+//                }
 
                 TaskRecord existingRecord = null;
 
@@ -310,7 +310,7 @@ public class TimetrackerPortlet extends MVCPortlet {
 
             _log.info("add taskRecord");
 
-            
+
             taskRecord = _taskRecordService.addTaskRecord(userId, workPackage, description, ticketURL, endDate,
                     startDate, status, duration, serviceContext);
 
@@ -320,7 +320,7 @@ public class TimetrackerPortlet extends MVCPortlet {
 
             _log.info("update taskRecord");
 
-            
+
             taskRecord = _taskRecordService.updateTaskRecord(userId, taskRecordId, workPackage, description,
                     ticketURL, endDate, startDate, status, duration, serviceContext);
         }
@@ -401,10 +401,10 @@ public class TimetrackerPortlet extends MVCPortlet {
     }
 
     // TODO: Remove local service from portlet
-//    @Reference
-//    protected void setTaskRecordLocalService(TaskRecordLocalService taskRecordLocalService) {
-//        this._taskRecordLocalService = taskRecordLocalService;
-//    }
+    @Reference
+    protected void setTaskRecordLocalService(TaskRecordLocalService taskRecordLocalService) {
+        this._taskRecordLocalService = taskRecordLocalService;
+    }
 
     @Reference
     protected void setTaskRecordService(TaskRecordService taskRecordService) {
@@ -412,7 +412,7 @@ public class TimetrackerPortlet extends MVCPortlet {
     }
 
     // TODO: Remove local service from portlet
-//    private TaskRecordLocalService _taskRecordLocalService;
+    private TaskRecordLocalService _taskRecordLocalService;
     private TaskRecordService _taskRecordService;
 
     private volatile TimetrackerConfiguration _timetrackerConfiguration;

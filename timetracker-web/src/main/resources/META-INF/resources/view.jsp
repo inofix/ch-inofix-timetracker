@@ -48,10 +48,10 @@
         
     List<TaskRecord> taskRecords = new ArrayList<TaskRecord>();
     
-    System.out.println("[view.jsp 48]DEBUGGING: Sorting");
-    System.out.println("[view.jsp 49]DEBUGGING: sort by col: "+taskRecordSearch.getOrderByCol());
-    System.out.println("[view.jsp 50]DEBUGGING: reverse: "+reverse);
-    System.out.println("[view.jsp 51]DEBUGGING: keywords: "+keywords);
+//     System.out.println("[view.jsp 48]DEBUGGING: Sorting");
+//     System.out.println("[view.jsp 49]DEBUGGING: sort by col: "+taskRecordSearch.getOrderByCol());
+//     System.out.println("[view.jsp 50]DEBUGGING: reverse: "+reverse);
+//     System.out.println("[view.jsp 51]DEBUGGING: keywords: "+keywords);
     
     for (Document document : documents) {
         try {
@@ -78,8 +78,7 @@
 <div id="<portlet:namespace />timetrackerContainer">
 
     <liferay-ui:error exception="<%= PrincipalException.class %>"
-        message="you-dont-have-the-required-permissions" />
-        
+        message="you-dont-have-the-required-permissions" />        
         
     <liferay-ui:tabs
         names="browse,import-export"
@@ -163,9 +162,6 @@
                                     value="<%=String.valueOf(taskRecord.getTaskRecordId())%>" />
                             </portlet:resourceURL>
                             
-                            <%-- 
-                            <portlet:renderURL var="editURL">
-                                --%>
                             <portlet:renderURL var="editURL"
                                 windowState="<%= LiferayWindowState.POP_UP.toString() %>">
                                 <portlet:param name="redirect" value="<%= currentURL %>" />

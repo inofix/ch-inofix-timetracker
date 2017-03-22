@@ -2,8 +2,8 @@
     toolbar.jsp: The toolbar of the timetracker portlet
     
     Created:    2016-03-20 16:58 by Christian Berndt
-    Modified:   2017-03-07 17:42 by Christian Berndt
-    Version:    1.1.0
+    Modified:   2017-03-22 15:11 by Christian Berndt
+    Version:    1.1.1
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -55,34 +55,30 @@
             </aui:nav-item>
         </aui:nav-item>
 
-
-        <portlet:actionURL var="addURL" name="editTaskRecord"
-            windowState="<%=LiferayWindowState.POP_UP.toString()%>">
-            <portlet:param name="mvcPath"
-                value="/html/edit_task_record.jsp" />
-            <portlet:param name="redirect" value="<%=currentURL%>" />
+        <portlet:renderURL var="editURL"
+            windowState="<%= LiferayWindowState.POP_UP.toString() %>">
+            <portlet:param name="redirect" value="<%= currentURL %>" />
+            <portlet:param name="mvcPath" value="/edit_task_record.jsp" />
             <portlet:param name="windowId" value="editTaskRecord" />
-        </portlet:actionURL>
+        </portlet:renderURL>
 
         <%
-        // TODO: enable permission checks
+            // TODO: enable permission checks
         %>
         <%-- 
         <c:if test='<%=TimetrackerPortletPermission.contains(permissionChecker, scopeGroupId,
                                 ActionKeys.ADD_TASK_RECORD)%>'>
         --%>
         <%
-            String taglibAddURL = "javascript:Liferay.Util.openWindow({id: '" + renderResponse.getNamespace()
-                            + "editTaskRecord', title: '"
-                            // TODO: reenable message formatting
-                            // + HtmlUtil.escapeJS(LanguageUtil.format(pageContext, "edit-x", "new")) + "', uri:'"
-                            + HtmlUtil.escapeJS(addURL) + "'});";
+        
+            String taglibEditURL = "javascript:Liferay.Util.openWindow({id: '" + renderResponse.getNamespace() + "editTaskRecord', title: '" + HtmlUtil.escapeJS(LanguageUtil.format(request, "edit-x", "new")) + "', uri:'" + HtmlUtil.escapeJS(editURL) + "'});";
+
         %>
 
         <aui:nav-item>
-            <aui:button type="submit" value="add-task-record"
-                href="<%=taglibAddURL%>"
-                cssClass="add-task-record" />
+            <aui:a label="add-task-record" title="add-task-record"
+                href="<%=taglibEditURL%>"
+                cssClass="btn btn-primary add-task-record" />
         </aui:nav-item>
 
         <%-- 
