@@ -68,7 +68,8 @@
         orderableProperty="duration_Number_sortable" />
 </c:if>
 <c:if test='<%="end-date".equals(column)%>'>
-    <liferay-ui:search-container-column-text value="<%= endDateString %>"
+    <liferay-ui:search-container-column-text property="endDate" 
+        value="<%= endDateString %>"
         name="end-date" orderable="true" href="<%=detailURL%>"
         orderableProperty="endDate_Number_sortable" />
 </c:if>

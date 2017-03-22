@@ -15,6 +15,7 @@
 package ch.inofix.timetracker.service.impl;
 
 import java.util.Date;
+import java.util.List;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
@@ -41,9 +42,9 @@ import ch.inofix.timetracker.service.permission.TaskRecordPermission;
  * can be accessed remotely.
  * </p>
  *
- * @author Christian Berndt
+ * @author Christian Berndt, Stefan Luebbers
  * @created 2015-05-07 23:50
- * @modified 2017-03-22 13:26
+ * @modified 2017-03-22 13:47
  * @version 1.0.5
  * @see TaskRecordServiceBaseImpl
  * @see ch.inofix.timetracker.service.TaskRecordServiceUtil
@@ -96,6 +97,17 @@ public class TaskRecordServiceImpl extends TaskRecordServiceBaseImpl {
 
         return TaskRecordLocalServiceUtil.getTaskRecord(taskRecordId);
 
+    }
+    
+    
+    public List<TaskRecord> getGroupTaskRecords(long groupId) throws PortalException, SystemException {
+    	
+    	List<TaskRecord> taskRecordList = TaskRecordLocalServiceUtil.getGroupTaskRecords(groupId);
+    	for (TaskRecord taskRecord: taskRecordList){
+    		TaskRecordPermission.check(getPermissionChecker(), taskRecord.getTaskRecordId(), ActionKeys.VIEW);
+    	}
+
+        return taskRecordList;
     }
 
     @Override
