@@ -2,8 +2,8 @@
     edit_task_record.jsp: edit a single task-record.
 
     Created:     2013-10-07 10:41 by Christian Berndt
-    Modified:    2016-11-27 20:19 by Christian Berndt
-    Version:     1.5.2
+    Modified:    2017-03-22 13:21 by Christian Berndt
+    Version:     1.5.3
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -97,8 +97,7 @@
     <aui:form method="post" action="<%=updateTaskRecordURL%>" name="fm">
 
         <aui:input name="userId"
-            value="<%=String.valueOf(themeDisplay.getUserId())%>"
-            type="hidden" />
+            value="<%=String.valueOf(themeDisplay.getUserId())%>" />
 
         <%-- The model for this record. --%>
         <aui:model-context bean="<%=taskRecord%>"
