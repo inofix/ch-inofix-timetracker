@@ -76,18 +76,17 @@ public class TaskRecordIndexer extends BaseIndexer<TaskRecord> {
         Document document = getBaseModelDocument(CLASS_NAME, taskRecord);
 
         // TODO: modify required fields to document
-        document.addTextSortable("description", taskRecord.getDescription()); // description
-        document.addTextSortable(Field.TITLE, taskRecord.getWorkPackage()); // work-package
-        document.addTextSortable("workPackage", taskRecord.getWorkPackage()); // work-package2?
-        document.addTextSortable("ticketURL", taskRecord.getTicketURL()); // ticket-url
-        document.addDateSortable(Field.CREATE_DATE, taskRecord.getCreateDate()); // create-date
-        document.addNumberSortable(Field.STATUS, taskRecord.getStatus()); // status
-        document.addTextSortable("userName", taskRecord.getUserName()); // username
         document.addNumberSortable("taskRecordId", taskRecord.getTaskRecordId()); // task-record-id
-        document.addTextSortable("modifiedDate", taskRecord.getModifiedDate().toString()); // modified-date
-        document.addNumberSortable("duration_Number_sortable", taskRecord.getDuration()); // duration
+        document.addNumberSortable(Field.STATUS, taskRecord.getStatus()); // status
+        document.addTextSortable("workPackage", taskRecord.getWorkPackage()); // work-package2?
+        document.addTextSortable("userName", taskRecord.getUserName()); // username
+        document.addTextSortable("ticketURL", taskRecord.getTicketURL()); // ticket-url
+        document.addTextSortable("description", taskRecord.getDescription()); // description
+        document.addDateSortable(Field.CREATE_DATE, taskRecord.getCreateDate()); // create-date
+        document.addDateSortable("modifiedDate", taskRecord.getModifiedDate()); // modified-date
         document.addDateSortable("startDate", taskRecord.getStartDate()); // start-date
-        document.addNumberSortable("endDate", taskRecord.getEndDate().getTime()); // end-date
+        document.addDateSortable("endDate", taskRecord.getEndDate()); // end-date
+        document.addNumberSortable("duration", taskRecord.getDuration()); // duration
         _log.info("DEBUGGING doGetDocument():" + taskRecord.getTaskRecordId());
         return document;
 

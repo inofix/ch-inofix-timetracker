@@ -55,12 +55,12 @@
 <c:if test='<%="create-date".equals(column)%>'>
     <liferay-ui:search-container-column-date property="createDate"
         name="create-date" orderable="true" href="<%=detailURL%>"
-        orderableProperty="createDate" />
+        orderableProperty="createDate_Number_sortable" />
 </c:if>
 <c:if test='<%="description".equals(column)%>'>
     <liferay-ui:search-container-column-text property="description"
         name="description" orderable="true" href="<%=detailURL%>"
-        orderableProperty="description" />
+        orderableProperty="description_sortable" />
 </c:if>                         
 <c:if test='<%="duration".equals(column)%>'>
     <liferay-ui:search-container-column-text value="<%= durationInMinutes %>"
@@ -70,41 +70,41 @@
 <c:if test='<%="end-date".equals(column)%>'>
     <liferay-ui:search-container-column-text value="<%= endDateString %>"
         name="end-date" orderable="true" href="<%=detailURL%>"
-        orderableProperty="endDate" />
+        orderableProperty="endDate_Number_sortable" />
 </c:if>
 <c:if test='<%="modified-date".equals(column)%>'>
     <liferay-ui:search-container-column-date property="modifiedDate"
         name="modified-date" orderable="true" href="<%=detailURL%>"
-        orderableProperty="modifiedDate"  />
+        orderableProperty="modifiedDate_Number_sortable"  />
 </c:if>
 <c:if test='<%="start-date".equals(column)%>'>
     <liferay-ui:search-container-column-text value="<%= startDateString %>"
         name="start-date" orderable="true" href="<%=detailURL%>"
-        orderableProperty="startDate" />
+        orderableProperty="startDate_Number_sortable" />
 </c:if>
 <c:if test='<%="status".equals(column)%>'>
     <liferay-ui:search-container-column-status property="status"
-        orderable="true" orderableProperty="status" />
+        orderable="true" orderableProperty="status_Number_sortable" />
 </c:if>
 <c:if test='<%="task-record-id".equals(column)%>'>
     <liferay-ui:search-container-column-text property="taskRecordId"
         name="task-record-id" orderable="true" href="<%=detailURL%>"
-        orderableProperty="taskRecordId" />
+        orderableProperty="taskRecordId_Number_sortable" />
 </c:if>
 <c:if test='<%="ticket-url".equals(column)%>'>
     <liferay-ui:search-container-column-text property="ticketURL"
         name="ticket-url" orderable="true" href="<%=detailURL%>"
-        orderableProperty="ticketURL" />
+        orderableProperty="ticketURL_sortable" />
 </c:if>
 <c:if test='<%="user-name".equals(column)%>'>
     <liferay-ui:search-container-column-text property="userName"
         name="user-name" orderable="true" href="<%=detailURL%>"
-        orderableProperty="userName" />
+        orderableProperty="userName_sortable" />
 </c:if>
 <c:if test='<%="work-package".equals(column)%>'>
     <liferay-ui:search-container-column-text 
         name="work-package" orderable="true" href="<%=detailURL%>"
-        orderableProperty="workPackage" value="<%= workPackageString %>"/>
+        orderableProperty="workPackage_sortable" value="<%= workPackageString %>"/>
 </c:if>
 <%
     }

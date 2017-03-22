@@ -17,13 +17,18 @@ import com.liferay.portal.kernel.util.Validator;
  */
 public class TaskRecordDisplayTerms extends DisplayTerms {
 
+	public static final String CREATE_DATE = "createDate";
     public static final String DESCRIPTION = "description";
+    public static final String DURATION = "duration";
     public static final String END_DATE = "endDate";
     public static final String GROUP_ID = "groupId";
+    public static final String MODIFIED_DATE = "modifiedDate";
     public static final String START_DATE = "startDate";
-    public static final String CREATE_DATE = "createDate";
     public static final String STATUS = "status";
+    public static final String TASKRECORDID = "taskRecordId";
+    public static final String TICKET_URL = "ticketURL";
     public static final String USER_ID = "userId";
+    public static final String USER_NAME = "userName";
     public static final String WORK_PACKAGE = "workPackage";
 
     public TaskRecordDisplayTerms(PortletRequest portletRequest) {
@@ -41,6 +46,12 @@ public class TaskRecordDisplayTerms extends DisplayTerms {
         }
         userId = ParamUtil.getLong(portletRequest, USER_ID);
         workPackage = ParamUtil.getString(portletRequest, WORK_PACKAGE);
+        createDate = ParamUtil.getString(portletRequest, CREATE_DATE);
+        taskRecordId = ParamUtil.getLong(portletRequest, TASKRECORDID);
+        modifiedDate = ParamUtil.getString(portletRequest, MODIFIED_DATE);
+        duration = ParamUtil.getLong(portletRequest, DURATION);
+        userName = ParamUtil.getString(portletRequest, USER_NAME);
+        ticketURL = ParamUtil.getString(portletRequest, TICKET_URL);
     }
 
     public String getWorkPackage() {
@@ -107,6 +118,46 @@ public class TaskRecordDisplayTerms extends DisplayTerms {
 		this.createDate = createDate;
 	}
 
+	public long getTaskRecordId() {
+		return taskRecordId;
+	}
+
+	public void setTaskRecordId(long taskRecordId) {
+		this.taskRecordId = taskRecordId;
+	}
+
+	public String getModifiedDate() {
+		return modifiedDate;
+	}
+
+	public void setModifiedDate(String modifiedDate) {
+		this.modifiedDate = modifiedDate;
+	}
+
+	public long getDuration() {
+		return duration;
+	}
+
+	public void setDuration(long duration) {
+		this.duration = duration;
+	}
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+	public String getTicketURL() {
+		return ticketURL;
+	}
+
+	public void setTicketURL(String ticketURL) {
+		this.ticketURL = ticketURL;
+	}
+
 	protected String createDate;
     protected String description;
     protected String endDate;
@@ -115,6 +166,10 @@ public class TaskRecordDisplayTerms extends DisplayTerms {
     protected int status;
     protected long userId;
     protected String workPackage;
-    
+    protected long taskRecordId;
+    protected String modifiedDate;
+    protected long duration;
+    protected String userName;
+    protected String ticketURL;
 
 }
