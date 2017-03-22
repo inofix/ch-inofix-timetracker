@@ -1,6 +1,13 @@
 <?xml version="1.0"?>
-<!DOCTYPE resource-action-mapping PUBLIC "-//Liferay//DTD Resource Action Mapping 7.0.0//EN" "http://www.liferay.com/dtd/liferay-resource-action-mapping_7_0_0.dtd">
-
+<!DOCTYPE resource-action-mapping PUBLIC "-//Liferay//DTD Resource Action Mapping 7.0.0//EN" 
+    "http://www.liferay.com/dtd/liferay-resource-action-mapping_7_0_0.dtd">
+<!--  
+    default.xml: The timetracker portlet's permission configuration.
+    
+    Created:    2016-03-20 17:26 by Christian Berndt
+    Modified:   2017-03-22 12:45 by Christian Berndt
+    Version:    1.0.1
+-->
 <resource-action-mapping>
     <model-resource>
         <model-name>ch.inofix.timetracker</model-name>
@@ -18,7 +25,7 @@
                 <action-key>VIEW</action-key>
             </supports>
             <site-member-defaults>
-                <action-key>ADD_ENTRY</action-key>
+                <action-key>ADD_TASK_RECORD</action-key>
                 <action-key>SUBSCRIBE</action-key>
                 <action-key>VIEW</action-key>
             </site-member-defaults>
@@ -26,7 +33,8 @@
                 <action-key>VIEW</action-key>
             </guest-defaults>
             <guest-unsupported>
-                <action-key>ADD_ENTRY</action-key>
+                <action-key>ADD_TASK_RECORD</action-key>
+                <action-key>IMPORT_TASK_RECORDS</action-key>               
                 <action-key>PERMISSIONS</action-key>
                 <action-key>SUBSCRIBE</action-key>
             </guest-unsupported>
@@ -42,19 +50,16 @@
             <supports>
                 <action-key>DELETE</action-key>
                 <action-key>PERMISSIONS</action-key>
-                <action-key>SUBSCRIBE</action-key>
                 <action-key>UPDATE</action-key>
                 <action-key>VIEW</action-key>
             </supports>
             <site-member-defaults>
-                <action-key>SUBSCRIBE</action-key>
                 <action-key>VIEW</action-key>
             </site-member-defaults>
             <guest-defaults>
                 <action-key>VIEW</action-key>
             </guest-defaults>
             <guest-unsupported>
-                <action-key>SUBSCRIBE</action-key>
                 <action-key>UPDATE</action-key>
             </guest-unsupported>
         </permissions>
