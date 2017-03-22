@@ -2,8 +2,8 @@
     edit_task_record.jsp: edit a single task-record.
 
     Created:     2013-10-07 10:41 by Christian Berndt
-    Modified:    2017-03-22 13:21 by Christian Berndt
-    Version:     1.5.3
+    Modified:    2017-03-22 15:07 by Christian Berndt
+    Version:     1.5.4
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -81,6 +81,10 @@
             endDateHour = endDate.getHours();
             endDateMinute = endDate.getMinutes();
         }
+    } else {
+        
+        // create an empty task record
+        taskRecord = TaskRecordLocalServiceUtil.createTaskRecord(0);
     }
 %>
 
