@@ -45,7 +45,7 @@ import ch.inofix.timetracker.service.permission.TimetrackerPortletPermission;
  *
  * @author Christian Berndt, Stefan Luebbers
  * @created 2015-05-07 23:50
- * @modified 2017-03-22 17:24
+ * @modified 2017-03-22 23:45
  * @version 1.0.7
  * @see TaskRecordServiceBaseImpl
  * @see ch.inofix.timetracker.service.TaskRecordServiceUtil
@@ -88,6 +88,18 @@ public class TaskRecordServiceImpl extends TaskRecordServiceBaseImpl {
 
         return taskRecord;
 
+    }
+    
+    public List<TaskRecord> deleteGroupTaskRecords(long groupId) throws PortalException, SystemException {
+
+        TaskRecordPermission.check(getPermissionChecker(), groupId, TaskRecordActionKeys.DELETE_GROUP_TASK_RECORDS);
+
+        List<TaskRecord> taskRecordList = TaskRecordLocalServiceUtil.getGroupTaskRecords(groupId);
+        for (TaskRecord taskRecord : taskRecordList) {
+            taskRecord = TaskRecordLocalServiceUtil.deleteTaskRecord(taskRecord.getTaskRecordId());
+        } 
+
+        return taskRecordList;
     }
 
     @Override
