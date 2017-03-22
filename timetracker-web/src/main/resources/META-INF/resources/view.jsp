@@ -2,16 +2,14 @@
     view.jsp: Default view of Inofix' timetracker.
     
     Created:     2013-10-06 16:52 by Christian Berndt
-    Modified:    2017-03-16 14:14 by Stefan Luebbers
-    Version:     1.5.5
+    Modified:    2017-03-22 16:15 by Christian Berndt
+    Version:     1.5.6
  --%>
 
 <%@ include file="/init.jsp" %>
 
 <%@page import="com.liferay.portal.kernel.search.Sort"%>
 <%@page import="com.liferay.portal.kernel.search.Field"%>
-<%@page import="java.util.Map.Entry"%>
-
 
 <%
     String [] columns = new String[] {"task-record-id", "work-package", "start-date"};
@@ -187,20 +185,18 @@
                                 resourcePrimKey="<%= String.valueOf(taskRecord.getTaskRecordId()) %>"
                                 var="permissionsURL" />
         
-                            <portlet:actionURL var="viewURL" name="viewTaskRecord"
+                            <portlet:renderURL var="viewURL"
                                 windowState="<%= LiferayWindowState.POP_UP.toString() %>">
                                 <portlet:param name="redirect" value="<%= currentURL %>" />
                                 <portlet:param name="taskRecordId"
                                     value="<%= String.valueOf(taskRecord.getTaskRecordId()) %>" />
-                                <portlet:param name="mvcPath" value="/view_task_record.jsp" />
+                                <portlet:param name="mvcPath" value="/edit_task_record.jsp" />
                                 <portlet:param name="windowId" value="viewTaskRecord" />
-                            </portlet:actionURL>
+                            </portlet:renderURL>
         
                             <%                  
                                 String taglibEditURL = "javascript:Liferay.Util.openWindow({id: '" + renderResponse.getNamespace() + "editTaskRecord', title: '" + HtmlUtil.escapeJS(LanguageUtil.format(request, "edit-x", taskRecord.getTaskRecordId())) + "', uri:'" + HtmlUtil.escapeJS(editURL) + "'});";
                                 String taglibViewURL = "javascript:Liferay.Util.openWindow({id: '" + renderResponse.getNamespace() + "viewTaskRecord', title: '" + HtmlUtil.escapeJS(LanguageUtil.format(request, "view-x", taskRecord.getTaskRecordId())) + "', uri:'" + HtmlUtil.escapeJS(viewURL) + "'});";
-
-//                                 taglibEditURL = editURL;
                                         
                                 boolean hasDeletePermission = TaskRecordPermission.contains(permissionChecker,
                                         taskRecord.getTaskRecordId(), ActionKeys.DELETE);   

@@ -2,8 +2,8 @@
     init.jsp: Common setup code for the timetracker portlet.
 
     Created:     2014-02-01 15:31 by Christian Berndt
-    Modified:    2017-03-12 00:44 by Stefan Luebbers
-    Version:     1.0.5 
+    Modified:    2017-03-22 17:09 by Christian Berndt
+    Version:     1.0.6 
 --%>
 
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
@@ -23,7 +23,6 @@
 <%@page import="ch.inofix.timetracker.web.internal.search.TaskRecordSearch"%>
 <%@page import="ch.inofix.timetracker.web.internal.search.TaskRecordSearchTerms"%>
 <%@page import="ch.inofix.timetracker.web.internal.constants.TimetrackerWebKeys"%>
-<%-- <%@page import="ch.inofix.timetracker.constants.PortletKeys"%> --%>
 <%@page import="ch.inofix.timetracker.web.configuration.TimetrackerConfiguration"%>
 
 <%@page import="com.liferay.portal.kernel.dao.search.SearchContainer"%>
@@ -47,6 +46,7 @@
 <%@page import="com.liferay.portal.kernel.util.KeyValuePairComparator"%>
 <%@page import="com.liferay.portal.kernel.util.ListUtil"%>
 <%@page import="com.liferay.portal.kernel.util.ParamUtil"%>
+<%@page import="com.liferay.portal.kernel.util.PortalUtil"%>
 <%@page import="com.liferay.portal.kernel.util.SetUtil"%>
 <%@page import="com.liferay.portal.kernel.util.StringPool"%>
 <%@page import="com.liferay.portal.kernel.util.StringUtil"%>
