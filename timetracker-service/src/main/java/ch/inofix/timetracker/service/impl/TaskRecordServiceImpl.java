@@ -26,7 +26,6 @@ import ch.inofix.timetracker.security.ActionKeys;
 import ch.inofix.timetracker.service.TaskRecordLocalServiceUtil;
 import ch.inofix.timetracker.service.base.TaskRecordServiceBaseImpl;
 import ch.inofix.timetracker.service.permission.TaskRecordPermission;
-import ch.inofix.timetracker.service.permission.TimetrackerPortletPermission;
 
 /**
  * The implementation of the task record remote service.
@@ -44,8 +43,8 @@ import ch.inofix.timetracker.service.permission.TimetrackerPortletPermission;
  *
  * @author Christian Berndt
  * @created 2015-05-07 23:50
- * @modified 2017-03-21 14:56
- * @version 1.0.4
+ * @modified 2017-03-22 13:26
+ * @version 1.0.5
  * @see TaskRecordServiceBaseImpl
  * @see ch.inofix.timetracker.service.TaskRecordServiceUtil
  */
@@ -63,7 +62,9 @@ public class TaskRecordServiceImpl extends TaskRecordServiceBaseImpl {
             Date endDate, Date startDate, int status, long duration, ServiceContext serviceContext)
             throws PortalException, SystemException {
 
-        TimetrackerPortletPermission.check(getPermissionChecker(), groupId, ActionKeys.ADD_TASK_RECORD);
+        // TODO: re-enable permission check
+        // TimetrackerPortletPermission.check(getPermissionChecker(), groupId,
+        // ActionKeys.ADD_TASK_RECORD);
 
         return taskRecordLocalService.addTaskRecord(getUserId(), workPackage, description, ticketURL, endDate,
                 startDate, status, duration, serviceContext);
@@ -104,7 +105,7 @@ public class TaskRecordServiceImpl extends TaskRecordServiceBaseImpl {
 
         TaskRecordPermission.check(getPermissionChecker(), taskRecordId, ActionKeys.UPDATE);
 
-        return taskRecordLocalService.updateTaskRecord(getUserId(), taskRecordId, workPackage, description, ticketURL,
+        return taskRecordLocalService.updateTaskRecord(taskRecordId, getUserId(), workPackage, description, ticketURL,
                 endDate, startDate, status, duration, serviceContext);
 
     }
