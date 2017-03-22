@@ -28,6 +28,7 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import ch.inofix.timetracker.model.TaskRecord;
 import ch.inofix.timetracker.service.TaskRecordLocalService;
+//import ch.inofix.timetracker.web.internal.search.TaskRecordDisplayTerms;
 
 /**
  *
@@ -75,18 +76,17 @@ public class TaskRecordIndexer extends BaseIndexer<TaskRecord> {
         Document document = getBaseModelDocument(CLASS_NAME, taskRecord);
 
         // TODO: modify required fields to document
-        document.addTextSortable(Field.CONTENT, taskRecord.getDescription()); // description
-        document.addTextSortable(Field.TITLE, taskRecord.getWorkPackage()); // work-package
-        document.addTextSortable("workPackage", taskRecord.getWorkPackage()); // work-package2?
-        document.addTextSortable(Field.URL, taskRecord.getTicketURL()); // ticket-url
-        document.addDateSortable(Field.CREATE_DATE, taskRecord.getStartDate()); // create-date
-        document.addNumberSortable(Field.STATUS, taskRecord.getStatus()); // status
-        document.addTextSortable(Field.NAME, taskRecord.getUserName()); // username
         document.addNumberSortable("taskRecordId", taskRecord.getTaskRecordId()); // task-record-id
-        document.addDateSortable(Field.MODIFIED_DATE, taskRecord.getModifiedDate()); // modified-date
-        document.addNumberSortable("duration", taskRecord.getDuration()); // duration
+        document.addNumberSortable(Field.STATUS, taskRecord.getStatus()); // status
+        document.addTextSortable("workPackage", taskRecord.getWorkPackage()); // work-package2?
+        document.addTextSortable("userName", taskRecord.getUserName()); // username
+        document.addTextSortable("ticketURL", taskRecord.getTicketURL()); // ticket-url
+        document.addTextSortable("description", taskRecord.getDescription()); // description
+        document.addDateSortable(Field.CREATE_DATE, taskRecord.getCreateDate()); // create-date
+        document.addDateSortable("modifiedDate", taskRecord.getModifiedDate()); // modified-date
         document.addDateSortable("startDate", taskRecord.getStartDate()); // start-date
         document.addDateSortable("endDate", taskRecord.getEndDate()); // end-date
+        document.addNumberSortable("duration", taskRecord.getDuration()); // duration
         _log.info("DEBUGGING doGetDocument():" + taskRecord.getTaskRecordId());
         return document;
 
