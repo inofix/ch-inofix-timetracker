@@ -18,6 +18,8 @@ import java.util.Date;
 import java.util.List;
 
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.search.Hits;
+import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.ServiceContext;
 
 import aQute.bnd.annotation.ProviderType;
@@ -116,6 +118,14 @@ public class TaskRecordServiceImpl extends TaskRecordServiceBaseImpl {
         }
 
         return taskRecordList;
+    }
+
+    public Hits search(long userId, long groupId, String keywords, int start, int end, Sort sort)
+            throws PortalException{
+
+        TaskRecordPermission.check(getPermissionChecker(), groupId, TaskRecordActionKeys.SEARCH);
+
+        return taskRecordLocalService.search(userId, groupId, keywords, start, end, sort);
     }
 
     @Override

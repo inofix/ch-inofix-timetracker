@@ -261,10 +261,10 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
         searchContext.setGroupIds(new long[] { groupId });
         searchContext.setSorts(sort);
         searchContext.setStart(start);
-        searchContext.setEnd(end);
-        searchContext.setGroupIds(new long[] { groupId });
-        searchContext.setStart(start);
-        searchContext.setUserId(userId);
+//        searchContext.setEnd(end);
+//        searchContext.setGroupIds(new long[] { groupId });
+//        searchContext.setStart(start);
+//        searchContext.setUserId(userId);
 
         return indexer.search(searchContext);
 
