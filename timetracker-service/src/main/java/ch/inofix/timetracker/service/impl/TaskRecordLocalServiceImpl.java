@@ -185,7 +185,8 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
 
        return taskRecords;
 
-   }
+    }
+
 
     @Indexable(type = IndexableType.DELETE)
     @Override
@@ -237,6 +238,8 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
 
     }
 
+    
+
     @Override
     public Hits search(long userId, long groupId, String keywords, int start, int end, Sort sort)
             throws PortalException {
@@ -258,13 +261,12 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
         searchContext.setCompanyId(group.getCompanyId());
 
         searchContext.setEnd(end);
-        searchContext.setGroupIds(new long[] { groupId });
+        if (groupId > 0){
+        	searchContext.setGroupIds(new long[] { groupId });
+        }
         searchContext.setSorts(sort);
         searchContext.setStart(start);
-//        searchContext.setEnd(end);
-//        searchContext.setGroupIds(new long[] { groupId });
-//        searchContext.setStart(start);
-//        searchContext.setUserId(userId);
+        searchContext.setUserId(userId);
 
         return indexer.search(searchContext);
 

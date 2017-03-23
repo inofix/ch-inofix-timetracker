@@ -22,14 +22,12 @@
                 <action-key>DELETE_GROUP_TASK_RECORDS</action-key>
                 <action-key>IMPORT_TASK_RECORDS</action-key>
                 <action-key>PERMISSIONS</action-key>
-                <action-key>SEARCH</action-key>
                 <action-key>SUBSCRIBE</action-key>
                 <action-key>VIEW</action-key>
             </supports>
             <site-member-defaults>
                 <action-key>ADD_TASK_RECORD</action-key>
                 <action-key>SUBSCRIBE</action-key>
-                <action-key>SEARCH</action-key>
                 <action-key>VIEW</action-key>
             </site-member-defaults>
             <guest-defaults>

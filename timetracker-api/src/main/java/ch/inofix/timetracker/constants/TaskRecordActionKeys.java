@@ -15,6 +15,6 @@ public class TaskRecordActionKeys extends ActionKeys {
     public static final String ADD_TASK_RECORD = "ADD_TASK_RECORD";
     public static final String IMPORT_TASK_RECORDS = "IMPORT_TASK_RECORDS";
     public static final String DELETE_GROUP_TASK_RECORDS = "DELETE_GROUP_TASK_RECORDS";
-    public static final String SEARCH = "SEARCH";
+    public static final String VIEW = "VIEW";
 
 }
