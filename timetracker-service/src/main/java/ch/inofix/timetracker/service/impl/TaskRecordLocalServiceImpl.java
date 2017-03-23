@@ -175,9 +175,10 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
 
        for (TaskRecord taskRecord : taskRecords) {
 
-           try {
+           //TODO differ exception types
+    	   try {
                deleteTaskRecord(taskRecord);
-           } catch (Exception e) {
+           } catch (Exception e) { 
                _log.error(e);
            }
        }
@@ -231,15 +232,6 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
     public List<TaskRecord> getGroupTaskRecords(long groupId) throws PortalException {
 
         List<TaskRecord> taskRecords = taskRecordPersistence.findByGroupId(groupId);
-
-        for (TaskRecord taskRecord : taskRecords) {
-
-            try {
-                deleteTaskRecord(taskRecord);
-            } catch (Exception e) {
-                _log.error(e);
-            }
-        }
 
         return taskRecords;
 
