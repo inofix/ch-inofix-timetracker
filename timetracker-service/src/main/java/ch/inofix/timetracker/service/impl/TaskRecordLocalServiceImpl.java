@@ -19,7 +19,6 @@ import java.util.List;
 import com.liferay.asset.kernel.model.AssetEntry;
 import com.liferay.asset.kernel.model.AssetLinkConstants;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -63,8 +62,8 @@ import ch.inofix.timetracker.service.base.TaskRecordLocalServiceBaseImpl;
  *
  * @author Christian Berndt
  * @created 2013-10-06 21:24
- * @modified 2017-03-21 18:28
- * @version 1.5.3
+ * @modified 2017-03-23 10:37
+ * @version 1.5.4
  * @see TaskRecordLocalServiceBaseImpl
  * @see ch.inofix.timetracker.service.TaskRecordLocalServiceUtil
  */
@@ -163,6 +162,30 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
         addTaskRecordResources(taskRecord, modelPermissions);
     }
 
+    /**
+    *
+    * @param groupId
+    * @return
+    * @since 1.5.2
+    */
+   @Override
+   public List<TaskRecord> deleteGroupTaskRecords(long groupId) throws PortalException {
+
+       List<TaskRecord> taskRecords = taskRecordPersistence.findByGroupId(groupId);
+
+       for (TaskRecord taskRecord : taskRecords) {
+
+           try {
+               deleteTaskRecord(taskRecord);
+           } catch (Exception e) {
+               _log.error(e);
+           }
+       }
+
+       return taskRecords;
+
+   }
+
     @Indexable(type = IndexableType.DELETE)
     @Override
     @SystemEvent(type = SystemEventConstants.TYPE_DELETE)
@@ -205,9 +228,21 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
      * @since 1.5.2
      */
     @Override
-    public List<TaskRecord> getGroupTaskRecords(long groupId) throws PortalException, SystemException {
+    public List<TaskRecord> getGroupTaskRecords(long groupId) throws PortalException {
 
-        return taskRecordPersistence.findByGroupId(groupId);
+        List<TaskRecord> taskRecords = taskRecordPersistence.findByGroupId(groupId);
+
+        for (TaskRecord taskRecord : taskRecords) {
+
+            try {
+                deleteTaskRecord(taskRecord);
+            } catch (Exception e) {
+                _log.error(e);
+            }
+        }
+
+        return taskRecords;
+
     }
 
     @Override
