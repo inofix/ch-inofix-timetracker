@@ -18,13 +18,11 @@ import java.util.Date;
 import java.util.List;
 
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.service.ServiceContext;
 
 import aQute.bnd.annotation.ProviderType;
 import ch.inofix.timetracker.constants.TaskRecordActionKeys;
 import ch.inofix.timetracker.model.TaskRecord;
-import ch.inofix.timetracker.service.TaskRecordLocalServiceUtil;
 import ch.inofix.timetracker.service.base.TaskRecordServiceBaseImpl;
 import ch.inofix.timetracker.service.permission.TaskRecordPermission;
 import ch.inofix.timetracker.service.permission.TimetrackerPortletPermission;
@@ -45,8 +43,8 @@ import ch.inofix.timetracker.service.permission.TimetrackerPortletPermission;
  *
  * @author Christian Berndt, Stefan Luebbers
  * @created 2015-05-07 23:50
- * @modified 2017-03-22 23:45
- * @version 1.0.7
+ * @modified 2017-03-23 10:40
+ * @version 1.0.8
  * @see TaskRecordServiceBaseImpl
  * @see ch.inofix.timetracker.service.TaskRecordServiceUtil
  */
@@ -61,8 +59,7 @@ public class TaskRecordServiceImpl extends TaskRecordServiceBaseImpl {
      */
     @Override
     public TaskRecord addTaskRecord(String workPackage, String description, String ticketURL, Date endDate,
-            Date startDate, int status, long duration, ServiceContext serviceContext)
-            throws PortalException, SystemException {
+            Date startDate, int status, long duration, ServiceContext serviceContext) throws PortalException {
 
         TimetrackerPortletPermission.check(getPermissionChecker(), serviceContext.getScopeGroupId(),
                 TaskRecordActionKeys.ADD_TASK_RECORD);
@@ -73,48 +70,47 @@ public class TaskRecordServiceImpl extends TaskRecordServiceBaseImpl {
     }
 
     @Override
-    public TaskRecord createTaskRecord() throws PortalException, SystemException {
+    public TaskRecord createTaskRecord() throws PortalException {
 
         // Create an empty taskRecord - no permission check required
-        return TaskRecordLocalServiceUtil.createTaskRecord(0);
+        return taskRecordLocalService.createTaskRecord(0);
     }
 
     @Override
-    public TaskRecord deleteTaskRecord(long taskRecordId) throws PortalException, SystemException {
+    public TaskRecord deleteTaskRecord(long taskRecordId) throws PortalException {
 
         TaskRecordPermission.check(getPermissionChecker(), taskRecordId, TaskRecordActionKeys.DELETE);
 
-        TaskRecord taskRecord = TaskRecordLocalServiceUtil.deleteTaskRecord(taskRecordId);
+        return taskRecordLocalService.deleteTaskRecord(taskRecordId);
 
-        return taskRecord;
-
-    }
-    
-    public List<TaskRecord> deleteGroupTaskRecords(long groupId) throws PortalException, SystemException {
-
-        TaskRecordPermission.check(getPermissionChecker(), groupId, TaskRecordActionKeys.DELETE_GROUP_TASK_RECORDS);
-
-        List<TaskRecord> taskRecordList = TaskRecordLocalServiceUtil.getGroupTaskRecords(groupId);
-        for (TaskRecord taskRecord : taskRecordList) {
-            taskRecord = TaskRecordLocalServiceUtil.deleteTaskRecord(taskRecord.getTaskRecordId());
-        } 
-
-        return taskRecordList;
     }
 
     @Override
-    public TaskRecord getTaskRecord(long taskRecordId) throws PortalException, SystemException {
+    public List<TaskRecord> deleteGroupTaskRecords(long groupId) throws PortalException {
+
+        TimetrackerPortletPermission.check(getPermissionChecker(), groupId,
+                TaskRecordActionKeys.DELETE_GROUP_TASK_RECORDS);
+
+        return taskRecordLocalService.deleteGroupTaskRecords(groupId);
+    }
+
+    @Override
+    public TaskRecord getTaskRecord(long taskRecordId) throws PortalException {
 
         TaskRecordPermission.check(getPermissionChecker(), taskRecordId, TaskRecordActionKeys.VIEW);
 
-        return TaskRecordLocalServiceUtil.getTaskRecord(taskRecordId);
+        return taskRecordLocalService.getTaskRecord(taskRecordId);
 
     }
 
+    /**
+     * looks deprecated - do we use it anywhere?
+     */
     @Override
-    public List<TaskRecord> getGroupTaskRecords(long groupId) throws PortalException, SystemException {
+    @Deprecated
+    public List<TaskRecord> getGroupTaskRecords(long groupId) throws PortalException {
 
-        List<TaskRecord> taskRecordList = TaskRecordLocalServiceUtil.getGroupTaskRecords(groupId);
+        List<TaskRecord> taskRecordList = taskRecordLocalService.getGroupTaskRecords(groupId);
         for (TaskRecord taskRecord : taskRecordList) {
             TaskRecordPermission.check(getPermissionChecker(), taskRecord.getTaskRecordId(), TaskRecordActionKeys.VIEW);
         }
@@ -125,7 +121,7 @@ public class TaskRecordServiceImpl extends TaskRecordServiceBaseImpl {
     @Override
     public TaskRecord updateTaskRecord(long taskRecordId, String workPackage, String description, String ticketURL,
             Date endDate, Date startDate, int status, long duration, ServiceContext serviceContext)
-            throws PortalException, SystemException {
+            throws PortalException {
 
         TaskRecordPermission.check(getPermissionChecker(), taskRecordId, TaskRecordActionKeys.UPDATE);
 

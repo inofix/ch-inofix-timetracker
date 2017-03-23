@@ -49,7 +49,6 @@ import ch.inofix.timetracker.exception.TaskRecordEndDateException;
 import ch.inofix.timetracker.exception.TaskRecordStartDateException;
 import ch.inofix.timetracker.model.TaskRecord;
 import ch.inofix.timetracker.model.impl.TaskRecordImpl;
-import ch.inofix.timetracker.service.TaskRecordLocalService;
 import ch.inofix.timetracker.service.TaskRecordService;
 import ch.inofix.timetracker.web.configuration.TimetrackerConfiguration;
 import ch.inofix.timetracker.web.internal.constants.TimetrackerWebKeys;
@@ -60,8 +59,8 @@ import ch.inofix.timetracker.web.internal.portlet.util.PortletUtil;
  *
  * @author Christian Berndt, Stefan Luebbers
  * @created 2013-10-07 10:47
- * @modified 2017-03-22 14:39
- * @version 1.6.0
+ * @modified 2017-03-23 10:54
+ * @version 1.6.1
  */
 @Component(immediate = true, property = { "com.liferay.portlet.css-class-wrapper=portlet-timetracker",
         "com.liferay.portlet.display-category=category.inofix", "com.liferay.portlet.header-portlet-css=/css/main.css",
@@ -77,30 +76,16 @@ public class TimetrackerPortlet extends MVCPortlet {
      * @since 1.0.8
      * @throws Exception
      */
-    public void deleteAllTaskRecords(ActionRequest actionRequest, ActionResponse actionResponse) throws Exception {
+    public void deleteGroupTaskRecords(ActionRequest actionRequest, ActionResponse actionResponse) throws Exception {
 
         String tabs1 = ParamUtil.getString(actionRequest, "tabs1");
 
         ServiceContext serviceContext = ServiceContextFactory.getInstance(TaskRecord.class.getName(), actionRequest);
 
-        // TODO: use remote service
-        List<TaskRecord> taskRecords = _taskRecordLocalService.getGroupTaskRecords(serviceContext.getScopeGroupId());
-
-        int countFailedDeletions = 0;
-        for (TaskRecord taskRecord : taskRecords) {
-
-            // TODO: Add try-catch and count failed deletions
-
-            try {
-                taskRecord = _taskRecordService.deleteTaskRecord(taskRecord.getTaskRecordId());
-            } catch (Exception e) {
-                countFailedDeletions++;
-            }
-
-        }
+        List<TaskRecord> taskRecords = _taskRecordService.deleteGroupTaskRecords(serviceContext.getScopeGroupId());
 
         SessionMessages.add(actionRequest, REQUEST_PROCESSED,
-                PortletUtil.translate("successfully-deleted-x-task-records"));
+                PortletUtil.translate("successfully-deleted-x-task-records", taskRecords.size()));
 
         actionResponse.setRenderParameter("tabs1", tabs1);
     }
@@ -248,17 +233,9 @@ public class TimetrackerPortlet extends MVCPortlet {
      */
     public void updateTaskRecord(ActionRequest actionRequest, ActionResponse actionResponse) throws Exception {
 
-        _log.info("updateTaskRecord()");
-
         long taskRecordId = ParamUtil.getLong(actionRequest, "taskRecordId");
 
-        _log.info("taskRecordId = " + taskRecordId);
-
         ServiceContext serviceContext = ServiceContextFactory.getInstance(TaskRecord.class.getName(), actionRequest);
-
-        ThemeDisplay themeDisplay = (ThemeDisplay) actionRequest.getAttribute(WebKeys.THEME_DISPLAY);
-
-        long userId = themeDisplay.getUserId();
 
         String workPackage = ParamUtil.getString(actionRequest, "workPackage");
         String description = ParamUtil.getString(actionRequest, "description");
@@ -307,16 +284,12 @@ public class TimetrackerPortlet extends MVCPortlet {
 
             // Add taskRecord
 
-            _log.info("add taskRecord");
-
             taskRecord = _taskRecordService.addTaskRecord(workPackage, description, ticketURL, endDate, startDate,
                     status, duration, serviceContext);
 
         } else {
 
             // Update taskRecord
-
-            _log.info("update taskRecord");
 
             taskRecord = _taskRecordService.updateTaskRecord(taskRecordId, workPackage, description, ticketURL, endDate,
                     startDate, status, duration, serviceContext);
@@ -395,19 +368,11 @@ public class TimetrackerPortlet extends MVCPortlet {
         portletRequest.setAttribute(TimetrackerWebKeys.TASK_RECORD, taskRecord);
     }
 
-    // TODO: Remove local service from portlet
-    @Reference
-    protected void setTaskRecordLocalService(TaskRecordLocalService taskRecordLocalService) {
-        this._taskRecordLocalService = taskRecordLocalService;
-    }
-
     @Reference
     protected void setTaskRecordService(TaskRecordService taskRecordService) {
         this._taskRecordService = taskRecordService;
     }
 
-    // TODO: Remove local service from portlet
-    private TaskRecordLocalService _taskRecordLocalService;
     private TaskRecordService _taskRecordService;
 
     private volatile TimetrackerConfiguration _timetrackerConfiguration;
