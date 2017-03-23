@@ -19,6 +19,7 @@
 <%@page import="ch.inofix.timetracker.model.TaskRecord"%>
 <%@page import="ch.inofix.timetracker.service.permission.TaskRecordPermission"%>
 <%@page import="ch.inofix.timetracker.service.TaskRecordLocalServiceUtil"%>
+<%@page import="ch.inofix.timetracker.service.TaskRecordServiceUtil"%>
 <%@page import="ch.inofix.timetracker.web.internal.search.TaskRecordDisplayTerms"%>
 <%@page import="ch.inofix.timetracker.web.internal.search.TaskRecordSearch"%>
 <%@page import="ch.inofix.timetracker.web.internal.search.TaskRecordSearchTerms"%>

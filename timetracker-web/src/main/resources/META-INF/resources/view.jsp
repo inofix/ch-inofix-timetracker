@@ -38,8 +38,7 @@
     
     TaskRecordSearchTerms searchTerms = (TaskRecordSearchTerms) taskRecordSearch.getSearchTerms();
 
-    // TODO: use remote service
-    Hits hits = TaskRecordLocalServiceUtil.search(themeDisplay.getUserId(), themeDisplay.getScopeGroupId(), keywords,
+    Hits hits = TaskRecordServiceUtil.search(themeDisplay.getUserId(), themeDisplay.getScopeGroupId(), keywords,
             taskRecordSearch.getStart(), taskRecordSearch.getEnd(), sort);
         
     List<Document> documents = ListUtil.toList(hits.getDocs());
@@ -62,7 +61,7 @@
 //                 System.out.println("[view.jsp ..] document:"+f.getKey()+"  -  "+f.getValue().getValue());
 //             } 
             
-            TaskRecord taskRecord = TaskRecordLocalServiceUtil.getTaskRecord(taskRecordId);
+            TaskRecord taskRecord = TaskRecordServiceUtil.getTaskRecord(taskRecordId);
             taskRecords.add(taskRecord); 
         } catch (Exception e) {
             System.out.println(e); 
