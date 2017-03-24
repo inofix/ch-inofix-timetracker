@@ -2,13 +2,22 @@
     import.jspf: Import taskRecords from an uploaded file. 
     
     Created:    2016-03-21 21:51 by Christian Berndt
-    Modified:   2016-11-26 17:13 by Christian Berndt
-    Version:    1.0.3
+    Modified:   2017-03-24 23:10 by Christian Berndt
+    Version:    1.0.4
 --%>
+
+<%@ include file="/init.jsp" %>
 
 <portlet:actionURL var="importXMLURL" name="importXML" />
 
 <portlet:renderURL var="browseURL" />
+
+<%
+    boolean hasImportPermission = TimetrackerPortletPermission.contains(permissionChecker, scopeGroupId,
+            TaskRecordActionKeys.IMPORT_TASK_RECORDS); 
+
+    String tabs1 = ParamUtil.getString(request, "tabs1", "import-export");
+%>
 
 <aui:form action="<%=importXMLURL%>" enctype="multipart/form-data"
     method="post" name="fm" cssClass="import-form">
@@ -21,7 +30,7 @@
 
     <aui:fieldset label="import">
 
-        <aui:input name="file" type="file" inlineField="true" label="" />
+        <aui:input disabled="<%= !hasImportPermission %>" name="file" type="file" inlineField="true" label="" />
 
         <%-- 
             <aui:input name="updateExisting" label="update-existing-task-records" type="checkbox" inlineField="true" />
