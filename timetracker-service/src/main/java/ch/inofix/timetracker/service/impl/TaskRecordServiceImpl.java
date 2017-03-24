@@ -101,11 +101,8 @@ public class TaskRecordServiceImpl extends TaskRecordServiceBaseImpl {
 
     @Override
     public TaskRecord getTaskRecord(long taskRecordId) throws PortalException {
-    	_log.info("check taskrecord:" + taskRecordId);
         TaskRecordPermission.check(getPermissionChecker(), taskRecordId, TaskRecordActionKeys.VIEW);
-        _log.info("get taskrecord:" + taskRecordId);
         return taskRecordLocalService.getTaskRecord(taskRecordId);
-
     }
 
     /**

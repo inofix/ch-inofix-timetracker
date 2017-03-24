@@ -25,27 +25,18 @@ public class TimetrackerPortletPermission extends BaseResourcePermissionChecker 
             throws PortalException {
 
         if (!contains(permissionChecker, groupId, actionId)) {
-        	_log.info("[DEBUGGING]check failed- PrincipalException - groupid:" + groupId + " actionKey: "+actionId);
+
             throw new PrincipalException();
         }
-        _log.info("[DEBUGGING]successfully checked groupid:" + groupId + " actionKey: "+actionId);
     }
 
     public static boolean contains(PermissionChecker permissionChecker, long groupId, String actionId) {
-    	_log.info("[DEBUGGING]groupid:" + groupId + " contains "+
-    					contains(permissionChecker, RESOURCE_NAME, PortletKeys.TIMETRACKER, groupId, actionId)
-    					+" actionKey: "+actionId);
+
         return contains(permissionChecker, RESOURCE_NAME, PortletKeys.TIMETRACKER, groupId, actionId);
     }
 
     @Override
     public Boolean checkResource(PermissionChecker permissionChecker, long classPK, String actionId) {
-    	_log.info("[DEBUGGING]classPK:" + classPK + " contains "+
-    					contains(permissionChecker, classPK, actionId)
-    					+" actionKey: "+actionId);
         return contains(permissionChecker, classPK, actionId);
     }
-    
-    private static final Log _log = LogFactoryUtil.getLog(TimetrackerPortletPermission.class.getName());
-
 }

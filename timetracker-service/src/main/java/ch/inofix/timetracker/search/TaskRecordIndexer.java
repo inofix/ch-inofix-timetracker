@@ -87,7 +87,7 @@ public class TaskRecordIndexer extends BaseIndexer<TaskRecord> {
         document.addDateSortable("startDate", taskRecord.getStartDate()); // start-date
         document.addDateSortable("endDate", taskRecord.getEndDate()); // end-date
         document.addNumberSortable("duration", taskRecord.getDuration()); // duration
-        _log.info("DEBUGGING doGetDocument():" + taskRecord.getTaskRecordId());
+
         return document;
 
     }
@@ -111,7 +111,6 @@ public class TaskRecordIndexer extends BaseIndexer<TaskRecord> {
     @Override
     protected void doReindex(String[] ids) throws Exception {
         long companyId = GetterUtil.getLong(ids[0]);
-        _log.info("doReindex:" + ids[0] + " - " + companyId);
         // TODO: what about the group?
         reindexTaskRecords(companyId);
         // reindexTaskRecords(companyId, groupId);
