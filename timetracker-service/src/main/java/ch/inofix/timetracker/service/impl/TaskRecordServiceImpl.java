@@ -21,7 +21,6 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.Hits;
-import com.liferay.portal.kernel.search.HitsImpl;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.ServiceContext;
 
@@ -120,6 +119,7 @@ public class TaskRecordServiceImpl extends TaskRecordServiceBaseImpl {
         return taskRecordList;
     }
 
+    @Override
     public Hits search(long userId, long groupId, String keywords, int start, int end, Sort sort)
             throws PortalException{
 
@@ -129,7 +129,7 @@ public class TaskRecordServiceImpl extends TaskRecordServiceBaseImpl {
 //        	_log.error("No search permissions!" + e);
 //        	return null;
 //        }
-    	
+
 
         return taskRecordLocalService.search(userId, groupId, keywords, start, end, sort);
     }

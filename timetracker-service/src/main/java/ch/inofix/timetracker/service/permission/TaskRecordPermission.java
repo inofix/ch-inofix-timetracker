@@ -4,12 +4,10 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
-import com.liferay.portal.kernel.security.permission.BaseResourcePermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 
 import ch.inofix.timetracker.model.TaskRecord;
 import ch.inofix.timetracker.service.TaskRecordLocalServiceUtil;
-import ch.inofix.timetracker.service.impl.TaskRecordLocalServiceImpl;
 
 /**
  *
@@ -19,7 +17,7 @@ import ch.inofix.timetracker.service.impl.TaskRecordLocalServiceImpl;
  * @version 1.0.2
  *
  */
-public class TaskRecordPermission{
+public class TaskRecordPermission {
 
     public static void check(PermissionChecker permissionChecker, TaskRecord taskRecord, String actionId)
             throws PortalException {
@@ -58,10 +56,10 @@ public class TaskRecordPermission{
         } catch (PortalException e) {
             _log.error(e);
         }
-        
+
         return false;
     }
-    
+
     private static final Log _log = LogFactoryUtil.getLog(TaskRecordPermission.class.getName());
 
 }
