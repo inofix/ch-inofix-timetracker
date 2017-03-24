@@ -38,37 +38,24 @@
     
     TaskRecordSearchTerms searchTerms = (TaskRecordSearchTerms) taskRecordSearch.getSearchTerms();
 
-//     System.out.println("[DEBUGGING view.jsp 41] try to search - usergroupID: "+themeDisplay.getUser().getGroupId());
-//     System.out.println("[DEBUGGING view.jsp 41] try to search - scopegroupID: "+themeDisplay.getScopeGroupId());
-//     System.out.println("[DEBUGGING view.jsp 41] try to search - compID: "+themeDisplay.getCompanyId());
-//     System.out.println("[DEBUGGING view.jsp 41] try to search - usercompID: "+themeDisplay.getUser().getCompanyId());
     Hits hits = TaskRecordServiceUtil.search(themeDisplay.getUserId(), themeDisplay.getScopeGroupId(), keywords,
             taskRecordSearch.getStart(), taskRecordSearch.getEnd(), sort);
-    System.out.println("[DEBUGGING view.jsp 41] after search"); 
             
     List<Document> documents = ListUtil.toList(hits.getDocs());
         
     List<TaskRecord> taskRecords = new ArrayList<TaskRecord>();
     
-//     System.out.println("[view.jsp 48]DEBUGGING: Sorting");
-//     System.out.println("[view.jsp 49]DEBUGGING: sort by col: "+taskRecordSearch.getOrderByCol());
-//     System.out.println("[view.jsp 50]DEBUGGING: reverse: "+reverse);
-//     System.out.println("[view.jsp 51]DEBUGGING: keywords: "+keywords);
-    
     for (Document document : documents) {
         try {
             long taskRecordId = GetterUtil.getLong(document.get("entryClassPK"));
 
-            System.out.println("[DEBUGGING view.jsp 62] ------------- try to getTaskRecord: "+taskRecordId);
             TaskRecord taskRecord = TaskRecordServiceUtil.getTaskRecord(taskRecordId);
             taskRecords.add(taskRecord); 
         } catch (Exception e) {
             System.out.println("ERROR: timetracker/view.jsp Failed to getTaskRecord: " + e); 
         }
     }
-    System.out.println("[DEBUGGING view.jsp 69] ------------- try to setResults taskRecordSearch");
     taskRecordSearch.setResults(taskRecords); 
-    System.out.println("[DEBUGGING view.jsp 69] ------------- try to setTotal taskRecordSearch");
     taskRecordSearch.setTotal(hits.getLength());
 %>
 
