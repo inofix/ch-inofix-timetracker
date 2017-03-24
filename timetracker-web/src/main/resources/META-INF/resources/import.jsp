@@ -28,16 +28,20 @@
 
     <aui:input name="tabs1" value="<%=tabs1%>" type="hidden" />
 
-    <aui:fieldset label="import">
+    <aui:fieldset cssClass="import" label="import">
 
-        <aui:input disabled="<%= !hasImportPermission %>" name="file" type="file" inlineField="true" label="" />
+        <aui:input disabled="<%=!hasImportPermission%>" name="file"
+            type="file" inlineField="true" label="" />
 
         <%-- 
             <aui:input name="updateExisting" label="update-existing-task-records" type="checkbox" inlineField="true" />
         --%>
-        
-        <aui:button name="import" type="submit" value="import" disabled="true" />
-        <aui:button href="<%=browseURL%>" type="cancel" />
+
+        <aui:button-row>
+            <aui:button name="import" type="submit" value="import"
+                disabled="true" />
+            <aui:button href="<%=browseURL%>" type="cancel" />
+        </aui:button-row>
 
     </aui:fieldset>
 
