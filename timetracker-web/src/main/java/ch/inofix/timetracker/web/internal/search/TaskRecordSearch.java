@@ -88,9 +88,6 @@ public class TaskRecordSearch extends SearchContainer<TaskRecord> {
             searchTerms.setStatus(WorkflowConstants.STATUS_APPROVED);
         }
 
-        _log.info("uebergabe status:'"+displayTerms.getStatus());
-        _log.info("uebergabe workpackage:"+displayTerms.getWorkPackage());
-        _log.info("uebergabe description:'"+displayTerms.getDescription());
         iteratorURL.setParameter(TaskRecordDisplayTerms.TASKRECORDID, String.valueOf(displayTerms.getTaskRecordId()));
         iteratorURL.setParameter(TaskRecordDisplayTerms.STATUS, String.valueOf(displayTerms.getStatus()));
         iteratorURL.setParameter(TaskRecordDisplayTerms.WORK_PACKAGE, displayTerms.getWorkPackage());

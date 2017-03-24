@@ -1,11 +1,15 @@
 package ch.inofix.timetracker.service.permission;
 
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.security.permission.BaseResourcePermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 
 import ch.inofix.timetracker.model.TaskRecord;
 import ch.inofix.timetracker.service.TaskRecordLocalServiceUtil;
+import ch.inofix.timetracker.service.impl.TaskRecordLocalServiceImpl;
 
 /**
  *
@@ -15,7 +19,7 @@ import ch.inofix.timetracker.service.TaskRecordLocalServiceUtil;
  * @version 1.0.2
  *
  */
-public class TaskRecordPermission {
+public class TaskRecordPermission{
 
     public static void check(PermissionChecker permissionChecker, TaskRecord taskRecord, String actionId)
             throws PortalException {
@@ -42,14 +46,22 @@ public class TaskRecordPermission {
         }
 
         return permissionChecker.hasPermission(taskRecord.getGroupId(), TaskRecord.class.getName(),
-                taskRecord.getTaskRecordId(), actionId);
+                String.valueOf(taskRecord.getTaskRecordId()), actionId);
     }
 
-    public static boolean contains(PermissionChecker permissionChecker, long taskRecordId, String actionId)
-            throws PortalException {
+    public static boolean contains(PermissionChecker permissionChecker, long taskRecordId, String actionId){
 
-        TaskRecord taskRecord = TaskRecordLocalServiceUtil.getTaskRecord(taskRecordId);
-
-        return contains(permissionChecker, taskRecord, actionId);
+    	TaskRecord taskRecord;
+        try {
+            taskRecord = TaskRecordLocalServiceUtil.getTaskRecord(taskRecordId);
+            return contains(permissionChecker, taskRecord, actionId);
+        } catch (PortalException e) {
+            _log.error(e);
+        }
+        
+        return false;
     }
+    
+    private static final Log _log = LogFactoryUtil.getLog(TaskRecordPermission.class.getName());
+
 }

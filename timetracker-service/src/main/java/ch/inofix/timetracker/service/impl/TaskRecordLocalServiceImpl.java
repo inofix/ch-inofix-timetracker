@@ -175,16 +175,18 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
 
        for (TaskRecord taskRecord : taskRecords) {
 
-           try {
+           //TODO differ exception types
+    	   try {
                deleteTaskRecord(taskRecord);
-           } catch (Exception e) {
+           } catch (Exception e) { 
                _log.error(e);
            }
        }
 
        return taskRecords;
 
-   }
+    }
+
 
     @Indexable(type = IndexableType.DELETE)
     @Override
@@ -232,18 +234,11 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
 
         List<TaskRecord> taskRecords = taskRecordPersistence.findByGroupId(groupId);
 
-        for (TaskRecord taskRecord : taskRecords) {
-
-            try {
-                deleteTaskRecord(taskRecord);
-            } catch (Exception e) {
-                _log.error(e);
-            }
-        }
-
         return taskRecords;
 
     }
+
+    
 
     @Override
     public Hits search(long userId, long groupId, String keywords, int start, int end, Sort sort)
@@ -266,11 +261,10 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
         searchContext.setCompanyId(group.getCompanyId());
 
         searchContext.setEnd(end);
-        searchContext.setGroupIds(new long[] { groupId });
+        if (groupId > 0){
+        	searchContext.setGroupIds(new long[] { groupId });
+        }
         searchContext.setSorts(sort);
-        searchContext.setStart(start);
-        searchContext.setEnd(end);
-        searchContext.setGroupIds(new long[] { groupId });
         searchContext.setStart(start);
         searchContext.setUserId(userId);
 

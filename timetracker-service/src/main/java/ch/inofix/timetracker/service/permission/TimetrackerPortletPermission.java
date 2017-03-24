@@ -1,6 +1,8 @@
 package ch.inofix.timetracker.service.permission;
 
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.BaseResourcePermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
@@ -23,6 +25,7 @@ public class TimetrackerPortletPermission extends BaseResourcePermissionChecker 
             throws PortalException {
 
         if (!contains(permissionChecker, groupId, actionId)) {
+
             throw new PrincipalException();
         }
     }
@@ -34,8 +37,6 @@ public class TimetrackerPortletPermission extends BaseResourcePermissionChecker 
 
     @Override
     public Boolean checkResource(PermissionChecker permissionChecker, long classPK, String actionId) {
-
         return contains(permissionChecker, classPK, actionId);
     }
-
 }

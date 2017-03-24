@@ -38,37 +38,23 @@
     
     TaskRecordSearchTerms searchTerms = (TaskRecordSearchTerms) taskRecordSearch.getSearchTerms();
 
-    // TODO: use remote service
-    Hits hits = TaskRecordLocalServiceUtil.search(themeDisplay.getUserId(), themeDisplay.getScopeGroupId(), keywords,
+    Hits hits = TaskRecordServiceUtil.search(themeDisplay.getUserId(), themeDisplay.getScopeGroupId(), keywords,
             taskRecordSearch.getStart(), taskRecordSearch.getEnd(), sort);
-        
+            
     List<Document> documents = ListUtil.toList(hits.getDocs());
         
     List<TaskRecord> taskRecords = new ArrayList<TaskRecord>();
     
-//     System.out.println("[view.jsp 48]DEBUGGING: Sorting");
-//     System.out.println("[view.jsp 49]DEBUGGING: sort by col: "+taskRecordSearch.getOrderByCol());
-//     System.out.println("[view.jsp 50]DEBUGGING: reverse: "+reverse);
-//     System.out.println("[view.jsp 51]DEBUGGING: keywords: "+keywords);
-    
     for (Document document : documents) {
         try {
             long taskRecordId = GetterUtil.getLong(document.get("entryClassPK"));
-            // TODO: use remote service
-            
-//             System.out.println("[view.jsp 57]DEBUGGING: document-taskRecordId: "+document.get("entryClassPK"));
-//             System.out.println("[view.jsp 58]DEBUGGING: document-values: "+document.get("status"));
-//             for(Entry<String, Field> f:document.getFields().entrySet()){
-//                 System.out.println("[view.jsp ..] document:"+f.getKey()+"  -  "+f.getValue().getValue());
-//             } 
-            
-            TaskRecord taskRecord = TaskRecordLocalServiceUtil.getTaskRecord(taskRecordId);
+
+            TaskRecord taskRecord = TaskRecordServiceUtil.getTaskRecord(taskRecordId);
             taskRecords.add(taskRecord); 
         } catch (Exception e) {
-            System.out.println(e); 
+            System.out.println("ERROR: timetracker/view.jsp Failed to getTaskRecord: " + e); 
         }
     }
-
     taskRecordSearch.setResults(taskRecords); 
     taskRecordSearch.setTotal(hits.getLength());
 %>
@@ -86,33 +72,22 @@
 
         <c:when test='<%=tabs1.equals("import-export")%>'>
         
-            <%
-            // TODO: re-enable permission check
-            %>
-             <%--
+
             <c:if test='<%=TimetrackerPortletPermission.contains(permissionChecker, scopeGroupId,
-                                ActionKeys.ADD_TASK_RECORD)%>'>
-            --%>
+                                TaskRecordActionKeys.IMPORT_TASK_RECORDS)%>'>
+
                 <%@include file="/import.jspf"%>
-                
-            <%-- 
+
             </c:if>
-            --%>
             
-             <%--
             
-             <%
-            // TODO: re-enable permission check
-            %>           
             <c:if
                 test='<%=TimetrackerPortletPermission.contains(permissionChecker, scopeGroupId,
-                                ActionKeys.DELETE)%>'>
-            --%>
+                                TaskRecordActionKeys.DELETE_GROUP_TASK_RECORDS)%>'>
+
                 <%@include file="/delete_task_records.jspf"%>
                 
-            <%-- 
             </c:if>
-            --%>
             
         </c:when>
 
@@ -197,15 +172,15 @@
                             <%                  
                                 String taglibEditURL = "javascript:Liferay.Util.openWindow({id: '" + renderResponse.getNamespace() + "editTaskRecord', title: '" + HtmlUtil.escapeJS(LanguageUtil.format(request, "edit-x", taskRecord.getTaskRecordId())) + "', uri:'" + HtmlUtil.escapeJS(editURL) + "'});";
                                 String taglibViewURL = "javascript:Liferay.Util.openWindow({id: '" + renderResponse.getNamespace() + "viewTaskRecord', title: '" + HtmlUtil.escapeJS(LanguageUtil.format(request, "view-x", taskRecord.getTaskRecordId())) + "', uri:'" + HtmlUtil.escapeJS(viewURL) + "'});";
-                                        
+
                                 boolean hasDeletePermission = TaskRecordPermission.contains(permissionChecker,
-                                        taskRecord.getTaskRecordId(), ActionKeys.DELETE);   
+                                        taskRecord.getTaskRecordId(), TaskRecordActionKeys.DELETE);   
                                 boolean hasPermissionsPermission = TaskRecordPermission.contains(permissionChecker,
-                                        taskRecord.getTaskRecordId(), ActionKeys.PERMISSIONS);  
+                                        taskRecord.getTaskRecordId(), TaskRecordActionKeys.PERMISSIONS);  
                                 boolean hasUpdatePermission = TaskRecordPermission.contains(permissionChecker,
-                                        taskRecord.getTaskRecordId(), ActionKeys.UPDATE);
+                                        taskRecord.getTaskRecordId(), TaskRecordActionKeys.UPDATE);
                                 boolean hasViewPermission = TaskRecordPermission.contains(permissionChecker,
-                                        taskRecord.getTaskRecordId(), ActionKeys.VIEW);
+                                        taskRecord.getTaskRecordId(), TaskRecordActionKeys.VIEW);
         
                                 String detailURL = null;
         
@@ -236,10 +211,7 @@
                                     </c:if>
                                     <c:if test="<%= hasViewPermission %>">
                                         <liferay-ui:icon image="view" url="<%=taglibViewURL%>" />
-                                    </c:if> 
-                                    <%-- <c:if test="<%= hasViewPermission %>">
-                                        <liferay-ui:icon image="download" url="<%= downloadTaskRecordURL %>" />
-                                    </c:if> --%>
+                                    </c:if>
                                     <c:if test="<%= hasDeletePermission %>">
                                         <liferay-ui:icon-delete url="<%=deleteURL%>" />
                                     </c:if>

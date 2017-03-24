@@ -18,6 +18,11 @@ import java.util.Date;
 import java.util.List;
 
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.search.Hits;
+import com.liferay.portal.kernel.search.HitsImpl;
+import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.ServiceContext;
 
 import aQute.bnd.annotation.ProviderType;
@@ -96,11 +101,8 @@ public class TaskRecordServiceImpl extends TaskRecordServiceBaseImpl {
 
     @Override
     public TaskRecord getTaskRecord(long taskRecordId) throws PortalException {
-
         TaskRecordPermission.check(getPermissionChecker(), taskRecordId, TaskRecordActionKeys.VIEW);
-
         return taskRecordLocalService.getTaskRecord(taskRecordId);
-
     }
 
     /**
@@ -118,6 +120,20 @@ public class TaskRecordServiceImpl extends TaskRecordServiceBaseImpl {
         return taskRecordList;
     }
 
+    public Hits search(long userId, long groupId, String keywords, int start, int end, Sort sort)
+            throws PortalException{
+
+//        try{
+//        	TimetrackerPortletPermission.check(getPermissionChecker(), groupId, TaskRecordActionKeys.SEARCH);
+//        }catch(Exception e){
+//        	_log.error("No search permissions!" + e);
+//        	return null;
+//        }
+    	
+
+        return taskRecordLocalService.search(userId, groupId, keywords, start, end, sort);
+    }
+
     @Override
     public TaskRecord updateTaskRecord(long taskRecordId, String workPackage, String description, String ticketURL,
             Date endDate, Date startDate, int status, long duration, ServiceContext serviceContext)
@@ -129,4 +145,5 @@ public class TaskRecordServiceImpl extends TaskRecordServiceBaseImpl {
                 endDate, startDate, status, duration, serviceContext);
 
     }
+    private static final Log _log = LogFactoryUtil.getLog(TaskRecordServiceImpl.class.getName());
 }
