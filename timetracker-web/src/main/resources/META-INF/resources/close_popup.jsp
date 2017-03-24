@@ -20,7 +20,7 @@
     }
 
     redirect = PortalUtil.escapeRedirect(redirect);
-
+    //TODO use remoteService?
     Portlet selPortlet = PortletLocalServiceUtil.getPortletById(
             company.getCompanyId(), portletDisplay.getId());
 %>

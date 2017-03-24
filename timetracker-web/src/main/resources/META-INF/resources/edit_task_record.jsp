@@ -84,7 +84,7 @@
     } else {
         
         // create an empty task record
-        taskRecord = TaskRecordLocalServiceUtil.createTaskRecord(0);
+        taskRecord = TaskRecordServiceUtil.createTaskRecord();
     }
 %>
 

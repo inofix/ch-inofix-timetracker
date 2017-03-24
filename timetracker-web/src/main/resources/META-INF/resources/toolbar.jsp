@@ -16,9 +16,9 @@
     long companyId = themeDisplay.getCompanyId();
 
     Sort sort = SortFactoryUtil.getSort(User.class, "lastName", "asc");
-
+    //TODO replace with remoteService
     int numUsers = UserLocalServiceUtil.searchCount(companyId, null, WorkflowConstants.STATUS_APPROVED, null);
-
+    //TODO replace with remoteService
     Hits hits = UserLocalServiceUtil.search(companyId, null, WorkflowConstants.STATUS_APPROVED, null, 0,
             numUsers, sort);
 
@@ -61,29 +61,24 @@
             <portlet:param name="mvcPath" value="/edit_task_record.jsp" />
             <portlet:param name="windowId" value="editTaskRecord" />
         </portlet:renderURL>
-
-        <%
-            // TODO: enable permission checks
-        %>
-        <%-- 
-        <c:if test='<%=TimetrackerPortletPermission.contains(permissionChecker, scopeGroupId,
-                                ActionKeys.ADD_TASK_RECORD)%>'>
-        --%>
-        <%
         
-            String taglibEditURL = "javascript:Liferay.Util.openWindow({id: '" + renderResponse.getNamespace() + "editTaskRecord', title: '" + HtmlUtil.escapeJS(LanguageUtil.format(request, "edit-x", "new")) + "', uri:'" + HtmlUtil.escapeJS(editURL) + "'});";
+        <c:if test='<%=TimetrackerPortletPermission.contains(permissionChecker, scopeGroupId,
+                                TaskRecordActionKeys.ADD_TASK_RECORD)%>'>
+        
+	        <%
+	        
+	            String taglibEditURL = "javascript:Liferay.Util.openWindow({id: '" + renderResponse.getNamespace() + "editTaskRecord', title: '" + HtmlUtil.escapeJS(LanguageUtil.format(request, "edit-x", "new")) + "', uri:'" + HtmlUtil.escapeJS(editURL) + "'});";
+	
+	        %>
+	
+	        <aui:nav-item>
+	            <aui:a label="add-task-record" title="add-task-record"
+	                href="<%=taglibEditURL%>"
+	                cssClass="btn btn-primary add-task-record" />
+	        </aui:nav-item>
 
-        %>
-
-        <aui:nav-item>
-            <aui:a label="add-task-record" title="add-task-record"
-                href="<%=taglibEditURL%>"
-                cssClass="btn btn-primary add-task-record" />
-        </aui:nav-item>
-
-        <%-- 
         </c:if>
-        --%>
+        
 
         <aui:nav-item dropdown="<%=true%>" id="exportButtonContainer"
             label="export">

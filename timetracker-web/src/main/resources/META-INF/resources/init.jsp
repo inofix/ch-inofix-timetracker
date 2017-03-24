@@ -15,10 +15,11 @@
 <%@taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui"%>
 <%@taglib uri="http://liferay.com/tld/util" prefix="liferay-util"%>
 
+<%@page import="ch.inofix.timetracker.constants.TaskRecordActionKeys"%>
 <%@page import="ch.inofix.timetracker.exception.NoSuchTaskRecordException"%>
 <%@page import="ch.inofix.timetracker.model.TaskRecord"%>
 <%@page import="ch.inofix.timetracker.service.permission.TaskRecordPermission"%>
-<%@page import="ch.inofix.timetracker.service.TaskRecordLocalServiceUtil"%>
+<%@page import="ch.inofix.timetracker.service.permission.TimetrackerPortletPermission"%>
 <%@page import="ch.inofix.timetracker.service.TaskRecordServiceUtil"%>
 <%@page import="ch.inofix.timetracker.web.internal.search.TaskRecordDisplayTerms"%>
 <%@page import="ch.inofix.timetracker.web.internal.search.TaskRecordSearch"%>
@@ -36,7 +37,6 @@
 <%@page import="com.liferay.portal.kernel.search.Sort"%>
 <%@page import="com.liferay.portal.kernel.search.SortFactoryUtil"%>
 <%@page import="com.liferay.portal.kernel.security.auth.PrincipalException"%>
-<%@page import="com.liferay.portal.kernel.security.permission.ActionKeys"%>
 <%@page import="com.liferay.portal.kernel.service.UserLocalServiceUtil"%>
 <%@page import="com.liferay.portal.kernel.util.Constants"%>
 <%@page import="com.liferay.portal.kernel.util.DateUtil"%>
