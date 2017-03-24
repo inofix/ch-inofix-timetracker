@@ -2,8 +2,8 @@
     view.jsp: Default view of Inofix' timetracker.
     
     Created:     2013-10-06 16:52 by Christian Berndt
-    Modified:    2017-03-22 16:15 by Christian Berndt
-    Version:     1.5.6
+    Modified:    2017-03-24 23:15 by Christian Berndt
+    Version:     1.5.7
  --%>
 
 <%@ include file="/init.jsp" %>
@@ -25,7 +25,6 @@
     String backURL = ParamUtil.getString(request, "backURL");
     String keywords = ParamUtil.getString(request, "keywords");
     String tabs1 = ParamUtil.getString(request, "tabs1", "browse");
-    
     
     SearchContainer taskRecordSearch = new TaskRecordSearch(renderRequest, "cur", portletURL);
     
@@ -72,34 +71,18 @@
 
         <c:when test='<%=tabs1.equals("import-export")%>'>
         
-
-            <c:if test='<%=TimetrackerPortletPermission.contains(permissionChecker, scopeGroupId,
-                                TaskRecordActionKeys.IMPORT_TASK_RECORDS)%>'>
-
-                <%@include file="/import.jspf"%>
-
-            </c:if>
+            <liferay-util:include page="/import.jsp" servletContext="<%= application %>"  />
             
-            
-            <c:if
-                test='<%=TimetrackerPortletPermission.contains(permissionChecker, scopeGroupId,
-                                TaskRecordActionKeys.DELETE_GROUP_TASK_RECORDS)%>'>
-
-                <%@include file="/delete_task_records.jspf"%>
-                
-            </c:if>
+            <liferay-util:include page="/delete_task_records.jsp" servletContext="<%= application %>"  />
             
         </c:when>
 
         <c:otherwise> 
 
-            <liferay-util:include
-                servletContext="<%=session.getServletContext()%>"
-                page="/toolbar.jsp" />
+            <liferay-util:include page="/toolbar.jsp" servletContext="<%= application %>" />
             
             <portlet:actionURL name="editSet" var="editSetURL">
-            </portlet:actionURL>
-            
+            </portlet:actionURL>          
             
             <aui:form action="<%= editSetURL %>" name="fm" 
                 onSubmit='<%= "event.preventDefault(); " + renderResponse.getNamespace() + "editSet();" %>'>
