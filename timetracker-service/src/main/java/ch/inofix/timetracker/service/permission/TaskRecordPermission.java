@@ -25,46 +25,48 @@ public class TaskRecordPermission{
             throws PortalException {
 
         if (!contains(permissionChecker, taskRecord, actionId)) {
-        	_log.info("[DEBUGGING]check failed");
+        	_log.info("[DEBUGGING]check failed - PrincipalException" + " actionKey: "+actionId);
             throw new PrincipalException();
         }
+        _log.info("[DEBUGGING]successfully checked - TR.id:" + taskRecord.getTaskRecordId() + " actionKey: "+actionId);
     }
 
     public static void check(PermissionChecker permissionChecker, long taskRecordId, String actionId)
             throws PortalException {
-    	_log.info("[DEBUGGING]call contains with id:" + taskRecordId);
+//    	_log.info("[DEBUGGING]call contains with id:" + taskRecordId);
         if (!contains(permissionChecker, taskRecordId, actionId)) {
-        	_log.info("[DEBUGGING]check failed - " + taskRecordId);
+        	_log.info("[DEBUGGING]check failed- PrincipalException - TRid:" + taskRecordId + " actionKey: "+actionId);
             throw new PrincipalException();
         }
-        _log.info("[DEBUGGING]successfully checked id:" + taskRecordId);
+        _log.info("[DEBUGGING]successfully checked id:" + taskRecordId + " actionKey: "+actionId);
     }
 
     public static boolean contains(PermissionChecker permissionChecker, TaskRecord taskRecord, String actionId) {
-    	_log.info("[DEBUGGING]call hasOwnerPermission.");
+//    	_log.info("[DEBUGGING]call hasOwnerPermission.");
         if (permissionChecker.hasOwnerPermission(taskRecord.getCompanyId(), TaskRecord.class.getName(),
                 taskRecord.getTaskRecordId(), taskRecord.getUserId(), actionId)) {
-        	_log.info("[DEBUGGING]successfully checked (OwnerPermission) taskRecord:" + taskRecord.getTaskRecordId());
+        	_log.info("[DEBUGGING]successfully contains (OwnerPermission) taskRecord:" + taskRecord.getTaskRecordId() + " actionKey: "+actionId);
             return true;
         }
-        _log.info("[DEBUGGING]call hasPermission.");
-        _log.info("[DEBUGGING]groupID: " + taskRecord.getGroupId() + " - Name: " + TaskRecord.class.getName() +
-        		" - TaskRecordId: " + taskRecord.getTaskRecordId() + " - actionId: " + actionId);
-        _log.info("[DEBUGGING]permissionchecker companyId: " +permissionChecker.getCompanyId() +
-        		"  userid: " + permissionChecker.getUserId() +
-        		"  groupid: " + permissionChecker.getUser().getGroupId());
+//        _log.info("[DEBUGGING]call hasPermission.");
+//        _log.info("[DEBUGGING]groupID: " + taskRecord.getGroupId() + " - Name: " + TaskRecord.class.getName() +
+//        		" - TaskRecordId: " + taskRecord.getTaskRecordId() + " - actionId: " + actionId);
+//	    _log.info("[DEBUGGING]permissionchecker companyId: " 
+//      +permissionChecker.getCompanyId() +
+//	    		"  userid: " + permissionChecker.getUserId() +
+//	    		"  groupid: " + permissionChecker.getUser().getGroupId());
         
         return permissionChecker.hasPermission(taskRecord.getGroupId(), TaskRecord.class.getName(),
                 String.valueOf(taskRecord.getTaskRecordId()), actionId);
     }
 
     public static boolean contains(PermissionChecker permissionChecker, long taskRecordId, String actionId){
-    	_log.info("[DEBUGGING]getTaskRecord from LocalService:" + taskRecordId);
+//    	_log.info("[DEBUGGING]getTaskRecord from LocalService:" + taskRecordId);
         
     	TaskRecord taskRecord;
 		try {
 			taskRecord = TaskRecordLocalServiceUtil.getTaskRecord(taskRecordId);
-			_log.info("[DEBUGGING]call contains with TaskRecord:" + taskRecordId);
+//			_log.info("[DEBUGGING]call contains with TaskRecord:" + taskRecordId);
 			return contains(permissionChecker, taskRecord, actionId);
 		} catch (PortalException e) {
 			_log.error(e);

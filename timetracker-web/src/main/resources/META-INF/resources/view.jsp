@@ -38,10 +38,10 @@
     
     TaskRecordSearchTerms searchTerms = (TaskRecordSearchTerms) taskRecordSearch.getSearchTerms();
 
-    System.out.println("[DEBUGGING view.jsp 41] try to search - usergroupID: "+themeDisplay.getUser().getGroupId());
-    System.out.println("[DEBUGGING view.jsp 41] try to search - scopegroupID: "+themeDisplay.getScopeGroupId());
-    System.out.println("[DEBUGGING view.jsp 41] try to search - compID: "+themeDisplay.getCompanyId());
-    System.out.println("[DEBUGGING view.jsp 41] try to search - usercompID: "+themeDisplay.getUser().getCompanyId());
+//     System.out.println("[DEBUGGING view.jsp 41] try to search - usergroupID: "+themeDisplay.getUser().getGroupId());
+//     System.out.println("[DEBUGGING view.jsp 41] try to search - scopegroupID: "+themeDisplay.getScopeGroupId());
+//     System.out.println("[DEBUGGING view.jsp 41] try to search - compID: "+themeDisplay.getCompanyId());
+//     System.out.println("[DEBUGGING view.jsp 41] try to search - usercompID: "+themeDisplay.getUser().getCompanyId());
     Hits hits = TaskRecordServiceUtil.search(themeDisplay.getUserId(), themeDisplay.getScopeGroupId(), keywords,
             taskRecordSearch.getStart(), taskRecordSearch.getEnd(), sort);
     System.out.println("[DEBUGGING view.jsp 41] after search"); 
@@ -59,15 +59,16 @@
         try {
             long taskRecordId = GetterUtil.getLong(document.get("entryClassPK"));
 
-            System.out.println("[DEBUGGING view.jsp 63] try to getTaskRecord: "+taskRecordId);
+            System.out.println("[DEBUGGING view.jsp 62] ------------- try to getTaskRecord: "+taskRecordId);
             TaskRecord taskRecord = TaskRecordServiceUtil.getTaskRecord(taskRecordId);
             taskRecords.add(taskRecord); 
         } catch (Exception e) {
-            System.out.println(e); 
+            System.out.println("ERROR: timetracker/view.jsp Failed to getTaskRecord: " + e); 
         }
     }
-
+    System.out.println("[DEBUGGING view.jsp 69] ------------- try to setResults taskRecordSearch");
     taskRecordSearch.setResults(taskRecords); 
+    System.out.println("[DEBUGGING view.jsp 69] ------------- try to setTotal taskRecordSearch");
     taskRecordSearch.setTotal(hits.getLength());
 %>
 
