@@ -100,6 +100,7 @@ public class TaskRecordServiceImpl extends TaskRecordServiceBaseImpl {
 
     @Override
     public TaskRecord getTaskRecord(long taskRecordId) throws PortalException {
+
         TaskRecordPermission.check(getPermissionChecker(), taskRecordId, TaskRecordActionKeys.VIEW);
         return taskRecordLocalService.getTaskRecord(taskRecordId);
     }
@@ -145,5 +146,6 @@ public class TaskRecordServiceImpl extends TaskRecordServiceBaseImpl {
                 endDate, startDate, status, duration, serviceContext);
 
     }
+
     private static final Log _log = LogFactoryUtil.getLog(TaskRecordServiceImpl.class.getName());
 }
