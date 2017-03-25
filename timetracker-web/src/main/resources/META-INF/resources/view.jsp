@@ -2,8 +2,8 @@
     view.jsp: Default view of Inofix' timetracker.
     
     Created:     2013-10-06 16:52 by Christian Berndt
-    Modified:    2017-03-24 23:15 by Christian Berndt
-    Version:     1.5.7
+    Modified:    2017-03-25 13:27 by Christian Berndt
+    Version:     1.5.8
  --%>
 
 <%@ include file="/init.jsp" %>
@@ -101,110 +101,73 @@
                         id="taskRecords"
                         searchContainer="<%= taskRecordSearch %>"
                         var="taskRecordearchContainer">
-                        
+
                         <liferay-ui:search-container-row
                             className="ch.inofix.timetracker.model.TaskRecord"
-                            modelVar="taskRecord" keyProperty="taskRecordId">
-                            
-                            <portlet:actionURL var="deleteURL" name="deleteTaskRecord">
-                                <portlet:param name="taskRecordId"
-                                    value="<%= String.valueOf(taskRecord.getTaskRecordId()) %>" />
-                                <portlet:param name="backURL" value="<%= currentURL %>" />
-                                <portlet:param name="mvcPath" value="/view.jsp" />
-                            </portlet:actionURL>
+                            modelVar="taskRecord"
+                            keyProperty="taskRecordId">
 
-                            <portlet:resourceURL var="downloadTaskRecordURL" id="serveTaskRecord">
+                            <portlet:renderURL var="editURL"
+                                windowState="<%=LiferayWindowState.POP_UP.toString()%>">
+                                <portlet:param name="redirect"
+                                    value="<%=currentURL%>" />
                                 <portlet:param name="taskRecordId"
                                     value="<%=String.valueOf(taskRecord.getTaskRecordId())%>" />
-                            </portlet:resourceURL>
-                            
-                            <portlet:renderURL var="editURL"
-                                windowState="<%= LiferayWindowState.POP_UP.toString() %>">
-                                <portlet:param name="redirect" value="<%= currentURL %>" />
-                                <portlet:param name="taskRecordId"
-                                    value="<%= String.valueOf(taskRecord.getTaskRecordId()) %>" />
-                                <portlet:param name="mvcPath" value="/edit_task_record.jsp" />
-                                <portlet:param name="windowId" value="editTaskRecord" />
+                                <portlet:param name="mvcPath"
+                                    value="/edit_task_record.jsp" />
+                                <portlet:param name="windowId"
+                                    value="editTaskRecord" />
                             </portlet:renderURL>
-        
-                            <%
-                                StringBuilder sb = new StringBuilder(); 
-                            
-                                sb.append(LanguageUtil.get(request, "permissions-of-task-record")); 
-                                sb.append(" "); 
-                                sb.append(taskRecord.getTaskRecordId()); 
-                            
-                                String modelResourceDescription = sb.toString(); 
-                            %>
-        
-                            <liferay-security:permissionsURL
-                                modelResource="<%= TaskRecord.class.getName() %>"
-                                modelResourceDescription="<%= modelResourceDescription %>"
-                                resourcePrimKey="<%= String.valueOf(taskRecord.getTaskRecordId()) %>"
-                                var="permissionsURL" />
-        
-                            <portlet:renderURL var="viewURL"
-                                windowState="<%= LiferayWindowState.POP_UP.toString() %>">
-                                <portlet:param name="redirect" value="<%= currentURL %>" />
-                                <portlet:param name="taskRecordId"
-                                    value="<%= String.valueOf(taskRecord.getTaskRecordId()) %>" />
-                                <portlet:param name="mvcPath" value="/edit_task_record.jsp" />
-                                <portlet:param name="windowId" value="viewTaskRecord" />
-                            </portlet:renderURL>
-        
-                            <%                  
-                                String taglibEditURL = "javascript:Liferay.Util.openWindow({id: '" + renderResponse.getNamespace() + "editTaskRecord', title: '" + HtmlUtil.escapeJS(LanguageUtil.format(request, "edit-x", taskRecord.getTaskRecordId())) + "', uri:'" + HtmlUtil.escapeJS(editURL) + "'});";
-                                String taglibViewURL = "javascript:Liferay.Util.openWindow({id: '" + renderResponse.getNamespace() + "viewTaskRecord', title: '" + HtmlUtil.escapeJS(LanguageUtil.format(request, "view-x", taskRecord.getTaskRecordId())) + "', uri:'" + HtmlUtil.escapeJS(viewURL) + "'});";
 
-                                boolean hasDeletePermission = TaskRecordPermission.contains(permissionChecker,
-                                        taskRecord.getTaskRecordId(), TaskRecordActionKeys.DELETE);   
-                                boolean hasPermissionsPermission = TaskRecordPermission.contains(permissionChecker,
-                                        taskRecord.getTaskRecordId(), TaskRecordActionKeys.PERMISSIONS);  
+                            <portlet:renderURL var="viewURL"
+                                windowState="<%=LiferayWindowState.POP_UP.toString()%>">
+                                <portlet:param name="redirect"
+                                    value="<%=currentURL%>" />
+                                <portlet:param name="taskRecordId"
+                                    value="<%=String.valueOf(taskRecord.getTaskRecordId())%>" />
+                                <portlet:param name="mvcPath"
+                                    value="/edit_task_record.jsp" />
+                                <portlet:param name="windowId"
+                                    value="viewTaskRecord" />
+                            </portlet:renderURL>
+
+                            <%
+                                String taglibEditURL = "javascript:Liferay.Util.openWindow({id: '" + renderResponse.getNamespace() + "editTaskRecord', title: '" + HtmlUtil.escapeJS(LanguageUtil.format(request, "edit-x", taskRecord.getTaskRecordId())) + "', uri:'" + HtmlUtil.escapeJS(editURL) + "'});";            
+                                String taglibViewURL = "javascript:Liferay.Util.openWindow({id: '" + renderResponse.getNamespace() + "viewTaskRecord', title: '" + HtmlUtil.escapeJS(LanguageUtil.format(request, "view-x", taskRecord.getTaskRecordId())) + "', uri:'" + HtmlUtil.escapeJS(viewURL) + "'});";
+                                
+                                request.setAttribute("editURL", editURL.toString()); 
+                                request.setAttribute("viewURL", viewURL.toString()); 
+                              
                                 boolean hasUpdatePermission = TaskRecordPermission.contains(permissionChecker,
                                         taskRecord.getTaskRecordId(), TaskRecordActionKeys.UPDATE);
                                 boolean hasViewPermission = TaskRecordPermission.contains(permissionChecker,
                                         taskRecord.getTaskRecordId(), TaskRecordActionKeys.VIEW);
-        
+
                                 String detailURL = null;
-        
+
                                 if (hasUpdatePermission) {
-                                    
+
                                     if (!viewByDefault) {
-                                        detailURL = taglibEditURL; 
+                                        detailURL = taglibEditURL;
                                     } else {
-                                        detailURL = taglibViewURL;                                  
+                                        detailURL = taglibViewURL;
                                     }
-                                    
+
                                 } else if (hasViewPermission) {
-                                    detailURL = taglibViewURL;  
+                                    detailURL = taglibViewURL;
                                 }
                             %>
-        
+
                             <%@ include file="/search_columns.jspf"%>
 
-                            <liferay-ui:search-container-column-text align="right">
-        
-                                <liferay-ui:icon-menu>
-        
-                                    <c:if test="<%= hasUpdatePermission %>">
-                                        <liferay-ui:icon image="edit" url="<%=taglibEditURL%>" />
-                                    </c:if>
-                                    <c:if test="<%= hasPermissionsPermission %>">
-                                        <liferay-ui:icon image="permissions" url="<%= permissionsURL %>" />
-                                    </c:if>
-                                    <c:if test="<%= hasViewPermission %>">
-                                        <liferay-ui:icon image="view" url="<%=taglibViewURL%>" />
-                                    </c:if>
-                                    <c:if test="<%= hasDeletePermission %>">
-                                        <liferay-ui:icon-delete url="<%=deleteURL%>" />
-                                    </c:if>
-        
-                                </liferay-ui:icon-menu>
-        
-                            </liferay-ui:search-container-column-text>
-                        
+
+                            <liferay-ui:search-container-column-jsp
+                                cssClass="entry-action"
+                                path="/task_record_action.jsp"
+                                valign="top" />
+
                         </liferay-ui:search-container-row>
-                        
+
                         <liferay-ui:search-iterator />
                 
                     </liferay-ui:search-container>
