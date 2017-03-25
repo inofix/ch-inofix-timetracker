@@ -266,6 +266,8 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
         searchContext.setStart(start);
         searchContext.setUserId(userId);
 
+        searchContext.setKeywords(keywords);
+
         return indexer.search(searchContext);
 
     }

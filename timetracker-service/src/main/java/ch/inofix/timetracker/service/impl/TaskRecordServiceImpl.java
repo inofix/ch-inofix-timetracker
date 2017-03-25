@@ -47,8 +47,8 @@ import ch.inofix.timetracker.service.permission.TimetrackerPortletPermission;
  *
  * @author Christian Berndt, Stefan Luebbers
  * @created 2015-05-07 23:50
- * @modified 2017-03-23 10:40
- * @version 1.0.8
+ * @modified 2017-03-25 19:41
+ * @version 1.0.9
  * @see TaskRecordServiceBaseImpl
  * @see ch.inofix.timetracker.service.TaskRecordServiceUtil
  */
@@ -123,14 +123,6 @@ public class TaskRecordServiceImpl extends TaskRecordServiceBaseImpl {
     @Override
     public Hits search(long userId, long groupId, String keywords, int start, int end, Sort sort)
             throws PortalException{
-
-//        try{
-//        	TimetrackerPortletPermission.check(getPermissionChecker(), groupId, TaskRecordActionKeys.SEARCH);
-//        }catch(Exception e){
-//        	_log.error("No search permissions!" + e);
-//        	return null;
-//        }
-
 
         return taskRecordLocalService.search(userId, groupId, keywords, start, end, sort);
     }
