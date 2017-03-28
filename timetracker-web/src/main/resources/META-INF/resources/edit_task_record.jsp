@@ -86,6 +86,15 @@
         // create an empty task record
         taskRecord = TaskRecordServiceUtil.createTaskRecord();
     }
+    
+    boolean hasUpdatePermission = TaskRecordPermission.contains(permissionChecker, taskRecord,
+            TaskRecordActionKeys.UPDATE);
+    boolean hasViewPermission = TaskRecordPermission.contains(permissionChecker, taskRecord,
+            TaskRecordActionKeys.VIEW);
+    boolean hasDeletePermission = TaskRecordPermission.contains(permissionChecker, taskRecord,
+            TaskRecordActionKeys.DELETE);
+    boolean hasPermissionsPermission = TaskRecordPermission.contains(permissionChecker, taskRecord, 
+            TaskRecordActionKeys.PERMISSIONS);
 %>
 
 <portlet:actionURL name="updateTaskRecord" var="updateTaskRecordURL"
@@ -109,25 +118,23 @@
         <aui:col span="6">
             <aui:fieldset>
 
-                <aui:input name="backURL" type="hidden"
-                    value="<%=backURL%>" />
+                <aui:input name="backURL" type="hidden" value="<%=backURL%>" />
 
-                <aui:input name="endDate" type="hidden" />
+                <aui:input name="endDate" type="hidden" disabled="<%=!hasUpdatePermission%>"/>
 
-                <aui:input name="redirect" type="hidden"
-                    value="<%=redirect%>" />
+                <aui:input name="redirect" type="hidden" value="<%=redirect%>" />
 
-                <aui:input name="taskRecordId" type="hidden" />
+                <aui:input name="taskRecordId" type="hidden" disabled="<%=!hasUpdatePermission%>"/>
 
                 <aui:input name="workPackage"
                     helpMessage="work-package-help"
-                    cssClass="timetracker-input" />
+                    cssClass="timetracker-input" disabled="<%=!hasUpdatePermission%>"/>
 
                 <aui:input name="ticketURL" label="ticket-url"
                     helpMessage="ticket-url-help"
-                    cssClass="timetracker-input" />
+                    cssClass="timetracker-input" disabled="<%=!hasUpdatePermission%>"/>
 
-                <aui:input name="description" />
+                <aui:input name="description" disabled="<%=!hasUpdatePermission%>"/>
 
             </aui:fieldset>
         </aui:col>
@@ -135,7 +142,7 @@
         <aui:col span="6">
             <aui:fieldset>
 
-                <aui:input name="startDate" label="date" />
+                <aui:input name="startDate" label="date" disabled="<%=!hasUpdatePermission%>"/>
 
                 <c:if
                     test="<%=Validator.equals("from-until", timeFormat)%>">
@@ -144,13 +151,15 @@
                             firstHour="<%=0%>" hour="<%=startDateHour%>"
                             minute="<%=startDateMinute%>"
                             nullable="<%=false%>"
-                            prefix="<%=startDatePrefix%>" />
+                            prefix="<%=startDatePrefix%>" 
+                            disabled="<%=!hasUpdatePermission%>"/>
                         --
                         <iu:time-picker deltaMinutes="<%=15%>"
                             firstHour="<%=0%>" hour="<%=endDateHour%>"
                             minute="<%=endDateMinute%>"
                             nullable="<%=false%>"
-                            prefix="<%=endDatePrefix%>" />
+                            prefix="<%=endDatePrefix%>" 
+                            disabled="<%=!hasUpdatePermission%>"/>
 
                     </aui:field-wrapper>
                 </c:if>
@@ -160,11 +169,12 @@
                         helpMessage="duration-help">
                         <input name="<portlet:namespace/>duration"
                             value="<%=durationInMinutes%>"
-                            class="aui-field-input aui-field-input-text lfr-input-text duration-in-minutes" />
+                            class="aui-field-input aui-field-input-text lfr-input-text duration-in-minutes" 
+                            disabled="<%=!hasUpdatePermission%>"/>
                     </aui:field-wrapper>
                 </c:if>
 
-                <aui:select name="status">
+                <aui:select name="status" disabled="<%=!hasUpdatePermission%>">
                     <aui:option
                         value="<%=WorkflowConstants.STATUS_APPROVED%>"
                         selected="<%=WorkflowConstants.STATUS_APPROVED == taskRecord.getStatus()%>">
@@ -200,7 +210,7 @@
             </aui:fieldset>
 
             <aui:button-row>
-                <aui:button type="submit" />
+                <aui:button type="submit" disabled="<%=!hasUpdatePermission%>"/>
             </aui:button-row>
 
         </aui:col>
