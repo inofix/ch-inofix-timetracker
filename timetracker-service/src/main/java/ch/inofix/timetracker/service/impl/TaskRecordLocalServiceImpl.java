@@ -163,30 +163,29 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
     }
 
     /**
-    *
-    * @param groupId
-    * @return
-    * @since 1.5.2
-    */
-   @Override
-   public List<TaskRecord> deleteGroupTaskRecords(long groupId) throws PortalException {
+     *
+     * @param groupId
+     * @return
+     * @since 1.5.2
+     */
+    @Override
+    public List<TaskRecord> deleteGroupTaskRecords(long groupId) throws PortalException {
 
-       List<TaskRecord> taskRecords = taskRecordPersistence.findByGroupId(groupId);
+        List<TaskRecord> taskRecords = taskRecordPersistence.findByGroupId(groupId);
 
-       for (TaskRecord taskRecord : taskRecords) {
+        for (TaskRecord taskRecord : taskRecords) {
 
-           //TODO differ exception types
-    	   try {
-               deleteTaskRecord(taskRecord);
-           } catch (Exception e) { 
-               _log.error(e);
-           }
-       }
+            // TODO differ exception types
+            try {
+                deleteTaskRecord(taskRecord);
+            } catch (Exception e) {
+                _log.error(e);
+            }
+        }
 
-       return taskRecords;
+        return taskRecords;
 
     }
-
 
     @Indexable(type = IndexableType.DELETE)
     @Override
@@ -218,9 +217,10 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
 
     @Override
     public TaskRecord deleteTaskRecord(long taskRecordId) throws PortalException {
+
         TaskRecord taskRecord = taskRecordPersistence.findByPrimaryKey(taskRecordId);
 
-        return taskRecordLocalService.deleteTaskRecord(taskRecord);
+        return deleteTaskRecord(taskRecord);
     }
 
     /**
@@ -237,8 +237,6 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
         return taskRecords;
 
     }
-
-    
 
     @Override
     public Hits search(long userId, long groupId, String keywords, int start, int end, Sort sort)
@@ -261,12 +259,14 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
         searchContext.setCompanyId(group.getCompanyId());
 
         searchContext.setEnd(end);
-        if (groupId > 0){
-        	searchContext.setGroupIds(new long[] { groupId });
+        if (groupId > 0) {
+            searchContext.setGroupIds(new long[] { groupId });
         }
         searchContext.setSorts(sort);
         searchContext.setStart(start);
         searchContext.setUserId(userId);
+
+        searchContext.setKeywords(keywords);
 
         return indexer.search(searchContext);
 

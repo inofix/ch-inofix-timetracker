@@ -2,8 +2,8 @@
     toolbar.jsp: The toolbar of the timetracker portlet
     
     Created:    2016-03-20 16:58 by Christian Berndt
-    Modified:   2017-03-22 15:11 by Christian Berndt
-    Version:    1.1.1
+    Modified:   2017-03-24 23:06 by Christian Berndt
+    Version:    1.1.2
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -62,23 +62,23 @@
             <portlet:param name="windowId" value="editTaskRecord" />
         </portlet:renderURL>
         
-        <c:if test='<%=TimetrackerPortletPermission.contains(permissionChecker, scopeGroupId,
-                                TaskRecordActionKeys.ADD_TASK_RECORD)%>'>
-        
-	        <%
-	        
-	            String taglibEditURL = "javascript:Liferay.Util.openWindow({id: '" + renderResponse.getNamespace() + "editTaskRecord', title: '" + HtmlUtil.escapeJS(LanguageUtil.format(request, "edit-x", "new")) + "', uri:'" + HtmlUtil.escapeJS(editURL) + "'});";
-	
-	        %>
-	
-	        <aui:nav-item>
-	            <aui:a label="add-task-record" title="add-task-record"
-	                href="<%=taglibEditURL%>"
-	                cssClass="btn btn-primary add-task-record" />
-	        </aui:nav-item>
+        <%
+            boolean hasAddPermission = TimetrackerPortletPermission.contains(permissionChecker, scopeGroupId,
+                    TaskRecordActionKeys.ADD_TASK_RECORD); 
+            
+            String taglibEditURL = ""; 
+            
+            if (hasAddPermission) {
+                taglibEditURL = "javascript:Liferay.Util.openWindow({id: '" + renderResponse.getNamespace() + "editTaskRecord', title: '" + HtmlUtil.escapeJS(LanguageUtil.format(request, "edit-x", "new")) + "', uri:'" + HtmlUtil.escapeJS(editURL) + "'});";
+            }
+        %>
 
-        </c:if>
-        
+        <aui:nav-item>
+            <aui:button cssClass="btn btn-primary"
+                disabled="<%= !hasAddPermission%>"
+                onClick="<%= taglibEditURL %>" value="add-task-record" />
+        </aui:nav-item>
+
 
         <aui:nav-item dropdown="<%=true%>" id="exportButtonContainer"
             label="export">

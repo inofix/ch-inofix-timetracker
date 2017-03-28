@@ -2,13 +2,31 @@
  * main.scss: css specific to the timetracker-portlet.
  *
  * Created:     2013-10-09 22:44 by Christian Berndt
- * Modified:    2017-03-16 15:45 by Christian Berndt
- * Version:     1.1.3
+ * Modified:    2017-03-25 19:25 by Christian Berndt
+ * Version:     1.1.5
  * 
  */
 @import "bourbon";
 @import "mixins";
-
+    
+.item-remove {
+    .taglib-text-icon {    
+        &:before {
+            content: "\f00d"; 
+            font-family: 'fontawesome-alloy';
+            -webkit-font-smoothing: antialiased;
+            font-style: normal;
+            font-variant: normal;
+            font-weight: normal;
+            line-height: 1;
+            *margin-right: .3em;
+            margin-right: .4em;
+            speak: none;
+            text-decoration: inherit;
+            text-transform: none;
+        }
+    }
+}
 
 .portlet-timetracker {
 	
@@ -20,6 +38,13 @@
     
     .clear-btn {
         margin: 8px 0 8px 8px;
+    }
+    
+    .import {
+        
+        .button-holder {
+            display: inline-block; 
+        }
     }
     
     .toolbar-container {
