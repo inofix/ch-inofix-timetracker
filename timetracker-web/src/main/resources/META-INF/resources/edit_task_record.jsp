@@ -2,8 +2,8 @@
     edit_task_record.jsp: edit a single task-record.
 
     Created:     2013-10-07 10:41 by Christian Berndt
-    Modified:    2017-03-22 17:13 by Christian Berndt
-    Version:     1.5.5
+    Modified:    2017-03-29 11:02 by Christian Berndt
+    Version:     1.5.6
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -118,23 +118,31 @@
         <aui:col span="6">
             <aui:fieldset>
 
-                <aui:input name="backURL" type="hidden" value="<%=backURL%>" />
+                <aui:input name="backURL" type="hidden"
+                    value="<%=backURL%>" />
 
-                <aui:input name="endDate" type="hidden" disabled="<%=!hasUpdatePermission%>"/>
+                <aui:input name="endDate" type="hidden"
+                    disabled="<%=!hasUpdatePermission%>" />
 
-                <aui:input name="redirect" type="hidden" value="<%=redirect%>" />
+                <aui:input name="redirect" type="hidden"
+                    value="<%=redirect%>" />
 
-                <aui:input name="taskRecordId" type="hidden" disabled="<%=!hasUpdatePermission%>"/>
+                <aui:input name="taskRecordId" type="hidden"
+                    disabled="<%=!hasUpdatePermission%>" />
 
                 <aui:input name="workPackage"
                     helpMessage="work-package-help"
-                    cssClass="timetracker-input" disabled="<%=!hasUpdatePermission%>"/>
+                    cssClass="timetracker-input"
+                    disabled="<%=!hasUpdatePermission%>" />
 
                 <aui:input name="ticketURL" label="ticket-url"
                     helpMessage="ticket-url-help"
-                    cssClass="timetracker-input" disabled="<%=!hasUpdatePermission%>"/>
+                    cssClass="timetracker-input"
+                    disabled="<%=!hasUpdatePermission%>" />
 
-                <aui:input name="description" disabled="<%=!hasUpdatePermission%>"/>
+                <aui:input name="description"
+                    disabled="<%=!hasUpdatePermission%>"
+                    helpMessage="description-help" />
 
             </aui:fieldset>
         </aui:col>
@@ -147,6 +155,23 @@
                 <c:if
                     test="<%=Validator.equals("from-until", timeFormat)%>">
                     <aui:field-wrapper name="from-until">
+                    
+                        <aui:input name="startTimeMinute" value="0" type="hidden" />
+                        <aui:input name="startTimeHour" value="0" type="hidden"/>
+
+                        <liferay-ui:input-time name="startTime"                           
+                            minuteParam="startTimeMinute"
+                            amPmParam="startTimeAmPm"
+                            hourParam="startTimeHour" />
+                            
+                        <aui:input name="endTimeMinute" value="0" type="hidden"/>
+                        <aui:input name="endTimeHour" value="0" type="hidden" />
+                            
+                        <liferay-ui:input-time name="endTime"
+                            minuteParam="endTimeMinute"
+                            amPmParam="endTimeAmPm"
+                            hourParam="endTimeHour" />
+                        <%-- 
                         <iu:time-picker deltaMinutes="<%=15%>"
                             firstHour="<%=0%>" hour="<%=startDateHour%>"
                             minute="<%=startDateMinute%>"
@@ -160,9 +185,11 @@
                             nullable="<%=false%>"
                             prefix="<%=endDatePrefix%>" 
                             disabled="<%=!hasUpdatePermission%>"/>
+                        --%>
 
                     </aui:field-wrapper>
                 </c:if>
+                
                 <c:if
                     test="<%=!Validator.equals("from-until", timeFormat)%>">
                     <aui:field-wrapper label="duration"
