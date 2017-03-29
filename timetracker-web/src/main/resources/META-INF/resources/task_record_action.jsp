@@ -2,7 +2,7 @@
     task_record_action.jsp: The action menu of the timetrackers's default view.
     
     Created:    2017-03-25 11:57 by Christian Berndt
-    Modified:   2017-03-25 11:57 by Christian Berndt
+    Modified:   2017-03-28 15:27 by Stefan Luebbers
     Version:    1.0.0
 --%>
 
@@ -27,26 +27,34 @@
     String taglibViewURL = "javascript:Liferay.Util.openWindow({id: '" + renderResponse.getNamespace() + "viewTaskRecord', title: '" + HtmlUtil.escapeJS(LanguageUtil.format(request, "view-x", taskRecord.getTaskRecordId())) + "', uri:'" + HtmlUtil.escapeJS(viewURL) + "'});";
 %>
 
+<%
+    boolean hasUpdatePermission = TaskRecordPermission.contains(permissionChecker, taskRecord,
+            TaskRecordActionKeys.UPDATE);
+    boolean hasViewPermission = TaskRecordPermission.contains(permissionChecker, taskRecord,
+            TaskRecordActionKeys.VIEW);
+    boolean hasDeletePermission = TaskRecordPermission.contains(permissionChecker, taskRecord,
+            TaskRecordActionKeys.DELETE);
+    boolean hasPermissionsPermission = TaskRecordPermission.contains(permissionChecker, taskRecord, 
+            TaskRecordActionKeys.PERMISSIONS);
+%>
+
 <liferay-ui:icon-menu showWhenSingleIcon="true">
 
-    <c:if test="<%=TaskRecordPermission.contains(permissionChecker, taskRecord,
-                    TaskRecordActionKeys.VIEW)%>">
+    <c:if test="<%=hasViewPermission%>">
 
-        <liferay-ui:icon iconCssClass="icon-eye-open" message="view"
+        <liferay-ui:icon iconCssClass="icon-eye-open" message="view" 
             url="<%=taglibViewURL%>" />
 
     </c:if>
 
-    <c:if test="<%=TaskRecordPermission.contains(permissionChecker, taskRecord,
-                    TaskRecordActionKeys.UPDATE)%>">
+    <c:if test="<%=hasUpdatePermission%>">
 
-        <liferay-ui:icon iconCssClass="icon-edit" message="edit"
+        <liferay-ui:icon iconCssClass="icon-edit" message="edit" 
             url="<%=taglibViewURL%>" />
 
     </c:if>
 
-    <c:if test="<%=TaskRecordPermission.contains(permissionChecker, taskRecord,
-                    TaskRecordActionKeys.DELETE)%>">
+    <c:if test="<%=hasDeletePermission%>">
 
         <portlet:actionURL var="deleteURL" name="deleteTaskRecord">
             <portlet:param name="redirect" value="<%=currentURL%>" />
@@ -58,8 +66,7 @@
 
     </c:if>
 
-    <c:if test="<%= TaskRecordPermission.contains(permissionChecker, taskRecord, 
-                     TaskRecordActionKeys.PERMISSIONS) %>">
+    <c:if test="<%= hasPermissionsPermission %>">
 
         <liferay-security:permissionsURL
             modelResource="<%= TaskRecord.class.getName() %>"
