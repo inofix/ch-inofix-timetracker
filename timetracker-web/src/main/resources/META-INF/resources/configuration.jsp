@@ -2,8 +2,8 @@
     configuration.jsp: configuration of the timetracker portlet.
     
     Created:    2017-03-09 14:20 by Stefan Lübbers
-    Modified:   2017-03-12 00:44 by Stefan Lübbers
-    Version:    1.0.0
+    Modified:   2017-03-28 16:30 by Stefan Lübbers
+    Version:    1.0.1
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -17,8 +17,9 @@
         maxLength = portletPreferences.getValue("max-length", timetrackerConfiguration.maxLength());
         timeFormat = portletPreferences.getValue("time-format", timetrackerConfiguration.timeFormat());
     }
-    String allColumns = new String ("task-record-id,work-package,start-date,duration,create-date,modified-date,user-name,status,description,end-date,ticket-url");
-    		
+    
+    TaskRecordSearch searchContainer = new TaskRecordSearch(liferayPortletRequest, portletURL);
+    List<String> headerList = searchContainer.getHeaderNames();
 %>
 
 <liferay-portlet:actionURL portletConfiguration="<%= true %>"
@@ -41,7 +42,7 @@
 	
 	        <aui:fieldset collapsible="<%=true%>" label="show-columns">
 	            <%
-	                Set<String> availableColumns = SetUtil.fromArray(StringUtil.split(allColumns));
+	                Set<String> availableColumns = SetUtil.fromList(headerList);
 	                // Left list
 	                List leftList = new ArrayList();
 	                for (String column : columns) {

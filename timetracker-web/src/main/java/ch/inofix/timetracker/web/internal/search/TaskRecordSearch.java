@@ -40,16 +40,16 @@ public class TaskRecordSearch extends SearchContainer<TaskRecord> {
     static Map<String, String> orderableHeaders = new HashMap<String, String>();
 
     static {
-        headerNames.add("taskRecordId");
+        headerNames.add("task-record-Id");
         headerNames.add("status");  //has no "name" in search_columns.jspf
-        headerNames.add("workPackage");
-        headerNames.add("userName");
-        headerNames.add("ticketURL");
+        headerNames.add("work-package");
+        headerNames.add("user-name");
+        headerNames.add("ticket-url");
         headerNames.add("description");
-        headerNames.add("createDate");
-        headerNames.add("modifiedDate");
-        headerNames.add("startDate");
-        headerNames.add("endDate");
+        headerNames.add("create-date");
+        headerNames.add("modified-date");
+        headerNames.add("start-date");
+        headerNames.add("end-date");
         headerNames.add("duration");
 
         orderableHeaders.put("taskRecordId", "taskRecordId");
