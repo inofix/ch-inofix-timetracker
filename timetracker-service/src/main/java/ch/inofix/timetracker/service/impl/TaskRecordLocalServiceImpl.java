@@ -87,7 +87,7 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
         long groupId = serviceContext.getScopeGroupId();
 
         // TODO
-        // validate(groupId, urlTitle);
+        // validate();
 
         long taskRecordId = counterLocalService.increment();
 

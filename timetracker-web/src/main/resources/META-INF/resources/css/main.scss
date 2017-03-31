@@ -2,8 +2,8 @@
  * main.scss: css specific to the timetracker-portlet.
  *
  * Created:     2013-10-09 22:44 by Christian Berndt
- * Modified:    2017-03-31 16:51 by Christian Berndt
- * Version:     1.1.6
+ * Modified:    2017-03-31 19:23 by Christian Berndt
+ * Version:     1.1.7
  * 
  */
 @import "bourbon";
@@ -49,7 +49,7 @@
         .lfr-input-time {
             display: block;
             float: left; 
-            width: 45%; 
+            width: 50%; 
         }    
     }
     
