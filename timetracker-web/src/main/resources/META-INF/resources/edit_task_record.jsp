@@ -2,8 +2,8 @@
     edit_task_record.jsp: edit a single task-record.
 
     Created:     2013-10-07 10:41 by Christian Berndt
-    Modified:    2017-03-29 11:02 by Christian Berndt
-    Version:     1.5.6
+    Modified:    2017-03-31 17:44 by Christian Berndt
+    Version:     1.5.7
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -152,53 +152,46 @@
 
                 <aui:input name="startDate" label="date" disabled="<%=!hasUpdatePermission%>"/>
 
-                <c:if
-                    test="<%=Validator.equals("from-until", timeFormat)%>">
-                    <aui:field-wrapper name="from-until">
+                <c:if test="<%=Validator.equals("from-until", timeFormat)%>">
+                    <aui:field-wrapper cssClass="clearfix from-until" name="from-until">
                     
                         <aui:input name="startTimeMinute" value="0" type="hidden" />
                         <aui:input name="startTimeHour" value="0" type="hidden"/>
 
-                        <liferay-ui:input-time name="startTime"                           
+                        <liferay-ui:input-time name="startTime" 
+                            minuteInterval="<%= 15 %>"               
                             minuteParam="startTimeMinute"
+                            minuteValue="<%= startDateMinute %>"
                             amPmParam="startTimeAmPm"
-                            hourParam="startTimeHour" />
+                            hourParam="startTimeHour" 
+                            hourValue="<%= startDateHour %>"/>
                             
                         <aui:input name="endTimeMinute" value="0" type="hidden"/>
-                        <aui:input name="endTimeHour" value="0" type="hidden" />
+                        <aui:input name="endTimeHour" value="30" type="hidden" />
                             
                         <liferay-ui:input-time name="endTime"
+                            minuteInterval="<%= 15 %>"
                             minuteParam="endTimeMinute"
+                            minuteValue="<%= endDateMinute %>"
                             amPmParam="endTimeAmPm"
-                            hourParam="endTimeHour" />
-                        <%-- 
-                        <iu:time-picker deltaMinutes="<%=15%>"
-                            firstHour="<%=0%>" hour="<%=startDateHour%>"
-                            minute="<%=startDateMinute%>"
-                            nullable="<%=false%>"
-                            prefix="<%=startDatePrefix%>" 
-                            disabled="<%=!hasUpdatePermission%>"/>
-                        --
-                        <iu:time-picker deltaMinutes="<%=15%>"
-                            firstHour="<%=0%>" hour="<%=endDateHour%>"
-                            minute="<%=endDateMinute%>"
-                            nullable="<%=false%>"
-                            prefix="<%=endDatePrefix%>" 
-                            disabled="<%=!hasUpdatePermission%>"/>
-                        --%>
+                            hourParam="endTimeHour" 
+                            hourValue="<%= endDateHour %>" />
 
                     </aui:field-wrapper>
                 </c:if>
                 
-                <c:if
-                    test="<%=!Validator.equals("from-until", timeFormat)%>">
+                <c:if test="<%=!Validator.equals("from-until", timeFormat)%>">
+                
                     <aui:field-wrapper label="duration"
                         helpMessage="duration-help">
+                        
                         <input name="<portlet:namespace/>duration"
                             value="<%=durationInMinutes%>"
                             class="aui-field-input aui-field-input-text lfr-input-text duration-in-minutes" 
                             disabled="<%=!hasUpdatePermission%>"/>
+                            
                     </aui:field-wrapper>
+                    
                 </c:if>
 
                 <aui:select name="status" disabled="<%=!hasUpdatePermission%>">

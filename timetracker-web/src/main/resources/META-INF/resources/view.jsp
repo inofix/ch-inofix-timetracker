@@ -2,8 +2,8 @@
     view.jsp: Default view of Inofix' timetracker.
     
     Created:     2013-10-06 16:52 by Christian Berndt
-    Modified:    2017-03-25 13:27 by Christian Berndt
-    Version:     1.5.8
+    Modified:    2017-03-31 16:29 by Christian Berndt
+    Version:     1.5.9
  --%>
 
 <%@ include file="/init.jsp" %>
@@ -26,7 +26,7 @@
     String keywords = ParamUtil.getString(request, "keywords");
     String tabs1 = ParamUtil.getString(request, "tabs1", "browse");
     
-    SearchContainer taskRecordSearch = new TaskRecordSearch(renderRequest, "cur", portletURL);
+    TaskRecordSearch taskRecordSearch = new TaskRecordSearch(renderRequest, "cur", portletURL);
     
     boolean reverse = false; 
     if (taskRecordSearch.getOrderByType().equals("desc")) {
@@ -171,11 +171,41 @@
                         <liferay-ui:search-iterator />
                 
                     </liferay-ui:search-container>
+                    
+                    <liferay-ui:message key="sum"/> = <strong><span id="sum"></span></strong>                                     
                 
                 </div>
                 
             </aui:form>
 
+
+            <%
+                ResourceURL resourceURL = liferayPortletResponse.createResourceURL();
+
+                resourceURL.setResourceID("getSum");
+
+                // Copy render parameters to resourceRequest
+                resourceURL.setParameters(renderRequest.getParameterMap());
+            %>
+
+            <aui:script use="aui-io-request">
+        
+                AUI().ready('aui-io-request',
+                    function (A) {
+                        A.io.request(
+                            '<%= resourceURL.toString() %>',
+                            {
+                                on: {
+                                    success: function() {
+                                        var data = this.get('responseData');
+                                        A.one('#sum').setHTML(data); 
+                                    }
+                                }
+                            }
+                        );
+                     }
+                 );
+            </aui:script>
         </c:otherwise>
     </c:choose>
 </div>

@@ -2,6 +2,7 @@ package ch.inofix.timetracker.web.internal.portlet;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +14,9 @@ import javax.portlet.PortletException;
 import javax.portlet.PortletRequest;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
+import javax.portlet.ResourceRequest;
+import javax.portlet.ResourceResponse;
+import javax.servlet.http.HttpServletRequest;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -21,10 +25,18 @@ import org.osgi.service.component.annotations.Reference;
 
 import com.liferay.portal.kernel.exception.NoSuchResourceException;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.portlet.PortletResponseUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
+import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.Hits;
+import com.liferay.portal.kernel.search.SearchException;
+import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextFactory;
@@ -33,6 +45,7 @@ import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.servlet.SessionMessages;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.upload.UploadPortletRequest;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HttpUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
@@ -59,8 +72,8 @@ import ch.inofix.timetracker.web.internal.portlet.util.PortletUtil;
  *
  * @author Christian Berndt, Stefan Luebbers
  * @created 2013-10-07 10:47
- * @modified 2017-03-23 10:54
- * @version 1.6.1
+ * @modified 2017-03-31 17:44
+ * @version 1.6.2
  */
 @Component(immediate = true, property = { "com.liferay.portlet.css-class-wrapper=portlet-timetracker",
         "com.liferay.portlet.display-category=category.inofix", "com.liferay.portlet.header-portlet-css=/css/main.css",
@@ -101,6 +114,83 @@ public class TimetrackerPortlet extends MVCPortlet {
         long taskRecordId = ParamUtil.getLong(actionRequest, "taskRecordId");
 
         _taskRecordService.deleteTaskRecord(taskRecordId);
+    }
+
+    /**
+     * @param resourceRequest
+     * @param resourceResponse
+     * @throws IOException
+     * @throws SearchException
+     * @since 1.1.5
+     */
+    public void getSum(ResourceRequest resourceRequest, ResourceResponse resourceResponse) throws Exception {
+
+        HttpServletRequest request = PortalUtil.getHttpServletRequest(resourceRequest);
+
+        List<TaskRecord> taskRecords = getTaskRecords(request);
+
+        long minutes = 0;
+
+        for (TaskRecord taskRecord : taskRecords) {
+            minutes = minutes + taskRecord.getDurationInMinutes();
+        }
+
+        double hours = 0;
+
+        if (minutes > 0) {
+            hours = ((double) minutes) / 60;
+        }
+
+        PortletResponseUtil.write(resourceResponse, String.valueOf(hours));
+
+    }
+
+    /**
+     * @param resourceRequest
+     * @param resourceResponse
+     * @return
+     * @since 1.1.6
+     * @throws SearchException
+     */
+    public List<TaskRecord> getTaskRecords(HttpServletRequest request) throws Exception {
+
+        ThemeDisplay themeDisplay = (ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY);
+
+        String keywords = ParamUtil.getString(request, "keywords");
+        String orderByCol = ParamUtil.getString(request, "orderByCol", "modifiedDate");
+        String orderByType = ParamUtil.getString(request, "orderByType", "desc");
+
+        boolean reverse = "desc".equals(orderByType);
+
+        Sort sort = new Sort(orderByCol, reverse);
+
+        Hits hits = _taskRecordService.search(themeDisplay.getUserId(), themeDisplay.getScopeGroupId(), keywords, 0,
+                Integer.MAX_VALUE, sort);
+
+        List<TaskRecord> taskRecords = new ArrayList<TaskRecord>();
+
+        for (int i = 0; i < hits.getDocs().length; i++) {
+            Document doc = hits.doc(i);
+
+            long taskRecordId = GetterUtil.getLong(doc.get(Field.ENTRY_CLASS_PK));
+
+            TaskRecord taskRecord = null;
+
+            try {
+                taskRecord = _taskRecordService.getTaskRecord(taskRecordId);
+            } catch (PortalException pe) {
+                _log.error(pe.getLocalizedMessage());
+            } catch (SystemException se) {
+                _log.error(se.getLocalizedMessage());
+            }
+
+            if (taskRecord != null) {
+                taskRecords.add(taskRecord);
+            }
+        }
+
+        return taskRecords;
+
     }
 
     /**
@@ -223,6 +313,23 @@ public class TimetrackerPortlet extends MVCPortlet {
         }
 
         super.render(renderRequest, renderResponse);
+    }
+
+    @Override
+    public void serveResource(ResourceRequest resourceRequest, ResourceResponse resourceResponse)
+            throws PortletException {
+
+        try {
+            String resourceID = resourceRequest.getResourceID();
+
+            if (resourceID.equals("getSum")) {
+                getSum(resourceRequest, resourceResponse);
+            } else {
+                super.serveResource(resourceRequest, resourceResponse);
+            }
+        } catch (Exception e) {
+            throw new PortletException(e);
+        }
     }
 
     /**
