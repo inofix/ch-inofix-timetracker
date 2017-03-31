@@ -72,8 +72,8 @@ import ch.inofix.timetracker.web.internal.portlet.util.PortletUtil;
  *
  * @author Christian Berndt, Stefan Luebbers
  * @created 2013-10-07 10:47
- * @modified 2017-03-31 17:44
- * @version 1.6.2
+ * @modified 2017-03-31 19:21
+ * @version 1.6.3
  */
 @Component(immediate = true, property = { "com.liferay.portlet.css-class-wrapper=portlet-timetracker",
         "com.liferay.portlet.display-category=category.inofix", "com.liferay.portlet.header-portlet-css=/css/main.css",
@@ -351,38 +351,45 @@ public class TimetrackerPortlet extends MVCPortlet {
         long duration = durationInMinutes * 60 * 1000;
         int status = ParamUtil.getInteger(actionRequest, "status");
 
-        int startDateDay = ParamUtil.getInteger(actionRequest, "startDateDay");
-        int startDateMonth = ParamUtil.getInteger(actionRequest, "startDateMonth");
-        int startDateYear = ParamUtil.getInteger(actionRequest, "startDateYear");
-        int startDateHour = ParamUtil.getInteger(actionRequest, "startDateHour");
-        int startDateMinute = ParamUtil.getInteger(actionRequest, "startDateMinute");
+        int fromDateDay = ParamUtil.getInteger(actionRequest, "fromDateDay");
+        int fromDateMonth = ParamUtil.getInteger(actionRequest, "fromDateMonth");
+        int fromDateYear = ParamUtil.getInteger(actionRequest, "fromDateYear");
+        int fromDateHour = ParamUtil.getInteger(actionRequest, "fromDateHour");
+        int fromDateMinute = ParamUtil.getInteger(actionRequest, "fromDateMinute");
 
         // TODO: clean this up!
-        // Create the endDate with the date values of
-        // the startDate, because we want the user to
+        // Create the untilDate with the date values of
+        // the fromDate, because we want the user to
         // have to select only one date.
-        int endDateDay = ParamUtil.getInteger(actionRequest, "startDateDay");
-        int endDateMonth = ParamUtil.getInteger(actionRequest, "startDateMonth");
-        int endDateYear = ParamUtil.getInteger(actionRequest, "startDateYear");
-        int endDateHour = ParamUtil.getInteger(actionRequest, "endDateHour");
-        int endDateMinute = ParamUtil.getInteger(actionRequest, "endDateMinute");
+        int untilDateDay = ParamUtil.getInteger(actionRequest, "fromDateDay");
+        int untilDateMonth = ParamUtil.getInteger(actionRequest, "fromDateMonth");
+        int untilDateYear = ParamUtil.getInteger(actionRequest, "fromDateYear");
+        int untilDateHour = ParamUtil.getInteger(actionRequest, "untilDateHour");
+        int untilDateMinute = ParamUtil.getInteger(actionRequest, "untilDateMinute");
 
-        Date endDate = null;
+        Date fromDate = null;
 
         try {
-            PortalUtil.getDate(endDateMonth, endDateDay, endDateYear, endDateHour, endDateMinute,
+            fromDate = PortalUtil.getDate(fromDateMonth, fromDateDay, fromDateYear, fromDateHour, fromDateMinute,
+                    TaskRecordStartDateException.class);
+        } catch (Exception e) {
+            _log.error(e);
+        }
+
+        Date untilDate = null;
+
+        try {
+            untilDate = PortalUtil.getDate(untilDateMonth, untilDateDay, untilDateYear, untilDateHour, untilDateMinute,
                     TaskRecordEndDateException.class);
         } catch (Exception e) {
             _log.error(e);
         }
 
-        Date startDate = null;
+        long fromTime = fromDate.getTime();
+        long untilTime = untilDate.getTime();
 
-        try {
-            PortalUtil.getDate(startDateMonth, startDateDay, startDateYear, startDateHour, startDateMinute,
-                    TaskRecordStartDateException.class);
-        } catch (Exception e) {
-            _log.error(e);
+        if (duration == 0) {
+            duration = untilTime - fromTime;
         }
 
         TaskRecord taskRecord = null;
@@ -391,15 +398,15 @@ public class TimetrackerPortlet extends MVCPortlet {
 
             // Add taskRecord
 
-            taskRecord = _taskRecordService.addTaskRecord(workPackage, description, ticketURL, endDate, startDate,
+            taskRecord = _taskRecordService.addTaskRecord(workPackage, description, ticketURL, untilDate, fromDate,
                     status, duration, serviceContext);
 
         } else {
 
             // Update taskRecord
 
-            taskRecord = _taskRecordService.updateTaskRecord(taskRecordId, workPackage, description, ticketURL, endDate,
-                    startDate, status, duration, serviceContext);
+            taskRecord = _taskRecordService.updateTaskRecord(taskRecordId, workPackage, description, ticketURL,
+                    untilDate, fromDate, status, duration, serviceContext);
         }
 
         String redirect = getEditTaskRecordURL(actionRequest, actionResponse, taskRecord);

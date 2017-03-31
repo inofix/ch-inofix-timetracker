@@ -2,11 +2,13 @@
     edit_task_record.jsp: edit a single task-record.
 
     Created:     2013-10-07 10:41 by Christian Berndt
-    Modified:    2017-03-31 17:44 by Christian Berndt
-    Version:     1.5.7
+    Modified:    2017-03-31 19:22 by Christian Berndt
+    Version:     1.5.8
 --%>
 
 <%@ include file="/init.jsp"%>
+
+<%@page import="java.util.Calendar"%>
 
 <%
     String timeFormat = portletPreferences.getValue("time-format", "from-until");
@@ -55,31 +57,45 @@
     String durationInMinutes = null;
 
     String namespace = portletDisplay.getNamespace();
+    
+    Calendar cal = Calendar.getInstance(); 
+    Date now = new Date(); 
+    cal.setTime(now); 
 
-    int startDateHour = -1;
-    int startDateMinute = -1;
-    String startDatePrefix = namespace + "startDate";
+    int fromDateDay = cal.get(Calendar.DAY_OF_MONTH);  
+    int fromDateMonth = cal.get(Calendar.MONTH); 
+    int fromDateYear = cal.get(Calendar.YEAR);  
+    int fromDateHour = cal.get(Calendar.HOUR_OF_DAY);
+    int fromDateMinute = 0;
 
-    int endDateHour = -1;
-    int endDateMinute = -1;
-    String endDatePrefix = namespace + "endDate";
+    int untilDateHour = fromDateHour; 
+    int untilDateMinute = 15;
 
     if (taskRecord != null) {
 
         durationInMinutes =
             String.valueOf(taskRecord.getDurationInMinutes());
 
-        Date startDate = taskRecord.getStartDate();
-        Date endDate = taskRecord.getEndDate();
+        Date fromDate = taskRecord.getStartDate();
+        Date untilDate = taskRecord.getEndDate();
+        
+        if (fromDate != null) {
+            
+            cal.setTime(fromDate); 
 
-        if (startDate != null) {
-            startDateHour = startDate.getHours();
-            startDateMinute = startDate.getMinutes();
+            fromDateDay = cal.get(Calendar.DAY_OF_MONTH);
+            fromDateMonth = cal.get(Calendar.MONTH); 
+            fromDateYear = cal.get(Calendar.YEAR); 
+            fromDateHour = cal.get(Calendar.HOUR_OF_DAY); 
+            fromDateMinute = cal.get(Calendar.MINUTE); 
         }
 
-        if (endDate != null) {
-            endDateHour = endDate.getHours();
-            endDateMinute = endDate.getMinutes();
+        if (untilDate != null) {
+            
+            cal.setTime(untilDate); 
+            
+            untilDateHour = cal.get(Calendar.HOUR_OF_DAY); 
+            untilDateMinute = cal.get(Calendar.MINUTE); 
         }
     } else {
         
@@ -121,7 +137,7 @@
                 <aui:input name="backURL" type="hidden"
                     value="<%=backURL%>" />
 
-                <aui:input name="endDate" type="hidden"
+                <aui:input name="untilDate" type="hidden"
                     disabled="<%=!hasUpdatePermission%>" />
 
                 <aui:input name="redirect" type="hidden"
@@ -148,36 +164,45 @@
         </aui:col>
 
         <aui:col span="6">
+        
             <aui:fieldset>
 
-                <aui:input name="startDate" label="date" disabled="<%=!hasUpdatePermission%>"/>
+                <aui:field-wrapper name="date">
+
+                    <liferay-ui:input-date name="fromDate"
+                        dayParam="fromDateDay"
+                        dayValue="<%=fromDateDay%>"
+                        monthParam="fromDateMonth"
+                        monthValue="<%=fromDateMonth%>"
+                        yearParam="fromDateYear"
+                        yearValue="<%=fromDateYear%>" />
+
+                </aui:field-wrapper>
 
                 <c:if test="<%=Validator.equals("from-until", timeFormat)%>">
+                
                     <aui:field-wrapper cssClass="clearfix from-until" name="from-until">
-                    
-                        <aui:input name="startTimeMinute" value="0" type="hidden" />
-                        <aui:input name="startTimeHour" value="0" type="hidden"/>
 
-                        <liferay-ui:input-time name="startTime" 
+                        <liferay-ui:input-time name="fromTime" 
                             minuteInterval="<%= 15 %>"               
-                            minuteParam="startTimeMinute"
-                            minuteValue="<%= startDateMinute %>"
-                            amPmParam="startTimeAmPm"
-                            hourParam="startTimeHour" 
-                            hourValue="<%= startDateHour %>"/>
+                            minuteParam="fromDateMinute"
+                            minuteValue="<%= fromDateMinute %>"
+                            amPmParam="fromDateAmPm"
+                            hourParam="fromDateHour" 
+                            hourValue="<%= fromDateHour %>"
+                            timeFormat="24-hour" />
                             
-                        <aui:input name="endTimeMinute" value="0" type="hidden"/>
-                        <aui:input name="endTimeHour" value="30" type="hidden" />
-                            
-                        <liferay-ui:input-time name="endTime"
+                        <liferay-ui:input-time name="untilTime"
                             minuteInterval="<%= 15 %>"
-                            minuteParam="endTimeMinute"
-                            minuteValue="<%= endDateMinute %>"
-                            amPmParam="endTimeAmPm"
-                            hourParam="endTimeHour" 
-                            hourValue="<%= endDateHour %>" />
+                            minuteParam="untilDateMinute"
+                            minuteValue="<%= untilDateMinute %>"
+                            amPmParam="untilDateAmPm"
+                            hourParam="untilDateHour" 
+                            hourValue="<%= untilDateHour %>" 
+                            timeFormat="24-hour" />
 
                     </aui:field-wrapper>
+                    
                 </c:if>
                 
                 <c:if test="<%=!Validator.equals("from-until", timeFormat)%>">
@@ -185,6 +210,7 @@
                     <aui:field-wrapper label="duration"
                         helpMessage="duration-help">
                         
+                        <%-- TODO: why this? --%>
                         <input name="<portlet:namespace/>duration"
                             value="<%=durationInMinutes%>"
                             class="aui-field-input aui-field-input-text lfr-input-text duration-in-minutes" 
