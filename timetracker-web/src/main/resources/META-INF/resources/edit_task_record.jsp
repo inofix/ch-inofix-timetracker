@@ -2,8 +2,8 @@
     edit_task_record.jsp: edit a single task-record.
 
     Created:     2013-10-07 10:41 by Christian Berndt
-    Modified:    2017-03-31 19:22 by Christian Berndt
-    Version:     1.5.8
+    Modified:    2017-04-04 23:57 by Christian Berndt
+    Version:     1.5.9
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -170,6 +170,7 @@
                 <aui:field-wrapper name="date">
 
                     <liferay-ui:input-date name="fromDate"
+                        disabled="<%= !hasUpdatePermission %>"
                         dayParam="fromDateDay"
                         dayValue="<%=fromDateDay%>"
                         monthParam="fromDateMonth"
@@ -184,6 +185,7 @@
                     <aui:field-wrapper cssClass="clearfix from-until" name="from-until">
 
                         <liferay-ui:input-time name="fromTime" 
+                            disabled="<%= !hasUpdatePermission %>"
                             minuteInterval="<%= 15 %>"               
                             minuteParam="fromDateMinute"
                             minuteValue="<%= fromDateMinute %>"
@@ -193,6 +195,7 @@
                             timeFormat="24-hour" />
                             
                         <liferay-ui:input-time name="untilTime"
+                            disabled="<%= !hasUpdatePermission %>"
                             minuteInterval="<%= 15 %>"
                             minuteParam="untilDateMinute"
                             minuteValue="<%= untilDateMinute %>"
