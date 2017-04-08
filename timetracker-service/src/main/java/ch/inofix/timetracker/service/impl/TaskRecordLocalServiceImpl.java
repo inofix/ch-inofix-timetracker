@@ -77,8 +77,8 @@ import ch.inofix.timetracker.service.base.TaskRecordLocalServiceBaseImpl;
  *
  * @author Christian Berndt
  * @created 2013-10-06 21:24
- * @modified 2017-04-06 23:32
- * @version 1.5.5
+ * @modified 2017-04-08 23:41
+ * @version 1.5.6
  * @see TaskRecordLocalServiceBaseImpl
  * @see ch.inofix.timetracker.service.TaskRecordLocalServiceUtil
  */
@@ -257,11 +257,13 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
     public void importTaskRecords(ExportImportConfiguration exportImportConfiguration, File file)
             throws PortalException {
 
+        _log.info("importTaskRecords()");
+
         try {
-            ImportController layoutImportController = ExportImportControllerRegistryUtil
+            ImportController taskRecordImportController = ExportImportControllerRegistryUtil
                     .getImportController(TaskRecord.class.getName());
 
-            layoutImportController.importFile(exportImportConfiguration, file);
+            taskRecordImportController.importFile(exportImportConfiguration, file);
         } catch (PortalException pe) {
             Throwable cause = pe.getCause();
 
@@ -280,6 +282,8 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
     @Override
     public void importTaskRecords(ExportImportConfiguration exportImportConfiguration, InputStream inputStream)
             throws PortalException {
+
+        _log.info("importTaskRecords()");
 
         File file = null;
 
@@ -300,10 +304,13 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
     public long importTaskRecordsInBackground(long userId, ExportImportConfiguration exportImportConfiguration,
             File file) throws PortalException {
 
+        _log.info("importTaskRecordsInBackground()");
+
         Map<String, Serializable> taskContextMap = new HashMap<>();
 
         taskContextMap.put("exportImportConfigurationId", exportImportConfiguration.getExportImportConfigurationId());
 
+        // TODO
         BackgroundTask backgroundTask = BackgroundTaskManagerUtil.addBackgroundTask(userId,
                 exportImportConfiguration.getGroupId(), exportImportConfiguration.getName(),
                 BackgroundTaskExecutorNames.LAYOUT_IMPORT_BACKGROUND_TASK_EXECUTOR, taskContextMap,
@@ -317,6 +324,8 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
     @Override
     public long importTaskRecordsInBackground(long userId, ExportImportConfiguration exportImportConfiguration,
             InputStream inputStream) throws PortalException {
+
+        _log.info("importTaskRecordsInBackground()");
 
         File file = null;
 
@@ -337,6 +346,8 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
     public long importTaskRecordsInBackground(long userId, long exportImportConfigurationId, File file)
             throws PortalException {
 
+        _log.info("importTaskRecordsInBackground()");
+
         // TODO
 
         // ExportImportConfiguration exportImportConfiguration =
@@ -353,14 +364,16 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
     public long importTaskRecordsInBackground(long userId, long exportImportConfigurationId, InputStream inputStream)
             throws PortalException {
 
-        // TODO
+        _log.info("importTaskRecordsInBackground()");
 
-        // ExportImportConfiguration exportImportConfiguration =
-        // exportImportConfigurationLocalService.getExportImportConfiguration(
-        // exportImportConfigurationId);
+        // TODO
         //
-        // return importTaskRecordsInBackground(
-        // userId, exportImportConfiguration, inputStream);
+        // ExportImportConfiguration exportImportConfiguration =
+        // exportImportConfigurationLocalService
+        // .getExportImportConfiguration(exportImportConfigurationId);
+        //
+        // return importTaskRecordsInBackground(userId,
+        // exportImportConfiguration, inputStream);
 
         return 0;
     }

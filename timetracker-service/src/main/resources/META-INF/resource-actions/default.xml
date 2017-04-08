@@ -5,8 +5,8 @@
     default.xml: The timetracker portlet's permission configuration.
     
     Created:    2016-03-20 17:26 by Christian Berndt
-    Modified:   2017-03-23 10:27 by Christian Berndt
-    Version:    1.0.2
+    Modified:   2017-04-08 19:28 by Christian Berndt
+    Version:    1.0.3
 -->
 <resource-action-mapping>
     <model-resource>
@@ -20,6 +20,7 @@
             <supports>
                 <action-key>ADD_TASK_RECORD</action-key>
                 <action-key>DELETE_GROUP_TASK_RECORDS</action-key>
+                <action-key>EXPORT_TASK_RECORDS</action-key>
                 <action-key>IMPORT_TASK_RECORDS</action-key>
                 <action-key>PERMISSIONS</action-key>
                 <action-key>VIEW</action-key>
