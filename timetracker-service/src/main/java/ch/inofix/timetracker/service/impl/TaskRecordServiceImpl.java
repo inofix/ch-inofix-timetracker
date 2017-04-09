@@ -57,8 +57,8 @@ import ch.inofix.timetracker.service.permission.TimetrackerPortletPermission;
  *
  * @author Christian Berndt, Stefan Luebbers
  * @created 2015-05-07 23:50
- * @modified 2017-04-08 19:29
- * @version 1.1.0
+ * @modified 2017-04-09 22:50
+ * @version 1.1.1
  * @see TaskRecordServiceBaseImpl
  * @see ch.inofix.timetracker.service.TaskRecordServiceUtil
  */
@@ -93,6 +93,22 @@ public class TaskRecordServiceImpl extends TaskRecordServiceBaseImpl {
         // GroupPermissionUtil.check(getPermissionChecker(), groupId,
         // TaskRecordActionKeys.IMPORT_TASK_RECORDS);
 
+        // try {
+        //
+        // FileEntry fileEntry = TempFileEntryUtil.addTempFileEntry(groupId,
+        // getUserId(),
+        // ExportImportHelper.TEMP_FOLDER_NAME, fileName, inputStream,
+        // mimeType);
+        //
+        // _log.info("fileEntry = " + fileEntry);
+        //
+        // return fileEntry;
+        //
+        // } catch (Exception e) {
+        // _log.error(e);
+        // throw new PortalException(e);
+        // }
+
         return TempFileEntryUtil.addTempFileEntry(groupId, getUserId(),
                 DigesterUtil.digestHex(Digester.SHA_256, folderName), fileName, inputStream, mimeType);
     }
@@ -114,19 +130,23 @@ public class TaskRecordServiceImpl extends TaskRecordServiceBaseImpl {
     }
 
     @Override
+    public void deleteTempFileEntry(long groupId, String folderName, String fileName) throws PortalException {
+
+        // TODO
+        // GroupPermissionUtil.check(getPermissionChecker(), groupId,
+        // TaskRecordActionKeys.IMPORT_TASK_RECORDS);
+
+        TempFileEntryUtil.deleteTempFileEntry(groupId, getUserId(),
+                DigesterUtil.digestHex(Digester.SHA_256, folderName), fileName);
+    }
+
+    @Override
     public List<TaskRecord> deleteGroupTaskRecords(long groupId) throws PortalException {
 
         TimetrackerPortletPermission.check(getPermissionChecker(), groupId,
                 TaskRecordActionKeys.DELETE_GROUP_TASK_RECORDS);
 
         return taskRecordLocalService.deleteGroupTaskRecords(groupId);
-    }
-
-    @Override
-    public TaskRecord getTaskRecord(long taskRecordId) throws PortalException {
-
-        TaskRecordPermission.check(getPermissionChecker(), taskRecordId, TaskRecordActionKeys.VIEW);
-        return taskRecordLocalService.getTaskRecord(taskRecordId);
     }
 
     /**
@@ -142,6 +162,23 @@ public class TaskRecordServiceImpl extends TaskRecordServiceBaseImpl {
         }
 
         return taskRecordList;
+    }
+
+    @Override
+    public TaskRecord getTaskRecord(long taskRecordId) throws PortalException {
+
+        TaskRecordPermission.check(getPermissionChecker(), taskRecordId, TaskRecordActionKeys.VIEW);
+        return taskRecordLocalService.getTaskRecord(taskRecordId);
+    }
+
+    @Override
+    public String[] getTempFileNames(long groupId, String folderName) throws PortalException {
+
+        // TODO
+        // GroupPermissionUtil.check(getPermissionChecker(), groupId, TaskRecordActionKeys.IMPORT_TASK_RECORDS);
+
+        return TempFileEntryUtil.getTempFileNames(groupId, getUserId(),
+                DigesterUtil.digestHex(Digester.SHA_256, folderName));
     }
 
     @Override
