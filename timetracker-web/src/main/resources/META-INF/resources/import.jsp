@@ -2,15 +2,15 @@
     import.jspf: Import taskRecords from an uploaded file. 
     
     Created:    2016-03-21 21:51 by Christian Berndt
-    Modified:   2017-04-08 22:33 by Christian Berndt
+    Modified:   2017-04-13 13:49 by Christian Berndt
     Version:    1.0.5
 --%>
 
 <%@ include file="/init.jsp"%>
 
 <%
-long groupId = scopeGroupId; 
-// long groupId = ParamUtil.getLong(request, "groupId");
+    long groupId = scopeGroupId;
+    // long groupId = ParamUtil.getLong(request, "groupId");
 
     boolean hasImportPermission = TimetrackerPortletPermission.contains(permissionChecker, scopeGroupId,
             TaskRecordActionKeys.IMPORT_TASK_RECORDS);
@@ -42,7 +42,7 @@ long groupId = scopeGroupId;
     <portlet:param name="privateLayout"
         value="<%=String.valueOf(privateLayout)%>" />
 
-    <portlet:param name="redirect" value="/view.jsp" />
+    <portlet:param name="redirect" value="<%= currentURL %>" />
 </liferay-portlet:actionURL>
 
 <portlet:renderURL var="browseURL" />

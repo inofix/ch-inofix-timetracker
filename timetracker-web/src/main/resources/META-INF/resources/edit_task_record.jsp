@@ -39,6 +39,7 @@
     String mvcPath = ParamUtil.getString(request, "mvcPath");
 
     // Retrieve the display settings.
+    // TODO: retrieve preferences like in configuration.jsp
     PortletPreferences preferences = renderRequest.getPreferences();
 
     String portletResource =

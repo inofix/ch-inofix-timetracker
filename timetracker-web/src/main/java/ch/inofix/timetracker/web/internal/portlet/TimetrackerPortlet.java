@@ -26,14 +26,12 @@ import org.osgi.service.component.annotations.Reference;
 
 import com.liferay.document.library.kernel.exception.FileSizeException;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalService;
-import com.liferay.exportimport.kernel.configuration.ExportImportConfigurationFactory;
 import com.liferay.exportimport.kernel.exception.LARFileException;
 import com.liferay.exportimport.kernel.exception.LARFileSizeException;
 import com.liferay.exportimport.kernel.exception.LARTypeException;
 import com.liferay.exportimport.kernel.exception.LayoutImportException;
 import com.liferay.exportimport.kernel.lar.ExportImportHelper;
 import com.liferay.exportimport.kernel.lar.ExportImportHelperUtil;
-import com.liferay.exportimport.kernel.model.ExportImportConfiguration;
 import com.liferay.portal.kernel.exception.LayoutPrototypeException;
 import com.liferay.portal.kernel.exception.LocaleException;
 import com.liferay.portal.kernel.exception.NoSuchResourceException;
@@ -373,7 +371,7 @@ public class TimetrackerPortlet extends MVCPortlet {
                 String redirect = ParamUtil.getString(actionRequest, "redirect");
                 _log.info("redirect = " + redirect);
 
-                super.sendRedirect(actionRequest, actionResponse);
+                // super.sendRedirect(actionRequest, actionResponse);
                 // sendRedirect(actionRequest, actionResponse, redirect);
             }
         } catch (Exception e) {
@@ -547,7 +545,10 @@ public class TimetrackerPortlet extends MVCPortlet {
 
             String contentType = uploadPortletRequest.getContentType("file");
 
-            _taskRecordService.addTempFileEntry(groupId, folderName, sourceFileName, inputStream, contentType);
+            FileEntry fileEntry = _taskRecordService.addTempFileEntry(groupId, folderName, sourceFileName, inputStream,
+                    contentType);
+
+            _log.info(fileEntry);
 
         } catch (Exception e) {
             UploadException uploadException = (UploadException) actionRequest.getAttribute(WebKeys.UPLOAD_EXCEPTION);
@@ -677,7 +678,12 @@ public class TimetrackerPortlet extends MVCPortlet {
 
         FileEntry fileEntry = ExportImportHelperUtil.getTempFileEntry(groupId, themeDisplay.getUserId(), folderName);
 
+        _log.info(fileEntry);
+
         InputStream inputStream = null;
+
+        _log.info(fileEntry.getFileEntryId());
+        _log.info(fileEntry.getFileEntryId());
 
         try {
             inputStream = _dlFileEntryLocalService.getFileAsStream(fileEntry.getFileEntryId(), fileEntry.getVersion(),
@@ -701,11 +707,21 @@ public class TimetrackerPortlet extends MVCPortlet {
         long groupId = ParamUtil.getLong(actionRequest, "groupId");
         boolean privateLayout = ParamUtil.getBoolean(actionRequest, "privateLayout");
 
-        ExportImportConfiguration taskRecordConfiguration = ExportImportConfigurationFactory
-                .buildDefaultLocalPublishingExportImportConfiguration(actionRequest);
+        _log.info("groupId = " + groupId);
 
-        _taskRecordService.importTaskRecordsInBackground(taskRecordConfiguration, inputStream);
+        // ExportImportConfiguration taskRecordConfiguration =
+        // ExportImportConfigurationFactory
+        // .buildDefaultLocalPublishingExportImportConfiguration(actionRequest);
+        //
+        // taskRecordConfiguration.setGroupId(groupId);
 
+        _taskRecordService.importTaskRecordsInBackground(inputStream);
+
+    }
+
+    @Reference
+    protected void setDLFileEntryLocalService(DLFileEntryLocalService dlFileEntryLocalService) {
+        this._dlFileEntryLocalService = dlFileEntryLocalService;
     }
 
     @Reference

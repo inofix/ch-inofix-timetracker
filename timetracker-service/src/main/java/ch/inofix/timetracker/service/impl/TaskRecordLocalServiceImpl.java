@@ -24,13 +24,8 @@ import java.util.Map;
 
 import com.liferay.asset.kernel.model.AssetEntry;
 import com.liferay.asset.kernel.model.AssetLinkConstants;
-import com.liferay.exportimport.kernel.background.task.BackgroundTaskExecutorNames;
-import com.liferay.exportimport.kernel.controller.ExportImportControllerRegistryUtil;
-import com.liferay.exportimport.kernel.controller.ImportController;
-import com.liferay.exportimport.kernel.model.ExportImportConfiguration;
 import com.liferay.portal.kernel.backgroundtask.BackgroundTask;
 import com.liferay.portal.kernel.backgroundtask.BackgroundTaskManagerUtil;
-import com.liferay.portal.kernel.exception.LocaleException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
@@ -58,6 +53,7 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import aQute.bnd.annotation.ProviderType;
+import ch.inofix.timetracker.background.task.TaskRecordImportBackgroundTaskExecutor;
 import ch.inofix.timetracker.model.TaskRecord;
 import ch.inofix.timetracker.service.base.TaskRecordLocalServiceBaseImpl;
 
@@ -254,34 +250,37 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
     }
 
     @Override
-    public void importTaskRecords(ExportImportConfiguration exportImportConfiguration, File file)
-            throws PortalException {
+    public void importTaskRecords(File file) throws PortalException {
 
         _log.info("importTaskRecords()");
 
-        try {
-            ImportController taskRecordImportController = ExportImportControllerRegistryUtil
-                    .getImportController(TaskRecord.class.getName());
+        // TODO
+        _log.info(file.getAbsolutePath());
 
-            taskRecordImportController.importFile(exportImportConfiguration, file);
-        } catch (PortalException pe) {
-            Throwable cause = pe.getCause();
-
-            if (cause instanceof LocaleException) {
-                throw (PortalException) cause;
-            }
-
-            throw pe;
-        } catch (SystemException se) {
-            throw se;
-        } catch (Exception e) {
-            throw new SystemException(e);
-        }
+        // try {
+        // ImportController taskRecordImportController =
+        // ExportImportControllerRegistryUtil
+        // .getImportController(TaskRecord.class.getName());
+        //
+        // taskRecordImportController.importFile(exportImportConfiguration,
+        // file);
+        // } catch (PortalException pe) {
+        // Throwable cause = pe.getCause();
+        //
+        // if (cause instanceof LocaleException) {
+        // throw (PortalException) cause;
+        // }
+        //
+        // throw pe;
+        // } catch (SystemException se) {
+        // throw se;
+        // } catch (Exception e) {
+        // throw new SystemException(e);
+        // }
     }
 
     @Override
-    public void importTaskRecords(ExportImportConfiguration exportImportConfiguration, InputStream inputStream)
-            throws PortalException {
+    public void importTaskRecords(InputStream inputStream) throws PortalException {
 
         _log.info("importTaskRecords()");
 
@@ -292,7 +291,7 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
 
             FileUtil.write(file, inputStream);
 
-            importTaskRecords(exportImportConfiguration, file);
+            importTaskRecords(file);
         } catch (IOException ioe) {
             throw new SystemException(ioe);
         } finally {
@@ -301,20 +300,22 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
     }
 
     @Override
-    public long importTaskRecordsInBackground(long userId, ExportImportConfiguration exportImportConfiguration,
-            File file) throws PortalException {
+    public long importTaskRecordsInBackground(long userId, File file) throws PortalException {
 
         _log.info("importTaskRecordsInBackground()");
 
         Map<String, Serializable> taskContextMap = new HashMap<>();
 
-        taskContextMap.put("exportImportConfigurationId", exportImportConfiguration.getExportImportConfigurationId());
+        // taskContextMap.put("exportImportConfigurationId",
+        // exportImportConfiguration.getExportImportConfigurationId());
 
         // TODO
-        BackgroundTask backgroundTask = BackgroundTaskManagerUtil.addBackgroundTask(userId,
-                exportImportConfiguration.getGroupId(), exportImportConfiguration.getName(),
-                BackgroundTaskExecutorNames.LAYOUT_IMPORT_BACKGROUND_TASK_EXECUTOR, taskContextMap,
-                new ServiceContext());
+        long groupId = 20147;
+        String taskName = "TODO: taskName";
+
+        // TODO
+        BackgroundTask backgroundTask = BackgroundTaskManagerUtil.addBackgroundTask(userId, groupId, taskName,
+                TaskRecordImportBackgroundTaskExecutor.class.getName(), taskContextMap, new ServiceContext());
 
         backgroundTask.addAttachment(userId, file.getName(), file);
 
@@ -322,8 +323,7 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
     }
 
     @Override
-    public long importTaskRecordsInBackground(long userId, ExportImportConfiguration exportImportConfiguration,
-            InputStream inputStream) throws PortalException {
+    public long importTaskRecordsInBackground(long userId, InputStream inputStream) throws PortalException {
 
         _log.info("importTaskRecordsInBackground()");
 
@@ -334,7 +334,7 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
 
             FileUtil.write(file, inputStream);
 
-            return importTaskRecordsInBackground(userId, exportImportConfiguration, file);
+            return importTaskRecordsInBackground(userId, file);
         } catch (IOException ioe) {
             throw new SystemException(ioe);
         } finally {
@@ -342,41 +342,42 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
         }
     }
 
-    @Override
-    public long importTaskRecordsInBackground(long userId, long exportImportConfigurationId, File file)
-            throws PortalException {
+    // @Override
+    // public long importTaskRecordsInBackground(long userId, File file)
+    // throws PortalException {
+    //
+    // _log.info("importTaskRecordsInBackground()");
+    //
+    // // TODO
+    //
+    // // ExportImportConfiguration exportImportConfiguration =
+    // // exportImportConfigurationLocalService.getExportImportConfiguration(
+    // // exportImportConfigurationId);
+    // //
+    // // return importPortletInfoInBackground(
+    // // userId, exportImportConfiguration, file);
+    //
+    // return 0;
+    // }
 
-        _log.info("importTaskRecordsInBackground()");
-
-        // TODO
-
-        // ExportImportConfiguration exportImportConfiguration =
-        // exportImportConfigurationLocalService.getExportImportConfiguration(
-        // exportImportConfigurationId);
-        //
-        // return importPortletInfoInBackground(
-        // userId, exportImportConfiguration, file);
-
-        return 0;
-    }
-
-    @Override
-    public long importTaskRecordsInBackground(long userId, long exportImportConfigurationId, InputStream inputStream)
-            throws PortalException {
-
-        _log.info("importTaskRecordsInBackground()");
-
-        // TODO
-        //
-        // ExportImportConfiguration exportImportConfiguration =
-        // exportImportConfigurationLocalService
-        // .getExportImportConfiguration(exportImportConfigurationId);
-        //
-        // return importTaskRecordsInBackground(userId,
-        // exportImportConfiguration, inputStream);
-
-        return 0;
-    }
+    // @Override
+    // public long importTaskRecordsInBackground(long userId, InputStream
+    // inputStream)
+    // throws PortalException {
+    //
+    // _log.info("importTaskRecordsInBackground()");
+    //
+    // // TODO
+    // //
+    // // ExportImportConfiguration exportImportConfiguration =
+    // // exportImportConfigurationLocalService
+    // // .getExportImportConfiguration(exportImportConfigurationId);
+    // //
+    // // return importTaskRecordsInBackground(userId,
+    // // exportImportConfiguration, inputStream);
+    //
+    // return 0;
+    // }
 
     @Override
     public Hits search(long userId, long groupId, String keywords, int start, int end, Sort sort)
