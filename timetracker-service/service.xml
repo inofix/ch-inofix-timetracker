@@ -6,15 +6,15 @@
     service.xml: Model and service description of Inofix' timetracker
     
     Created:    2013-10-21 14:16 by Christian Berndt
-    Modified:   2016-11-27 11:45 by Christian Berndt   
-    Version:    1.0.0
+    Modified:   2017-04-17 14:44 by Christian Berndt   
+    Version:    1.0.1
 -->
 
 <service-builder package-path="ch.inofix.timetracker">
 
     <author>Christian Berndt</author>
 
-    <namespace>Inofix</namespace>
+    <namespace>inofix_tt</namespace>
 
     <entity local-service="true" name="TaskRecord"
         remote-service="true" uuid="true">
