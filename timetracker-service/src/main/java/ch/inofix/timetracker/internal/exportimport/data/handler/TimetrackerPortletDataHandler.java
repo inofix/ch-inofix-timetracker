@@ -29,8 +29,8 @@ import ch.inofix.timetracker.service.permission.TimetrackerPortletPermission;
  *
  * @author Christian Berndt
  * @created 2017-04-17 16:42
- * @modified 2017-04-17 16:42
- * @version 1.0.0
+ * @modified 2017-04-18 16:23
+ * @version 1.0.1
  *
  */
 @Component(immediate = true, property = {
@@ -75,13 +75,7 @@ public class TimetrackerPortletDataHandler extends BasePortletDataHandler {
     protected String doExportData(final PortletDataContext portletDataContext, String portletId,
             PortletPreferences portletPreferences) throws Exception {
 
-        _log.info("doExportData()");
-
-        _log.info(portletDataContext);
-
         Element rootElement = addExportDataRootElement(portletDataContext);
-
-        _log.info(rootElement.asXML());
 
         if (!portletDataContext.getBooleanParameter(NAMESPACE, "task-records")) {
             return getExportDataRootElementString(rootElement);
@@ -95,11 +89,6 @@ public class TimetrackerPortletDataHandler extends BasePortletDataHandler {
                 .getExportActionableDynamicQuery(portletDataContext);
 
         actionableDynamicQuery.performActions();
-
-        long count = actionableDynamicQuery.performCount();
-
-        _log.info(rootElement.asXML());
-        _log.info(count);
 
         return getExportDataRootElementString(rootElement);
     }

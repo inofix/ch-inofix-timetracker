@@ -2,8 +2,8 @@
     edit_task_record.jsp: edit a single task-record.
 
     Created:     2013-10-07 10:41 by Christian Berndt
-    Modified:    2017-04-04 23:57 by Christian Berndt
-    Version:     1.5.9
+    Modified:    2017-04-18 15:36 by Christian Berndt
+    Version:     1.6.0
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -165,7 +165,7 @@
         </aui:col>
 
         <aui:col span="6">
-        
+
             <aui:fieldset>
 
                 <aui:field-wrapper name="date">
@@ -181,47 +181,49 @@
 
                 </aui:field-wrapper>
 
-                <c:if test="<%=Validator.equals("from-until", timeFormat)%>">
-                
-                    <aui:field-wrapper cssClass="clearfix from-until" name="from-until">
+                <c:if
+                    test="<%=Validator.equals("from-until", timeFormat)%>">
 
-                        <liferay-ui:input-time name="fromTime" 
+                    <aui:field-wrapper cssClass="clearfix from-until"
+                        name="from-until">
+
+                        <liferay-ui:input-time name="fromTime"
                             disabled="<%= !hasUpdatePermission %>"
-                            minuteInterval="<%= 15 %>"               
+                            minuteInterval="<%= 15 %>"
                             minuteParam="fromDateMinute"
                             minuteValue="<%= fromDateMinute %>"
                             amPmParam="fromDateAmPm"
-                            hourParam="fromDateHour" 
+                            hourParam="fromDateHour"
                             hourValue="<%= fromDateHour %>"
                             timeFormat="24-hour" />
-                            
+
                         <liferay-ui:input-time name="untilTime"
                             disabled="<%= !hasUpdatePermission %>"
                             minuteInterval="<%= 15 %>"
                             minuteParam="untilDateMinute"
                             minuteValue="<%= untilDateMinute %>"
                             amPmParam="untilDateAmPm"
-                            hourParam="untilDateHour" 
-                            hourValue="<%= untilDateHour %>" 
+                            hourParam="untilDateHour"
+                            hourValue="<%= untilDateHour %>"
                             timeFormat="24-hour" />
 
                     </aui:field-wrapper>
-                    
+
                 </c:if>
-                
+
                 <c:if test="<%=!Validator.equals("from-until", timeFormat)%>">
-                
+
                     <aui:field-wrapper label="duration"
                         helpMessage="duration-help">
-                        
+
                         <%-- TODO: why this? --%>
                         <input name="<portlet:namespace/>duration"
                             value="<%=durationInMinutes%>"
-                            class="aui-field-input aui-field-input-text lfr-input-text duration-in-minutes" 
-                            disabled="<%=!hasUpdatePermission%>"/>
-                            
+                            class="aui-field-input aui-field-input-text lfr-input-text duration-in-minutes"
+                            disabled="<%=!hasUpdatePermission%>" />
+
                     </aui:field-wrapper>
-                    
+
                 </c:if>
 
                 <aui:select name="status" disabled="<%=!hasUpdatePermission%>">
