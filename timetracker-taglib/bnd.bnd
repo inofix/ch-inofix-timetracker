@@ -1,6 +1,0 @@
-Bundle-Name: Inofix Timetracker Taglib
-Bundle-SymbolicName: ch.inofix.timetracker.taglib
-Bundle-Version: 1.0.0
-Export-Package: ch.inofix.timetracker.taglib.servlet.taglib
-Provide-Capability: osgi.extender;osgi.extender="jsp.taglib";uri="http://inofix.ch/tld/timetracker";version:Version="${Bundle-Version}"
-Web-ContextPath: /timetracker-taglib
