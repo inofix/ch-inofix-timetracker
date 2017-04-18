@@ -26,14 +26,7 @@ import org.osgi.service.component.annotations.Reference;
 
 import com.liferay.document.library.kernel.exception.FileSizeException;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalService;
-import com.liferay.exportimport.kernel.exception.LARFileException;
-import com.liferay.exportimport.kernel.exception.LARFileSizeException;
-import com.liferay.exportimport.kernel.exception.LARTypeException;
-import com.liferay.exportimport.kernel.exception.LayoutImportException;
-import com.liferay.exportimport.kernel.lar.ExportImportHelper;
 import com.liferay.exportimport.kernel.lar.ExportImportHelperUtil;
-import com.liferay.portal.kernel.exception.LayoutPrototypeException;
-import com.liferay.portal.kernel.exception.LocaleException;
 import com.liferay.portal.kernel.exception.NoSuchResourceException;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -62,7 +55,6 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.upload.UploadException;
 import com.liferay.portal.kernel.upload.UploadPortletRequest;
 import com.liferay.portal.kernel.upload.UploadRequestSizeException;
-import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HttpUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
@@ -91,8 +83,8 @@ import ch.inofix.timetracker.web.internal.portlet.util.PortletUtil;
  *
  * @author Christian Berndt, Stefan Luebbers
  * @created 2013-10-07 10:47
- * @modified 2017-04-08 19:15
- * @version 1.6.4
+ * @modified 2017-04-18 15:38
+ * @version 1.6.5
  */
 @Component(immediate = true, property = { "com.liferay.portlet.css-class-wrapper=portlet-timetracker",
         "com.liferay.portlet.display-category=category.inofix", "com.liferay.portlet.header-portlet-css=/css/main.css",
@@ -333,71 +325,70 @@ public class TimetrackerPortlet extends MVCPortlet {
      * @param actionResponse
      * @throws Exception
      */
-    @Override
-    public void processAction(ActionRequest actionRequest, ActionResponse actionResponse) {
-
-        _log.info("processAction()");
-
-        String cmd = ParamUtil.getString(actionRequest, Constants.CMD);
-
-        _log.info("cmd = " + cmd);
-
-        try {
-            if (cmd.equals(Constants.ADD_TEMP)) {
-
-                // TODO
-                addTempFileEntry(actionRequest, ExportImportHelper.TEMP_FOLDER_NAME);
-
-                // TODO
-                // validateFile(actionRequest, actionResponse,
-                // ExportImportHelper.TEMP_FOLDER_NAME);
-
-                hideDefaultSuccessMessage(actionRequest);
-            } else if (cmd.equals(Constants.DELETE_TEMP)) {
-
-                // TODO
-                // deleteTempFileEntry(actionRequest, actionResponse,
-                // ExportImportHelper.TEMP_FOLDER_NAME);
-
-                hideDefaultSuccessMessage(actionRequest);
-            } else if (cmd.equals(Constants.IMPORT)) {
-
-                _log.info("cmd = " + cmd);
-
-                hideDefaultSuccessMessage(actionRequest);
-
-                importData(actionRequest, ExportImportHelper.TEMP_FOLDER_NAME);
-
-                String redirect = ParamUtil.getString(actionRequest, "redirect");
-                _log.info("redirect = " + redirect);
-
-                // super.sendRedirect(actionRequest, actionResponse);
-                // sendRedirect(actionRequest, actionResponse, redirect);
-            }
-        } catch (Exception e) {
-            if (cmd.equals(Constants.ADD_TEMP) || cmd.equals(Constants.DELETE_TEMP)) {
-
-                hideDefaultSuccessMessage(actionRequest);
-
-                // TODO
-                // handleUploadException(actionRequest, actionResponse,
-                // ExportImportHelper.TEMP_FOLDER_NAME, e);
-            } else {
-                if ((e instanceof LARFileException) || (e instanceof LARFileSizeException)
-                        || (e instanceof LARTypeException)) {
-
-                    SessionErrors.add(actionRequest, e.getClass());
-                } else if ((e instanceof LayoutPrototypeException) || (e instanceof LocaleException)) {
-
-                    SessionErrors.add(actionRequest, e.getClass(), e);
-                } else {
-                    _log.error(e, e);
-
-                    SessionErrors.add(actionRequest, LayoutImportException.class.getName());
-                }
-            }
-        }
-    }
+//    @Override
+//    public void processAction(ActionRequest actionRequest, ActionResponse actionResponse) {
+//
+//        _log.info("processAction()");
+//
+//        String cmd = ParamUtil.getString(actionRequest, Constants.CMD);
+//
+//        _log.info("cmd = " + cmd);
+//
+//        try {
+//            if (cmd.equals(Constants.ADD_TEMP)) {
+//
+//                addTempFileEntry(actionRequest, ExportImportHelper.TEMP_FOLDER_NAME);
+//
+//                // TODO
+//                // validateFile(actionRequest, actionResponse,
+//                // ExportImportHelper.TEMP_FOLDER_NAME);
+//
+//                hideDefaultSuccessMessage(actionRequest);
+//            } else if (cmd.equals(Constants.DELETE_TEMP)) {
+//
+//                // TODO
+//                // deleteTempFileEntry(actionRequest, actionResponse,
+//                // ExportImportHelper.TEMP_FOLDER_NAME);
+//
+//                hideDefaultSuccessMessage(actionRequest);
+//            } else if (cmd.equals(Constants.IMPORT)) {
+//
+//                _log.info("cmd = " + cmd);
+//
+//                hideDefaultSuccessMessage(actionRequest);
+//
+//                importData(actionRequest, ExportImportHelper.TEMP_FOLDER_NAME);
+//
+//                String redirect = ParamUtil.getString(actionRequest, "redirect");
+//                _log.info("redirect = " + redirect);
+//
+//                // super.sendRedirect(actionRequest, actionResponse);
+//                // sendRedirect(actionRequest, actionResponse, redirect);
+//            }
+//        } catch (Exception e) {
+//            if (cmd.equals(Constants.ADD_TEMP) || cmd.equals(Constants.DELETE_TEMP)) {
+//
+//                hideDefaultSuccessMessage(actionRequest);
+//
+//                // TODO
+//                // handleUploadException(actionRequest, actionResponse,
+//                // ExportImportHelper.TEMP_FOLDER_NAME, e);
+//            } else {
+//                if ((e instanceof LARFileException) || (e instanceof LARFileSizeException)
+//                        || (e instanceof LARTypeException)) {
+//
+//                    SessionErrors.add(actionRequest, e.getClass());
+//                } else if ((e instanceof LayoutPrototypeException) || (e instanceof LocaleException)) {
+//
+//                    SessionErrors.add(actionRequest, e.getClass(), e);
+//                } else {
+//                    _log.error(e, e);
+//
+//                    SessionErrors.add(actionRequest, LayoutImportException.class.getName());
+//                }
+//            }
+//        }
+//    }
 
     @Override
     public void render(RenderRequest renderRequest, RenderResponse renderResponse)
@@ -523,16 +514,12 @@ public class TimetrackerPortlet extends MVCPortlet {
 
     protected void addTempFileEntry(ActionRequest actionRequest, String folderName) throws Exception {
 
-        _log.info("addTempFileEntry()");
-
         UploadPortletRequest uploadPortletRequest = PortalUtil.getUploadPortletRequest(actionRequest);
 
         // TODO
         // checkExceededSizeLimit(uploadPortletRequest);
 
         long groupId = ParamUtil.getLong(actionRequest, "groupId");
-
-        _log.info("groupId = " + groupId);
 
         deleteTempFileEntry(groupId, folderName);
 
@@ -547,8 +534,6 @@ public class TimetrackerPortlet extends MVCPortlet {
 
             FileEntry fileEntry = _taskRecordService.addTempFileEntry(groupId, folderName, sourceFileName, inputStream,
                     contentType);
-
-            _log.info(fileEntry);
 
         } catch (Exception e) {
             UploadException uploadException = (UploadException) actionRequest.getAttribute(WebKeys.UPLOAD_EXCEPTION);
@@ -669,21 +654,13 @@ public class TimetrackerPortlet extends MVCPortlet {
 
     protected void importData(ActionRequest actionRequest, String folderName) throws Exception {
 
-        _log.info("importData()");
-        _log.info("folderName = " + folderName);
-
         ThemeDisplay themeDisplay = (ThemeDisplay) actionRequest.getAttribute(WebKeys.THEME_DISPLAY);
 
         long groupId = ParamUtil.getLong(actionRequest, "groupId");
 
         FileEntry fileEntry = ExportImportHelperUtil.getTempFileEntry(groupId, themeDisplay.getUserId(), folderName);
 
-        _log.info(fileEntry);
-
         InputStream inputStream = null;
-
-        _log.info(fileEntry.getFileEntryId());
-        _log.info(fileEntry.getFileEntryId());
 
         try {
             inputStream = _dlFileEntryLocalService.getFileAsStream(fileEntry.getFileEntryId(), fileEntry.getVersion(),
@@ -691,16 +668,14 @@ public class TimetrackerPortlet extends MVCPortlet {
 
             importData(actionRequest, fileEntry.getTitle(), inputStream);
 
-            // TODO
-            // deleteTempFileEntry(groupId, folderName);
+            deleteTempFileEntry(groupId, folderName);
+
         } finally {
             StreamUtil.cleanUp(inputStream);
         }
     }
 
     protected void importData(ActionRequest actionRequest, String fileName, InputStream inputStream) throws Exception {
-
-        _log.info("importData()");
 
         ThemeDisplay themeDisplay = (ThemeDisplay) actionRequest.getAttribute(WebKeys.THEME_DISPLAY);
 

@@ -2,8 +2,8 @@
     view.jsp: Default view of Inofix' timetracker.
     
     Created:     2013-10-06 16:52 by Christian Berndt
-    Modified:    2017-03-31 16:29 by Christian Berndt
-    Version:     1.5.9
+    Modified:    2017-04-18 15:35 by Christian Berndt
+    Version:     1.6.0
  --%>
 
 <%@ include file="/init.jsp" %>
@@ -71,7 +71,7 @@
 
         <c:when test='<%=tabs1.equals("import-export")%>'>
         
-            <liferay-util:include page="/import.jsp" servletContext="<%= application %>"  />
+<%--             <liferay-util:include page="/import.jsp" servletContext="<%= application %>"  /> --%>
             
             <liferay-util:include page="/delete_task_records.jsp" servletContext="<%= application %>"  />
             
@@ -91,7 +91,10 @@
                 
                 <div id="<portlet:namespace />entriesContainer">
                 
-                    <%-- TODO: make search speed display configurable
+                    <% 
+                        // TODO: make search speed display configurable 
+                    %>
+                    <%--
                     <div class="search-results">
                         <liferay-ui:search-speed hits="<%= hits %>" searchContainer="<%= taskRecordSearch %>" />
                     </div>
