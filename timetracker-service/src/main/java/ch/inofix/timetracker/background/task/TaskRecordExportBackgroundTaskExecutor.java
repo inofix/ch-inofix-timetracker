@@ -1,5 +1,6 @@
 package ch.inofix.timetracker.background.task;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.Map;
 
@@ -8,6 +9,8 @@ import com.liferay.portal.kernel.backgroundtask.BackgroundTask;
 import com.liferay.portal.kernel.backgroundtask.BackgroundTaskExecutor;
 import com.liferay.portal.kernel.backgroundtask.BackgroundTaskResult;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.CharPool;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.StringBundler;
@@ -15,11 +18,14 @@ import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Time;
 
+import ch.inofix.timetracker.service.TaskRecordLocalServiceUtil;
+
 public class TaskRecordExportBackgroundTaskExecutor extends BaseExportImportBackgroundTaskExecutor {
 
     public TaskRecordExportBackgroundTaskExecutor() {
         // TODO
-//        setBackgroundTaskStatusMessageTranslator(new TaskRecordExportImportBackgroundTaskStatusMessageTranslator());
+        // setBackgroundTaskStatusMessageTranslator(new
+        // TaskRecordExportImportBackgroundTaskStatusMessageTranslator());
     }
 
     @Override
@@ -36,6 +42,8 @@ public class TaskRecordExportBackgroundTaskExecutor extends BaseExportImportBack
     @Override
     public BackgroundTaskResult execute(BackgroundTask backgroundTask) throws PortalException {
 
+        _log.info("execute");
+
         ExportImportConfiguration exportImportConfiguration = getExportImportConfiguration(backgroundTask);
 
         Map<String, Serializable> settingsMap = exportImportConfiguration.getSettingsMap();
@@ -47,14 +55,19 @@ public class TaskRecordExportBackgroundTaskExecutor extends BaseExportImportBack
         sb.append(StringUtil.replace(exportImportConfiguration.getName(), CharPool.SPACE, CharPool.UNDERLINE));
         sb.append(StringPool.DASH);
         sb.append(Time.getTimestamp());
-        sb.append(".lar");
+        sb.append(".xml");
 
-        // TODO
-//        File larFile = ExportImportLocalServiceUtil.exportTaskRecordsAsFile(exportImportConfiguration);
+        _log.info(sb.toString());
 
-//        BackgroundTaskManagerUtil.addBackgroundTaskAttachment(userId, backgroundTask.getBackgroundTaskId(),
-//                sb.toString(), larFile);
+        File xmlFile = TaskRecordLocalServiceUtil.exportTaskRecordsAsFile(exportImportConfiguration);
+
+        // BackgroundTaskManagerUtil.addBackgroundTaskAttachment(userId,
+        // backgroundTask.getBackgroundTaskId(),
+        // sb.toString(), larFile);
 
         return BackgroundTaskResult.SUCCESS;
     }
+
+    private static final Log _log = LogFactoryUtil.getLog(TaskRecordExportBackgroundTaskExecutor.class.getName());
+
 }
