@@ -91,6 +91,10 @@ public class TaskRecordImportBackgroundTaskExecutor extends BaseExportImportBack
         @Override
         public Void call() throws PortalException {
 
+            _log.info("call()");
+
+            _log.info(_exportImportConfiguration);
+
             // TODO
             // ExportImportLocalServiceUtil.importTaskRecordsDataDeletions(_exportImportConfiguration,
             // _file);
