@@ -2,13 +2,14 @@
     init.jsp: Common setup code for the timetracker portlet.
 
     Created:     2014-02-01 15:31 by Christian Berndt
-    Modified:    2017-03-22 17:09 by Christian Berndt
-    Version:     1.0.6 
+    Modified:    2017-04-25 18:09 by Christian Berndt
+    Version:     1.0.7 
 --%>
 
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://java.sun.com/portlet_2_0" prefix="portlet"%>
 <%@taglib uri="http://liferay.com/tld/aui" prefix="aui"%>
+<%@taglib uri="http://liferay.com/tld/frontend" prefix="liferay-frontend" %>
 <%@taglib uri="http://liferay.com/tld/portlet" prefix="liferay-portlet" %>
 <%@taglib uri="http://liferay.com/tld/security" prefix="liferay-security" %>
 <%@taglib uri="http://liferay.com/tld/theme" prefix="liferay-theme"%>
@@ -74,7 +75,12 @@
 <portlet:defineObjects />
 
 <%
+    String tabs1 = ParamUtil.getString(request, "tabs1", "browse");
+    String tabs2 = ParamUtil.getString(request, "tabs2", "export");
+
     PortletURL portletURL = renderResponse.createRenderURL();
+    portletURL.setParameter("tabs1", tabs1); 
+    portletURL.setParameter("tabs2", tabs2); 
 
 //     String[] columns = portletPreferences.getValues("columns", new String[] { "task-record-id", "work-package",
 //             "start-date", "duration", "create-date", "modified-date", "user-name", "status" });
