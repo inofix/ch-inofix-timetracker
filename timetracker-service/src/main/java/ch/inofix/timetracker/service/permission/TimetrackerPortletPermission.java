@@ -1,8 +1,6 @@
 package ch.inofix.timetracker.service.permission;
 
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.BaseResourcePermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
@@ -10,7 +8,7 @@ import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import ch.inofix.timetracker.constants.PortletKeys;
 
 /**
- * 
+ *
  * @author Christian Berndt
  * @created 2016-11-13 18:09
  * @modified 2017-03-21 14:56
