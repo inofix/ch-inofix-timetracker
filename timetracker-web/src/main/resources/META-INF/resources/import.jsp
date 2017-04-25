@@ -1,9 +1,9 @@
 <%--
-    import.jspf: Import taskRecords from an uploaded file. 
+    import.jsp: Import taskRecords from an uploaded file. 
     
     Created:    2016-03-21 21:51 by Christian Berndt
-    Modified:   2017-04-13 13:49 by Christian Berndt
-    Version:    1.0.5
+    Modified:   2017-04-25 17:26 by Christian Berndt
+    Version:    1.0.6
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -16,8 +16,6 @@
             TaskRecordActionKeys.IMPORT_TASK_RECORDS);
 
     boolean privateLayout = ParamUtil.getBoolean(request, "privateLayout");
-
-    String tabs1 = ParamUtil.getString(request, "tabs1", "import-export");
 %>
 
 <%-- <portlet:actionURL var="importDataURL" name="importData" /> --%>

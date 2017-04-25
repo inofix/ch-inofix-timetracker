@@ -2,8 +2,8 @@
     view.jsp: Default view of Inofix' timetracker.
     
     Created:     2013-10-06 16:52 by Christian Berndt
-    Modified:    2017-04-18 15:35 by Christian Berndt
-    Version:     1.6.0
+    Modified:    2017-04-18 22:29 by Christian Berndt
+    Version:     1.6.1
  --%>
 
 <%@ include file="/init.jsp" %>
@@ -24,7 +24,6 @@
     
     String backURL = ParamUtil.getString(request, "backURL");
     String keywords = ParamUtil.getString(request, "keywords");
-    String tabs1 = ParamUtil.getString(request, "tabs1", "browse");
     
     TaskRecordSearch taskRecordSearch = new TaskRecordSearch(renderRequest, "cur", portletURL);
     
@@ -64,16 +63,29 @@
         message="you-dont-have-the-required-permissions" />        
         
     <liferay-ui:tabs
-        names="browse,import-export"
+        names="browse,export-import"
         param="tabs1" url="<%= portletURL.toString() %>" />
 
     <c:choose>
 
-        <c:when test='<%=tabs1.equals("import-export")%>'>
+        <c:when test='<%=tabs1.equals("export-import")%>'>
         
-<%--             <liferay-util:include page="/import.jsp" servletContext="<%= application %>"  /> --%>
+ 
+        <liferay-ui:tabs
+            names="export,import,delete"
+            param="tabs2" url="<%= portletURL.toString() %>" /> 
             
-            <liferay-util:include page="/delete_task_records.jsp" servletContext="<%= application %>"  />
+            <c:if test="<%= tabs2.equals("export") %>">
+                <liferay-util:include page="/export/view.jsp" servletContext="<%= application %>"  />
+            </c:if>      
+        
+            <c:if test="<%= tabs2.equals("import") %>">
+                <liferay-util:include page="/import.jsp" servletContext="<%= application %>"  />
+            </c:if>      
+        
+            <c:if test="<%= tabs2.equals("delete") %>">
+                <liferay-util:include page="/delete_task_records.jsp" servletContext="<%= application %>"  />
+            </c:if>
             
         </c:when>
 
