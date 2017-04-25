@@ -24,6 +24,12 @@ import java.util.Map;
 
 import com.liferay.asset.kernel.model.AssetEntry;
 import com.liferay.asset.kernel.model.AssetLinkConstants;
+import com.liferay.document.library.kernel.util.DLValidatorUtil;
+import com.liferay.exportimport.kernel.controller.ExportController;
+import com.liferay.exportimport.kernel.controller.ExportImportControllerRegistryUtil;
+//import com.liferay.exportimport.kernel.background.task.BackgroundTaskExecutorNames;
+import com.liferay.exportimport.kernel.exception.LARFileNameException;
+import com.liferay.exportimport.kernel.model.ExportImportConfiguration;
 import com.liferay.portal.kernel.backgroundtask.BackgroundTask;
 import com.liferay.portal.kernel.backgroundtask.BackgroundTaskManagerUtil;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -53,6 +59,7 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import aQute.bnd.annotation.ProviderType;
+import ch.inofix.timetracker.background.task.TaskRecordExportBackgroundTaskExecutor;
 import ch.inofix.timetracker.background.task.TaskRecordImportBackgroundTaskExecutor;
 import ch.inofix.timetracker.model.TaskRecord;
 import ch.inofix.timetracker.service.base.TaskRecordLocalServiceBaseImpl;
@@ -232,6 +239,50 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
         TaskRecord taskRecord = taskRecordPersistence.findByPrimaryKey(taskRecordId);
 
         return deleteTaskRecord(taskRecord);
+    }
+
+    @Override
+    public File exportTaskRecordsAsFile(ExportImportConfiguration exportImportConfiguration) throws PortalException {
+
+        _log.info("exportTaskRecordsAsFile");
+
+        _log.debug("groupId = " + exportImportConfiguration.getGroupId());
+
+        try {
+            ExportController taskRecordExportController = ExportImportControllerRegistryUtil
+                    .getExportController(TaskRecord.class.getName());
+
+            return taskRecordExportController.export(exportImportConfiguration);
+
+        } catch (PortalException pe) {
+            _log.error(pe);
+            throw pe;
+        } catch (Exception e) {
+            _log.error(e);
+            throw new SystemException(e);
+        }
+    }
+
+    @Override
+    public long exportTaskRecordsAsFileInBackground(long userId, ExportImportConfiguration exportImportConfiguration)
+            throws PortalException {
+
+        _log.info("exportTaskRecordsAsFileInBackground()");
+        _log.info(exportImportConfiguration.getName());
+
+        if (!DLValidatorUtil.isValidName(exportImportConfiguration.getName())) {
+            throw new LARFileNameException(exportImportConfiguration.getName());
+        }
+
+        Map<String, Serializable> taskContextMap = new HashMap<>();
+
+        taskContextMap.put("exportImportConfigurationId", exportImportConfiguration.getExportImportConfigurationId());
+
+        BackgroundTask backgroundTask = BackgroundTaskManagerUtil.addBackgroundTask(userId,
+                exportImportConfiguration.getGroupId(), exportImportConfiguration.getName(),
+                TaskRecordExportBackgroundTaskExecutor.class.getName(), taskContextMap, new ServiceContext());
+
+        return backgroundTask.getBackgroundTaskId();
     }
 
     /**

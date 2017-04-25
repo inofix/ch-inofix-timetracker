@@ -46,6 +46,8 @@ public class TaskRecordExportBackgroundTaskExecutor extends BaseExportImportBack
 
         ExportImportConfiguration exportImportConfiguration = getExportImportConfiguration(backgroundTask);
 
+        _log.info("groupId = " + exportImportConfiguration.getGroupId());
+
         Map<String, Serializable> settingsMap = exportImportConfiguration.getSettingsMap();
 
         long userId = MapUtil.getLong(settingsMap, "userId");

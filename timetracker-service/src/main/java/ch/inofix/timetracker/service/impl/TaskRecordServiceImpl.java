@@ -19,6 +19,7 @@ import java.io.InputStream;
 import java.util.Date;
 import java.util.List;
 
+import com.liferay.exportimport.kernel.model.ExportImportConfiguration;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -143,6 +144,18 @@ public class TaskRecordServiceImpl extends TaskRecordServiceBaseImpl {
                 TaskRecordActionKeys.DELETE_GROUP_TASK_RECORDS);
 
         return taskRecordLocalService.deleteGroupTaskRecords(groupId);
+    }
+
+    @Override
+    public long exportTaskRecordsAsFileInBackground(long userId, ExportImportConfiguration exportImportConfiguration)
+            throws PortalException {
+
+        // TODO: enable permission check
+//        TimetrackerPortletPermission.check(getPermissionChecker(), exportImportConfiguration.getGroupId(),
+//                TaskRecordActionKeys.EXPORT_TASK_RECORDS);
+
+        return taskRecordLocalService.exportTaskRecordsAsFileInBackground(userId, exportImportConfiguration);
+
     }
 
     /**
