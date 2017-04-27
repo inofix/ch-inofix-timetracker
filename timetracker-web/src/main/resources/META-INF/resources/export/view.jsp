@@ -2,14 +2,13 @@
     export.jsp: Export taskRecords in background to a file.
     
     Created:    2017-04-18 23:11 by Christian Berndt
-    Modified:   2017-04-25 17:28 by Christian Berndt
-    Version:    1.0.1
+    Modified:   2017-04-27 23:55 by Christian Berndt
+    Version:    1.0.2
 --%>
 
-<%@page import="com.liferay.portal.kernel.dao.search.RowChecker"%>
-<%@page import="ch.inofix.timetracker.background.task.TaskRecordExportBackgroundTaskExecutor"%>
 <%@ include file="/init.jsp"%>
 
+<%@page import="ch.inofix.timetracker.background.task.TaskRecordExportBackgroundTaskExecutor"%>
 <%@page import="ch.inofix.timetracker.model.impl.TaskRecordBaseImpl"%>
 
 <%@page import="com.liferay.background.task.kernel.util.comparator.BackgroundTaskComparatorFactoryUtil"%>
@@ -18,6 +17,7 @@
 <%@page import="com.liferay.portal.kernel.backgroundtask.BackgroundTaskConstants"%>
 <%@page import="com.liferay.portal.kernel.backgroundtask.BackgroundTaskManagerUtil"%>
 <%@page import="com.liferay.portal.kernel.dao.search.EmptyOnClickRowChecker"%>
+<%@page import="com.liferay.portal.kernel.dao.search.RowChecker"%>
 <%@page import="com.liferay.portal.kernel.portletfilerepository.PortletFileRepositoryUtil"%>
 <%@page import="com.liferay.portal.kernel.repository.model.FileEntry"%>
 <%@page import="com.liferay.portal.kernel.util.TextFormatter"%>
