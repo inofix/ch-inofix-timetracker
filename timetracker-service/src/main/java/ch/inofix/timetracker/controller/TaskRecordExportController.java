@@ -1,67 +1,78 @@
 package ch.inofix.timetracker.controller;
 
-import static com.liferay.exportimport.kernel.lifecycle.ExportImportLifecycleConstants.EVENT_LAYOUT_EXPORT_FAILED;
-import static com.liferay.exportimport.kernel.lifecycle.ExportImportLifecycleConstants.EVENT_LAYOUT_EXPORT_STARTED;
-import static com.liferay.exportimport.kernel.lifecycle.ExportImportLifecycleConstants.EVENT_LAYOUT_EXPORT_SUCCEEDED;
-import static com.liferay.exportimport.kernel.lifecycle.ExportImportLifecycleConstants.PROCESS_FLAG_LAYOUT_EXPORT_IN_PROCESS;
+import static ch.inofix.timetracker.internal.exportimport.util.ExportImportLifecycleConstants.EVENT_TASK_RECORDS_EXPORT_FAILED;
+import static ch.inofix.timetracker.internal.exportimport.util.ExportImportLifecycleConstants.EVENT_TASK_RECORDS_EXPORT_STARTED;
+import static ch.inofix.timetracker.internal.exportimport.util.ExportImportLifecycleConstants.EVENT_TASK_RECORDS_EXPORT_SUCCEEDED;
+import static ch.inofix.timetracker.internal.exportimport.util.ExportImportLifecycleConstants.PROCESS_FLAG_TASK_RECORDS_EXPORT_IN_PROCESS;
 
 import java.io.File;
-import java.util.LinkedHashMap;
+import java.io.Serializable;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang3.time.StopWatch;
-
-// TODO
-//import org.apache.commons.lang.time.StopWatch;
-
-import org.osgi.framework.Bundle;
-import org.osgi.framework.FrameworkUtil;
-import org.osgi.framework.Version;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
-import com.liferay.exportimport.controller.PortletExportController;
 import com.liferay.exportimport.kernel.controller.ExportController;
 import com.liferay.exportimport.kernel.controller.ExportImportController;
-import com.liferay.exportimport.kernel.lar.ManifestSummary;
+import com.liferay.exportimport.kernel.lar.ExportImportDateUtil;
+import com.liferay.exportimport.kernel.lar.ExportImportHelperUtil;
 import com.liferay.exportimport.kernel.lar.PortletDataContext;
 import com.liferay.exportimport.kernel.lar.PortletDataContextFactoryUtil;
-import com.liferay.exportimport.kernel.lar.PortletDataHandlerStatusMessageSenderUtil;
 import com.liferay.exportimport.kernel.lifecycle.ExportImportLifecycleManager;
 import com.liferay.exportimport.kernel.model.ExportImportConfiguration;
-import com.liferay.portal.kernel.backgroundtask.BackgroundTaskThreadLocal;
-import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.exportimport.kernel.xstream.XStreamAlias;
+import com.liferay.exportimport.kernel.xstream.XStreamConverter;
+import com.liferay.exportimport.kernel.xstream.XStreamType;
+import com.liferay.exportimport.xstream.ConverterAdapter;
+import com.liferay.exportimport.xstream.XStreamStagedModelTypeHierarchyPermission;
+import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.service.GroupLocalService;
-import com.liferay.portal.kernel.service.ImageLocalService;
-import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
-import com.liferay.portal.kernel.service.UserLocalService;
-import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.service.LayoutLocalService;
+import com.liferay.portal.kernel.util.DateRange;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.MapUtil;
-import com.liferay.portal.kernel.util.PortalUtil;
-import com.liferay.portal.kernel.util.ReleaseInfo;
-import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.kernel.util.Time;
-import com.liferay.portal.kernel.xml.Document;
-import com.liferay.portal.kernel.xml.Element;
-import com.liferay.portal.kernel.xml.SAXReaderUtil;
+import com.liferay.portal.kernel.util.SetUtil;
+import com.liferay.portal.kernel.util.StringPool;
+//import com.liferay.portal.kernel.xml.Document;
+//import com.liferay.portal.kernel.xml.Element;
+//import com.liferay.portal.kernel.xml.SAXReaderUtil;
 import com.liferay.portal.kernel.zip.ZipWriter;
-import com.liferay.portal.kernel.zip.ZipWriterFactoryUtil;
+import com.liferay.xstream.configurator.XStreamConfigurator;
+import com.liferay.xstream.configurator.XStreamConfiguratorRegistryUtil;
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.core.ClassLoaderReference;
+import com.thoughtworks.xstream.io.xml.XppDriver;
+import com.thoughtworks.xstream.security.NoTypePermission;
+import com.thoughtworks.xstream.security.PrimitiveTypePermission;
 
+import ch.inofix.timetracker.internal.exportimport.util.ExportImportThreadLocal;
 import ch.inofix.timetracker.model.TaskRecord;
 import ch.inofix.timetracker.service.TaskRecordLocalService;
 
 /**
  * @author Christian Berndt
  * @created 2017-04-21 19:23
- * @modified 2017-04-21 19:23
- * @version 1.0.0
+ * @modified 2017-05-30 18:40
+ * @version 1.0.1
  */
 @Component(immediate = true, property = { "model.class.name=ch.inofix.timetracker.model.TaskRecord" }, service = {
         ExportImportController.class, TaskRecordExportController.class })
 public class TaskRecordExportController implements ExportController {
+
+    public TaskRecordExportController() {
+        initXStream();
+    }
 
     @Override
     public File export(ExportImportConfiguration exportImportConfiguration) throws Exception {
@@ -71,20 +82,21 @@ public class TaskRecordExportController implements ExportController {
         PortletDataContext portletDataContext = null;
 
         try {
-            // TODO
-            // ExportImportThreadLocal.setTaskRecordExportInProcess(true);
+
+            ExportImportThreadLocal.setTaskRecordExportInProcess(true);
+
+            portletDataContext = getPortletDataContext(exportImportConfiguration);
 
             exportImportConfiguration.getSettingsMap();
 
-            _exportImportLifecycleManager.fireExportImportLifecycleEvent(EVENT_LAYOUT_EXPORT_STARTED, getProcessFlag(),
-                    PortletDataContextFactoryUtil.clonePortletDataContext(portletDataContext));
+            _exportImportLifecycleManager.fireExportImportLifecycleEvent(EVENT_TASK_RECORDS_EXPORT_STARTED,
+                    getProcessFlag(), PortletDataContextFactoryUtil.clonePortletDataContext(portletDataContext));
 
-            File file = doExport(exportImportConfiguration);
+            File file = doExport(portletDataContext);
 
-            // TODO
-            // ExportImportThreadLocal.setTaskRecordExportInProcess(false);
+            ExportImportThreadLocal.setTaskRecordExportInProcess(false);
 
-            _exportImportLifecycleManager.fireExportImportLifecycleEvent(EVENT_LAYOUT_EXPORT_SUCCEEDED,
+            _exportImportLifecycleManager.fireExportImportLifecycleEvent(EVENT_TASK_RECORDS_EXPORT_SUCCEEDED,
                     getProcessFlag(), PortletDataContextFactoryUtil.clonePortletDataContext(portletDataContext));
 
             return file;
@@ -93,179 +105,161 @@ public class TaskRecordExportController implements ExportController {
 
             _log.error(t);
 
-            // TODO
-            // ExportImportThreadLocal.setTaskRecordExportInProcess(false);
+            ExportImportThreadLocal.setTaskRecordExportInProcess(false);
 
-            _exportImportLifecycleManager.fireExportImportLifecycleEvent(EVENT_LAYOUT_EXPORT_FAILED, getProcessFlag(),
-                    PortletDataContextFactoryUtil.clonePortletDataContext(portletDataContext), t);
+            _exportImportLifecycleManager.fireExportImportLifecycleEvent(EVENT_TASK_RECORDS_EXPORT_FAILED,
+                    getProcessFlag(), PortletDataContextFactoryUtil.clonePortletDataContext(portletDataContext), t);
 
             throw t;
         }
     }
 
-    protected File doExport(ExportImportConfiguration exportImportConfiguration) throws Exception {
-
-        _log.info("doExport");
-
-        // Map<String, String[]> parameterMap =
-        // portletDataContext.getParameterMap();
-
-        // boolean ignoreLastPublishDate = MapUtil.getBoolean(parameterMap,
-        // PortletDataHandlerKeys.IGNORE_LAST_PUBLISH_DATE);
-        // MapUtil.getBoolean(parameterMap,
-        // PortletDataHandlerKeys.LAYOUT_SET_PROTOTYPE_SETTINGS);
-        // MapUtil.getBoolean(parameterMap,
-        // PortletDataHandlerKeys.LAYOUT_SET_SETTINGS);
-        // MapUtil.getBoolean(parameterMap, PortletDataHandlerKeys.LOGO);
-        // boolean permissions = MapUtil.getBoolean(parameterMap,
-        // PortletDataHandlerKeys.PERMISSIONS);
-        //
-        // if (_log.isDebugEnabled()) {
-        // _log.debug("Export permissions " + permissions);
-        // }
-
-        // TODO
-        // TaskRecord taskRecord =
-        // _taskRecordLocalService.getTaskRecord(taskRecordIds[0]);
-
-        // TODO
-        long companyId = PortalUtil.getDefaultCompanyId();
-        long defaultUserId = _userLocalService.getDefaultUserId(companyId);
-
-        ServiceContext serviceContext = ServiceContextThreadLocal.popServiceContext();
-
-        if (serviceContext == null) {
-            serviceContext = new ServiceContext();
-        }
-
-        serviceContext.setCompanyId(companyId);
-        serviceContext.setSignedIn(false);
-        serviceContext.setUserId(defaultUserId);
-
-        serviceContext.setAttribute("exporting", Boolean.TRUE);
-
-        ServiceContextThreadLocal.pushServiceContext(serviceContext);
+    protected File doExport(PortletDataContext portletDataContext) throws Exception {
 
         StopWatch stopWatch = new StopWatch();
 
         stopWatch.start();
 
-        Document document = SAXReaderUtil.createDocument();
+        StringBuilder sb = new StringBuilder();
+        sb.append("<TaskRecords>");
+        sb.append(StringPool.NEW_LINE);
 
-        Element rootElement = document.addElement("root");
+        ActionableDynamicQuery actionableDynamicQuery = _taskRecordLocalService.getActionableDynamicQuery();
 
-        Element headerElement = rootElement.addElement("header");
+        // TODO: process date-range of portletDataContext
 
-        headerElement.addAttribute("available-locales",
-                StringUtil.merge(LanguageUtil.getAvailableLocales(exportImportConfiguration.getGroupId())));
+        actionableDynamicQuery.setPerformActionMethod(new ActionableDynamicQuery.PerformActionMethod<TaskRecord>() {
 
-        headerElement.addAttribute("build-number", String.valueOf(ReleaseInfo.getBuildNumber()));
+            @Override
+            public void performAction(TaskRecord taskRecord) {
+                String xml = _xStream.toXML(taskRecord);
+                sb.append(xml);
+                sb.append(StringPool.NEW_LINE);
 
-        Bundle bundle = FrameworkUtil.getBundle(TaskRecordExportController.class);
+            }
 
-        Version version = bundle.getVersion();
+        });
 
-        headerElement.addAttribute("bundle-version", String.valueOf(version));
+        actionableDynamicQuery.performActions();
 
-        headerElement.addAttribute("export-date", Time.getRFC822());
+        sb.append("</TaskRecords>");
 
-        // TODO
-        // if (portletDataContext.hasDateRange()) {
-        // headerElement.addAttribute("start-date",
-        // String.valueOf(portletDataContext.getStartDate()));
-        // headerElement.addAttribute("end-date",
-        // String.valueOf(portletDataContext.getEndDate()));
-        // }
-
-        // TODO
-        // Group group = taskRecordSet.getGroup();
-
-        String type = "task-record";
-
-        headerElement.addAttribute("type", type);
-
-        // Element missingReferencesElement =
-        // rootElement.addElement("missing-references");
-
-        Map<String, Object[]> portletIds = new LinkedHashMap<>();
-
-        long groupId = exportImportConfiguration.getGroupId();
-
-        _log.info("groupId = " + groupId);
-
-        // Group group = GroupLocalServiceUtil.getGroup(groupId);
-
-        _taskRecordLocalService.getGroupTaskRecords(groupId);
-
-        //
-        // // Calculate the amount of exported data
-        //
-        // if (BackgroundTaskThreadLocal.hasBackgroundTask()) {
-        // PortletDataHandler portletDataHandler =
-        // portlet.getPortletDataHandlerInstance();
-        //
-        // portletDataHandler.prepareManifestSummary(portletDataContext);
-        // }
-
-        // Scoped data
-
-        if (BackgroundTaskThreadLocal.hasBackgroundTask()) {
-
-            ManifestSummary manifestSummary = new ManifestSummary();
-            // ManifestSummary manifestSummary =
-            // portletDataContext.getManifestSummary();
-
-            PortletDataHandlerStatusMessageSenderUtil.sendStatusMessage("taskRecord",
-                    ArrayUtil.toStringArray(portletIds.keySet()), manifestSummary);
-
-            manifestSummary.resetCounters();
+        if (_log.isInfoEnabled()) {
+            _log.info("Exporting taskRecords takes " + stopWatch.getTime() + " ms");
         }
 
-        _log.info("Exporting task-records takes " + stopWatch.getTime() + " ms");
+        portletDataContext.addZipEntry("/TaskRecords.xml", sb.toString());
 
-        // Export actual data
+        ZipWriter zipWriter = portletDataContext.getZipWriter();
 
-        ZipWriter zipWriter = ZipWriterFactoryUtil.getZipWriter();
+        return zipWriter.getFile();
 
-        zipWriter.addEntry("foo", "bar");
+    }
 
-        File file = zipWriter.getFile();
+    protected PortletDataContext getPortletDataContext(ExportImportConfiguration exportImportConfiguration)
+            throws PortalException {
 
-        _log.info(file.getName());
-        _log.info(file.getAbsolutePath());
+        _log.info("getPortletDataContext");
 
-        return file;
+        Map<String, Serializable> settingsMap = exportImportConfiguration.getSettingsMap();
 
+        long sourcePlid = MapUtil.getLong(settingsMap, "sourcePlid");
+        long sourceGroupId = MapUtil.getLong(settingsMap, "sourceGroupId");
+        String portletId = MapUtil.getString(settingsMap, "portletId");
+        Map<String, String[]> parameterMap = (Map<String, String[]>) settingsMap.get("parameterMap");
+        DateRange dateRange = ExportImportDateUtil.getDateRange(exportImportConfiguration);
+
+        Layout layout = _layoutLocalService.getLayout(sourcePlid);
+        ZipWriter zipWriter = ExportImportHelperUtil.getPortletZipWriter(portletId);
+
+        PortletDataContext portletDataContext = PortletDataContextFactoryUtil.createExportPortletDataContext(
+                layout.getCompanyId(), sourceGroupId, parameterMap, dateRange.getStartDate(), dateRange.getEndDate(),
+                zipWriter);
+
+        portletDataContext.setOldPlid(sourcePlid);
+        portletDataContext.setPlid(sourcePlid);
+        portletDataContext.setPortletId(portletId);
+
+        return portletDataContext;
     }
 
     protected int getProcessFlag() {
-        // TODO
-        // if (ExportImportThreadLocal.isTaskRecordStagingInProcess()) {
-        // return PROCESS_FLAG_LAYOUT_STAGING_IN_PROCESS;
-        // }
-
-        return PROCESS_FLAG_LAYOUT_EXPORT_IN_PROCESS;
+        return PROCESS_FLAG_TASK_RECORDS_EXPORT_IN_PROCESS;
     }
 
-    protected boolean prepareTaskRecordStagingHandler(PortletDataContext portletDataContext, TaskRecord taskRecord) {
+    /**
+     * From com.liferay.exportimport.lar.PortletDataContextImpl
+     */
+    protected void initXStream() {
 
-        MapUtil.getBoolean(portletDataContext.getParameterMap(), "exportLAR");
+        _xStream = new XStream(null, new XppDriver(), new ClassLoaderReference(
+                XStreamConfiguratorRegistryUtil.getConfiguratorsClassLoader(XStream.class.getClassLoader())));
 
-        return true;
+        _xStream.omitField(HashMap.class, "cache_bitmask");
+
+        Set<XStreamConfigurator> xStreamConfigurators = XStreamConfiguratorRegistryUtil.getXStreamConfigurators();
+
+        if (SetUtil.isEmpty(xStreamConfigurators)) {
+            return;
+        }
+
+        List<String> allowedTypeNames = new ArrayList<>();
+
+        for (XStreamConfigurator xStreamConfigurator : xStreamConfigurators) {
+            List<XStreamAlias> xStreamAliases = xStreamConfigurator.getXStreamAliases();
+
+            if (ListUtil.isNotEmpty(xStreamAliases)) {
+                for (XStreamAlias xStreamAlias : xStreamAliases) {
+                    _xStream.alias(xStreamAlias.getName(), xStreamAlias.getClazz());
+                }
+            }
+
+            List<XStreamConverter> xStreamConverters = xStreamConfigurator.getXStreamConverters();
+
+            if (ListUtil.isNotEmpty(xStreamConverters)) {
+                for (XStreamConverter xStreamConverter : xStreamConverters) {
+                    _xStream.registerConverter(new ConverterAdapter(xStreamConverter), XStream.PRIORITY_VERY_HIGH);
+                }
+            }
+
+            List<XStreamType> xStreamTypes = xStreamConfigurator.getAllowedXStreamTypes();
+
+            if (ListUtil.isNotEmpty(xStreamTypes)) {
+                for (XStreamType xStreamType : xStreamTypes) {
+                    allowedTypeNames.add(xStreamType.getTypeExpression());
+                }
+            }
+        }
+
+        // For default permissions, first wipe than add default
+
+        _xStream.addPermission(NoTypePermission.NONE);
+
+        // Add permissions
+
+        _xStream.addPermission(PrimitiveTypePermission.PRIMITIVES);
+        _xStream.addPermission(XStreamStagedModelTypeHierarchyPermission.STAGED_MODELS);
+
+        _xStream.allowTypes(_XSTREAM_DEFAULT_ALLOWED_TYPES);
+
+        _xStream.allowTypeHierarchy(List.class);
+        _xStream.allowTypeHierarchy(Map.class);
+        _xStream.allowTypeHierarchy(Timestamp.class);
+        _xStream.allowTypeHierarchy(Set.class);
+
+        _xStream.allowTypes(allowedTypeNames.toArray(new String[0]));
+
+        _xStream.allowTypesByWildcard(new String[] { "com.thoughtworks.xstream.mapper.DynamicProxyMapper*" });
     }
 
     @Reference(unbind = "-")
     protected void setExportImportLifecycleManager(ExportImportLifecycleManager exportImportLifecycleManager) {
-
         _exportImportLifecycleManager = exportImportLifecycleManager;
     }
 
     @Reference(unbind = "-")
-    protected void setGroupLocalService(GroupLocalService groupLocalService) {
-    }
-
-    @Reference(unbind = "-")
-    protected void setImageLocalService(ImageLocalService imageLocalService) {
+    protected void setLayoutLocalService(LayoutLocalService layoutLocalService) {
+        _layoutLocalService = layoutLocalService;
     }
 
     @Reference(unbind = "-")
@@ -274,19 +268,15 @@ public class TaskRecordExportController implements ExportController {
         _taskRecordLocalService = taskRecordLocalService;
     }
 
-    @Reference(unbind = "-")
-    protected void setPortletExportController(PortletExportController portletExportController) {
-    }
-
-    @Reference(unbind = "-")
-    protected void setUserLocalService(UserLocalService userLocalService) {
-        _userLocalService = userLocalService;
-    }
+    private static final Class<?>[] _XSTREAM_DEFAULT_ALLOWED_TYPES = { boolean[].class, byte[].class, Date.class,
+            Date[].class, double[].class, float[].class, int[].class, Locale.class, long[].class, Number.class,
+            Number[].class, short[].class, String.class, String[].class };
 
     private static final Log _log = LogFactoryUtil.getLog(TaskRecordExportController.class);
 
     private ExportImportLifecycleManager _exportImportLifecycleManager;
+    private LayoutLocalService _layoutLocalService;
     private TaskRecordLocalService _taskRecordLocalService;
-    private UserLocalService _userLocalService;
+    private transient XStream _xStream;
 
 }

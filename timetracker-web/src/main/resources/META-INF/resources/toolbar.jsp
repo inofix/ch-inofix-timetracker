@@ -80,6 +80,7 @@
         </aui:nav-item>
 
 
+        <%-- 
         <aui:nav-item dropdown="<%=true%>" id="exportButtonContainer"
             label="export">
 
@@ -115,6 +116,9 @@
                     message="export-xml" />
             </aui:nav-item>
         </aui:nav-item>
+        
+        --%>
+        
     </aui:nav>
     
     <aui:nav cssClass="pull-right">

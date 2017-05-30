@@ -24,11 +24,8 @@ import java.util.Map;
 
 import com.liferay.asset.kernel.model.AssetEntry;
 import com.liferay.asset.kernel.model.AssetLinkConstants;
-import com.liferay.document.library.kernel.util.DLValidatorUtil;
 import com.liferay.exportimport.kernel.controller.ExportController;
 import com.liferay.exportimport.kernel.controller.ExportImportControllerRegistryUtil;
-//import com.liferay.exportimport.kernel.background.task.BackgroundTaskExecutorNames;
-import com.liferay.exportimport.kernel.exception.LARFileNameException;
 import com.liferay.exportimport.kernel.model.ExportImportConfiguration;
 import com.liferay.portal.kernel.backgroundtask.BackgroundTask;
 import com.liferay.portal.kernel.backgroundtask.BackgroundTaskManagerUtil;
@@ -80,8 +77,8 @@ import ch.inofix.timetracker.service.base.TaskRecordLocalServiceBaseImpl;
  *
  * @author Christian Berndt
  * @created 2013-10-06 21:24
- * @modified 2017-04-08 23:41
- * @version 1.5.6
+ * @modified 2017-04-28 00:01
+ * @version 1.5.7
  * @see TaskRecordLocalServiceBaseImpl
  * @see ch.inofix.timetracker.service.TaskRecordLocalServiceUtil
  */
@@ -244,10 +241,6 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
     @Override
     public File exportTaskRecordsAsFile(ExportImportConfiguration exportImportConfiguration) throws PortalException {
 
-        _log.info("exportTaskRecordsAsFile");
-
-        _log.debug("groupId = " + exportImportConfiguration.getGroupId());
-
         try {
             ExportController taskRecordExportController = ExportImportControllerRegistryUtil
                     .getExportController(TaskRecord.class.getName());
@@ -267,12 +260,14 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
     public long exportTaskRecordsAsFileInBackground(long userId, ExportImportConfiguration exportImportConfiguration)
             throws PortalException {
 
-        _log.info("exportTaskRecordsAsFileInBackground()");
-        _log.info(exportImportConfiguration.getName());
-
-        if (!DLValidatorUtil.isValidName(exportImportConfiguration.getName())) {
-            throw new LARFileNameException(exportImportConfiguration.getName());
-        }
+        // TODO: The export may have different file types / extensions:
+        // - .csv
+        // - .xml
+        // - .txt
+        // - .json
+//        if (!DLValidatorUtil.isValidName(exportImportConfiguration.getName())) {
+//            throw new LARFileNameException(exportImportConfiguration.getName());
+//        }
 
         Map<String, Serializable> taskContextMap = new HashMap<>();
 

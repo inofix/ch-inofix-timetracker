@@ -3,6 +3,7 @@ Bundle-SymbolicName: ch.inofix.timetracker.service
 Bundle-Version: 1.0.0
 Export-Package:\
     ch.inofix.timetracker.background.task,\
+    ch.inofix.timetracker.internal.exportimport.configuration,\
     ch.inofix.timetracker.model.impl,\
     ch.inofix.timetracker.search,\
     ch.inofix.timetracker.service.permission
