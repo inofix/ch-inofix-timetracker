@@ -33,15 +33,15 @@
     
     <liferay-ui:panel id="timetrackerColumnsPanel" title="columns"
         extended="true">
-
+    
         <aui:input name="<%=Constants.CMD%>" type="hidden"
             value="<%=Constants.UPDATE%>" />
-
+    
         <aui:input name="redirect" type="hidden"
             value="<%=configurationRenderURL%>" />
-
+    
         <aui:input name="columns" type="hidden" />
-
+    
         <%
             Set<String> availableColumns = SetUtil.fromList(headerList);
         
@@ -49,7 +49,7 @@
             for (String column : columns) {
                 leftList.add(new KeyValuePair(column, LanguageUtil.get(request, column)));
             }
-
+    
             List<KeyValuePair> rightList = new ArrayList<KeyValuePair>();
             Arrays.sort(columns);
             for (String column : availableColumns) {
@@ -59,7 +59,7 @@
             }
             rightList = ListUtil.sort(rightList, new KeyValuePairComparator(false, true));
         %>
-
+    
         <liferay-ui:input-move-boxes leftBoxName="currentColumns"
             leftList="<%=leftList%>"
             leftReorder="<%=Boolean.TRUE.toString()%>"
@@ -67,7 +67,7 @@
             rightList="<%=rightList%>" rightTitle="available" />
             
     </liferay-ui:panel>
-
+    
     <liferay-ui:panel id="timetrackerMiscellaneousPanel"
         title="miscellaneous" extended="true">
         
@@ -78,15 +78,15 @@
                     value="time-format"
                     checked="<%=Validator.equals(timeFormat, "time-format")%>"
                     label="duration" inlineField="true" />
-
+    
                 <aui:input name="<%="time-format"%>" type="radio"
                     value="from-until"
                     checked="<%=Validator.equals(timeFormat, "from-until")%>"
                     label="from-until" inlineField="true" />
-
+    
             </aui:field-wrapper>
         </aui:fieldset>
-
+    
         <aui:input name="max-length" value="<%=maxLength%>"
             helpMessage="max-length-help" />
             
