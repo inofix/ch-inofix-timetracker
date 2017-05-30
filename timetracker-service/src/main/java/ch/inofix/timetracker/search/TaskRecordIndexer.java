@@ -75,18 +75,17 @@ public class TaskRecordIndexer extends BaseIndexer<TaskRecord> {
 
         Document document = getBaseModelDocument(CLASS_NAME, taskRecord);
 
-        // TODO: modify required fields to document
-        document.addNumberSortable("taskRecordId", taskRecord.getTaskRecordId()); // task-record-id
-        document.addNumberSortable(Field.STATUS, taskRecord.getStatus()); // status
-        document.addTextSortable("workPackage", taskRecord.getWorkPackage()); // work-package2?
-        document.addTextSortable("userName", taskRecord.getUserName()); // username
-        document.addTextSortable("ticketURL", taskRecord.getTicketURL()); // ticket-url
-        document.addTextSortable("description", taskRecord.getDescription()); // description
-        document.addDateSortable(Field.CREATE_DATE, taskRecord.getCreateDate()); // create-date
-        document.addDateSortable("modifiedDate", taskRecord.getModifiedDate()); // modified-date
-        document.addDateSortable("startDate", taskRecord.getStartDate()); // start-date
-        document.addDateSortable("endDate", taskRecord.getEndDate()); // end-date
-        document.addNumberSortable("duration", taskRecord.getDuration()); // duration
+        document.addNumberSortable("taskRecordId", taskRecord.getTaskRecordId());
+        document.addNumberSortable(Field.STATUS, taskRecord.getStatus());
+        document.addTextSortable("workPackage", taskRecord.getWorkPackage());
+        document.addTextSortable("userName", taskRecord.getUserName());
+        document.addTextSortable("ticketURL", taskRecord.getTicketURL());
+        document.addTextSortable("description", taskRecord.getDescription());
+        document.addDateSortable(Field.CREATE_DATE, taskRecord.getCreateDate());
+        document.addDateSortable("modifiedDate", taskRecord.getModifiedDate());
+        document.addDateSortable("startDate", taskRecord.getStartDate());
+        document.addDateSortable("endDate", taskRecord.getEndDate());
+        document.addNumberSortable("duration", taskRecord.getDuration());
 
         return document;
 
