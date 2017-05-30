@@ -2,8 +2,8 @@
     view.jsp: Default view of Inofix' timetracker.
     
     Created:     2013-10-06 16:52 by Christian Berndt
-    Modified:    2017-04-18 22:29 by Christian Berndt
-    Version:     1.6.1
+    Modified:    2017-05-30 19:52 by Christian Berndt
+    Version:     1.6.2
  --%>
 
 <%@ include file="/init.jsp" %>
@@ -76,7 +76,9 @@
             param="tabs2" url="<%= portletURL.toString() %>" /> 
             
             <c:if test="<%= tabs2.equals("export") %>">
-                <liferay-util:include page="/export/view.jsp" servletContext="<%= application %>"  />
+                <liferay-util:include page="/export/view.jsp" servletContext="<%= application %>"  >
+                    <liferay-util:param name="orderByCol" value="create-date"/>
+                </liferay-util:include>
             </c:if>      
         
             <c:if test="<%= tabs2.equals("import") %>">
