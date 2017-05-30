@@ -24,11 +24,12 @@
 <%@page import="com.liferay.portal.kernel.util.OrderByComparator"%>
 <%@page import="com.liferay.portal.kernel.util.StringBundler"%>
 
-<portlet:actionURL name="exportTaskRecords" var="exportTaskRecordsURL">
+<portlet:renderURL var="exportTaskRecordsURL">
     <portlet:param name="groupId" value="<%= String.valueOf(scopeGroupId) %>"/>
+    <portlet:param name="mvcPath" value="/export/new_export/export_task_records.jsp"/>
     <portlet:param name="tabs1" value="export-import" />
     <portlet:param name="tabs2" value="export" />
-</portlet:actionURL>
+</portlet:renderURL>
 
 <aui:button href="<%= exportTaskRecordsURL %>" value="export-task-records"/>
 
@@ -41,7 +42,7 @@
 
     //     PortletURL portletURL = liferayPortletResponse.createRenderURL();
 
-    portletURL.setParameter("mvcRenderCommandName", "exportLayoutsView");
+//     portletURL.setParameter("mvcRenderCommandName", "exportLayoutsView");
     portletURL.setParameter("groupId", String.valueOf(groupId));
 //     portletURL.setParameter("privateLayout", String.valueOf(privateLayout));
 //     portletURL.setParameter("displayStyle", displayStyle);
@@ -79,7 +80,7 @@
         <%
             RowChecker rowChecker =  new EmptyOnClickRowChecker(liferayPortletResponse);
             // TODO: enable set operations
-            rowChecker = null; 
+            // rowChecker = null; 
         %>
         <liferay-ui:search-container
             emptyResultsMessage="no-export-processes-were-found"
@@ -102,8 +103,8 @@
                     completed = true; 
                 } 
 
-                backgroundTasks = BackgroundTaskManagerUtil.getBackgroundTasks(0, TaskRecordExportBackgroundTaskExecutor.class.getName(), 0, 20, orderByComparator);
-                backgroundTasksCount = BackgroundTaskManagerUtil.getBackgroundTasksCount(0, TaskRecordExportBackgroundTaskExecutor.class.getName());
+                backgroundTasks = BackgroundTaskManagerUtil.getBackgroundTasks(scopeGroupId, TaskRecordExportBackgroundTaskExecutor.class.getName(), 0, 20, orderByComparator);
+                backgroundTasksCount = BackgroundTaskManagerUtil.getBackgroundTasksCount(scopeGroupId, TaskRecordExportBackgroundTaskExecutor.class.getName());
 
                 searchContainer.setResults(backgroundTasks);
                 searchContainer.setTotal(backgroundTasksCount);

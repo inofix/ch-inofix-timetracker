@@ -1,3 +1,11 @@
+<%--
+    toolbar.jsp: the export toolbar.
+    
+    Created:    2017-05-16 17:30 by Christian Berndt
+    Modified:   2017-05-16 17:30 by Christian Berndt
+    Version:    1.0.0
+--%>
+
 <%@ include file="/init.jsp" %>
 
 <%@page import="com.liferay.portal.kernel.portlet.PortletURLUtil"%>
