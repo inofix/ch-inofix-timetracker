@@ -77,8 +77,6 @@ public class TaskRecordExportController implements ExportController {
     @Override
     public File export(ExportImportConfiguration exportImportConfiguration) throws Exception {
 
-        _log.info("export");
-
         PortletDataContext portletDataContext = null;
 
         try {
@@ -135,7 +133,6 @@ public class TaskRecordExportController implements ExportController {
                 String xml = _xStream.toXML(taskRecord);
                 sb.append(xml);
                 sb.append(StringPool.NEW_LINE);
-
             }
 
         });
@@ -159,9 +156,9 @@ public class TaskRecordExportController implements ExportController {
     protected PortletDataContext getPortletDataContext(ExportImportConfiguration exportImportConfiguration)
             throws PortalException {
 
-        _log.info("getPortletDataContext");
-
         Map<String, Serializable> settingsMap = exportImportConfiguration.getSettingsMap();
+
+        String fileName = MapUtil.getString(settingsMap, "fileName");
 
         long sourcePlid = MapUtil.getLong(settingsMap, "sourcePlid");
         long sourceGroupId = MapUtil.getLong(settingsMap, "sourceGroupId");

@@ -6,8 +6,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
 
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.StringPool;
@@ -123,7 +121,4 @@ public class ExportImportTaskRecordsConfigurationSettingsMapFactory {
 
         return settingsMap;
     }
-
-    private static final Log _log = LogFactoryUtil.getLog(ExportImportTaskRecordsConfigurationSettingsMapFactory.class);
-
 }
