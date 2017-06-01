@@ -2,19 +2,16 @@
     export.jsp: Export taskRecords in background to a file.
     
     Created:    2017-04-18 23:11 by Christian Berndt
-    Modified:   2017-04-27 23:55 by Christian Berndt
-    Version:    1.0.2
+    Modified:   2017-06-01 18:56 by Christian Berndt
+    Version:    1.0.3
 --%>
 
 <%@ include file="/init.jsp"%>
 
 <%@page import="ch.inofix.timetracker.background.task.TaskRecordExportBackgroundTaskExecutor"%>
-<%@page import="ch.inofix.timetracker.model.impl.TaskRecordBaseImpl"%>
 
 <%@page import="com.liferay.background.task.kernel.util.comparator.BackgroundTaskComparatorFactoryUtil"%>
-<%@page import="com.liferay.exportimport.kernel.background.task.BackgroundTaskExecutorNames"%>
 <%@page import="com.liferay.portal.kernel.backgroundtask.BackgroundTask"%>
-<%@page import="com.liferay.portal.kernel.backgroundtask.BackgroundTaskConstants"%>
 <%@page import="com.liferay.portal.kernel.backgroundtask.BackgroundTaskManagerUtil"%>
 <%@page import="com.liferay.portal.kernel.dao.search.EmptyOnClickRowChecker"%>
 <%@page import="com.liferay.portal.kernel.dao.search.RowChecker"%>
@@ -31,21 +28,20 @@
     <portlet:param name="tabs2" value="export" />
 </portlet:renderURL>
 
-<aui:button href="<%= exportTaskRecordsURL %>" value="export-task-records"/>
+<aui:button-row>
+    <aui:button href="<%= exportTaskRecordsURL %>" value="new-export"/>
+</aui:button-row>
 
 <%
+    String displayStyle = ParamUtil.getString(request, "displayStyle", "list"); 
     long groupId = scopeGroupId; 
     String navigation = ParamUtil.getString(request, "navigation", "all"); 
     String orderByCol = ParamUtil.getString(request, "orderByCol", "create-date");
     String orderByType = ParamUtil.getString(request, "orderByType", "desc");
     String searchContainerId = "SearchContainer"; 
 
-    //     PortletURL portletURL = liferayPortletResponse.createRenderURL();
-
-//     portletURL.setParameter("mvcRenderCommandName", "exportLayoutsView");
     portletURL.setParameter("groupId", String.valueOf(groupId));
-//     portletURL.setParameter("privateLayout", String.valueOf(privateLayout));
-//     portletURL.setParameter("displayStyle", displayStyle);
+    portletURL.setParameter("displayStyle", displayStyle);
     portletURL.setParameter("navigation", navigation);
     portletURL.setParameter("orderByCol", orderByCol);
     portletURL.setParameter("orderByType", orderByType);
@@ -56,12 +52,18 @@
 %>
 
 <div id="<portlet:namespace />exportProcessesSearchContainer">
+    <%
+        int incompleteBackgroundTaskCount = BackgroundTaskManagerUtil.getBackgroundTasksCount(scopeGroupId, TaskRecordExportBackgroundTaskExecutor.class.getName(), false);
+    %>
+    <div class="<%= (incompleteBackgroundTaskCount == 0) ? "hide" : "in-progress" %>" id="<portlet:namespace />incompleteProcessMessage">
+        <liferay-util:include page="/incomplete_processes_message.jsp" servletContext="<%= application %>">
+            <liferay-util:param name="incompleteBackgroundTaskCount" value="<%= String.valueOf(incompleteBackgroundTaskCount) %>" />
+        </liferay-util:include>
+    </div>
 
     <liferay-util:include page="/export/toolbar.jsp" servletContext="<%= application %>">
-        <liferay-util:param name="mvcRenderCommandName" value="exportLayoutsView" />
         <liferay-util:param name="groupId" value="<%= String.valueOf(scopeGroupId) %>" />
-<%--         <liferay-util:param name="privateLayout" value="<%= String.valueOf(privateLayout) %>" /> --%>
-<%--         <liferay-util:param name="displayStyle" value="<%= displayStyle %>" /> --%>
+        <liferay-util:param name="displayStyle" value="<%= displayStyle %>" />
         <liferay-util:param name="navigation" value="<%= navigation %>" />
         <liferay-util:param name="orderByCol" value="<%= orderByCol %>" />
         <liferay-util:param name="orderByType" value="<%= orderByType %>" />
@@ -79,9 +81,8 @@
     
         <%
             RowChecker rowChecker =  new EmptyOnClickRowChecker(liferayPortletResponse);
-            // TODO: enable set operations
-            // rowChecker = null; 
         %>
+        
         <liferay-ui:search-container
             emptyResultsMessage="no-export-processes-were-found"
             id="<%= searchContainerId %>"
@@ -89,8 +90,8 @@
             orderByCol="<%= orderByCol %>"
             orderByComparator="<%= orderByComparator %>"
             orderByType="<%= orderByType %>"
-            rowChecker="<%= rowChecker %>"
-        >
+            rowChecker="<%= rowChecker %>">
+            
             <liferay-ui:search-container-results>
             
             <%

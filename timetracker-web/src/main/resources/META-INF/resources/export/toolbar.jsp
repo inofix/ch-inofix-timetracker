@@ -2,30 +2,24 @@
     toolbar.jsp: the export toolbar.
     
     Created:    2017-05-16 17:30 by Christian Berndt
-    Modified:   2017-05-16 17:30 by Christian Berndt
-    Version:    1.0.0
+    Modified:   2017-05-30 23:48 by Christian Berndt
+    Version:    1.0.1
 --%>
 
 <%@ include file="/init.jsp" %>
 
 <%@page import="com.liferay.portal.kernel.portlet.PortletURLUtil"%>
+<%@page import="com.liferay.portal.kernel.language.UnicodeLanguageUtil"%>
 
 <%
-    String mvcRenderCommandName = ParamUtil.getString(request, "mvcRenderCommandName");
-
     long groupId = ParamUtil.getLong(request, "groupId");
-    boolean privateLayout = ParamUtil.getBoolean(request, "privateLayout");
     String displayStyle = ParamUtil.getString(request, "displayStyle", "descriptive");
     String orderByCol = ParamUtil.getString(request, "orderByCol");
     String orderByType = ParamUtil.getString(request, "orderByType");
     String navigation = ParamUtil.getString(request, "navigation", "all");
     String searchContainerId = ParamUtil.getString(request, "searchContainerId");
 
-    // PortletURL portletURL = liferayPortletResponse.createRenderURL();
-
-    portletURL.setParameter("mvcRenderCommandName", mvcRenderCommandName);
     portletURL.setParameter("groupId", String.valueOf(groupId));
-    portletURL.setParameter("privateLayout", String.valueOf(privateLayout));
     portletURL.setParameter("displayStyle", displayStyle);
     portletURL.setParameter("navigation", navigation);
     portletURL.setParameter("orderByCol", orderByCol);
@@ -34,9 +28,11 @@
 %>
 
 <% // TODO enable set operations %>
+
 <liferay-frontend:management-bar
-    includeCheckBox="<%= false %>"
+    includeCheckBox="<%= true %>"
     searchContainerId="<%= searchContainerId %>">
+           
     <liferay-frontend:management-bar-filters>
     
         <liferay-frontend:management-bar-navigation
@@ -65,3 +61,17 @@
         <liferay-frontend:management-bar-button href='<%= "javascript:" + liferayPortletResponse.getNamespace() + "deleteEntries();" %>' icon="times" label="delete" />
     </liferay-frontend:management-bar-action-buttons>
 </liferay-frontend:management-bar>
+
+<aui:script>
+    function <portlet:namespace />deleteEntries() {
+        if (confirm('<%= UnicodeLanguageUtil.get(request, "are-you-sure-you-want-to-delete-the-selected-entries") %>')) {
+            var form = AUI.$(document.<portlet:namespace />fm);
+
+            form.attr('method', 'post');
+            form.fm('<%= Constants.CMD %>').val('<%= Constants.DELETE %>');
+            form.fm('deleteBackgroundTaskIds').val(Liferay.Util.listCheckedExcept(form, '<portlet:namespace />allRowIds'));
+
+            submitForm(form);
+        }
+    }
+</aui:script>
