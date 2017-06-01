@@ -11,6 +11,7 @@ import com.liferay.portal.kernel.util.StringPool;
  *
  */
 public class ExportImportConfigurationConstants {
+
     public static final int TYPE_EXPORT_TASK_RECORDS = 0;
 
     public static final String TYPE_EXPORT_TASK_RECORDS_LABEL = "export-task-records";
@@ -28,5 +29,4 @@ public class ExportImportConfigurationConstants {
             return StringPool.BLANK;
         }
     }
-
 }
