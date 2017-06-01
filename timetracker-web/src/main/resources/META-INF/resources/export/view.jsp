@@ -2,8 +2,8 @@
     export.jsp: Export taskRecords in background to a file.
     
     Created:    2017-04-18 23:11 by Christian Berndt
-    Modified:   2017-06-01 18:56 by Christian Berndt
-    Version:    1.0.3
+    Modified:   2017-06-01 19:48 by Christian Berndt
+    Version:    1.0.4
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -33,12 +33,12 @@
 </aui:button-row>
 
 <%
-    String displayStyle = ParamUtil.getString(request, "displayStyle", "list"); 
-    long groupId = scopeGroupId; 
-    String navigation = ParamUtil.getString(request, "navigation", "all"); 
+    String displayStyle = ParamUtil.getString(request, "displayStyle", "list");
+    long groupId = scopeGroupId;
+    String navigation = ParamUtil.getString(request, "navigation", "all");
     String orderByCol = ParamUtil.getString(request, "orderByCol", "create-date");
     String orderByType = ParamUtil.getString(request, "orderByType", "desc");
-    String searchContainerId = "SearchContainer"; 
+    String searchContainerId = "SearchContainer";
 
     portletURL.setParameter("groupId", String.valueOf(groupId));
     portletURL.setParameter("displayStyle", displayStyle);
@@ -49,6 +49,20 @@
 
     OrderByComparator<BackgroundTask> orderByComparator = BackgroundTaskComparatorFactoryUtil
             .getBackgroundTaskOrderByComparator(orderByCol, orderByType);
+
+    int backgroundTasksCount = 0;
+    List<BackgroundTask> backgroundTasks = null;
+
+    boolean completed = false;
+
+    if ("completed".equals(navigation)) {
+        completed = true;
+    }
+
+    backgroundTasks = BackgroundTaskManagerUtil.getBackgroundTasks(scopeGroupId,
+            TaskRecordExportBackgroundTaskExecutor.class.getName(), 0, 20, orderByComparator);
+    backgroundTasksCount = BackgroundTaskManagerUtil.getBackgroundTasksCount(scopeGroupId,
+            TaskRecordExportBackgroundTaskExecutor.class.getName());
 %>
 
 <div id="<portlet:namespace />exportProcessesSearchContainer">
@@ -61,14 +75,16 @@
         </liferay-util:include>
     </div>
 
-    <liferay-util:include page="/export/toolbar.jsp" servletContext="<%= application %>">
-        <liferay-util:param name="groupId" value="<%= String.valueOf(scopeGroupId) %>" />
-        <liferay-util:param name="displayStyle" value="<%= displayStyle %>" />
-        <liferay-util:param name="navigation" value="<%= navigation %>" />
-        <liferay-util:param name="orderByCol" value="<%= orderByCol %>" />
-        <liferay-util:param name="orderByType" value="<%= orderByType %>" />
-        <liferay-util:param name="searchContainerId" value="<%= searchContainerId %>" />
-    </liferay-util:include>
+    <c:if test="<%= backgroundTasksCount > 0 %>">
+        <liferay-util:include page="/export/toolbar.jsp" servletContext="<%= application %>">
+            <liferay-util:param name="groupId" value="<%= String.valueOf(scopeGroupId) %>" />
+            <liferay-util:param name="displayStyle" value="<%= displayStyle %>" />
+            <liferay-util:param name="navigation" value="<%= navigation %>" />
+            <liferay-util:param name="orderByCol" value="<%= orderByCol %>" />
+            <liferay-util:param name="orderByType" value="<%= orderByType %>" />
+            <liferay-util:param name="searchContainerId" value="<%= searchContainerId %>" />
+        </liferay-util:include>
+    </c:if>
 
     <portlet:actionURL name="deleteBackgroundTasks" var="deleteBackgroundTasksURL">
         <portlet:param name="redirect" value="<%= currentURL.toString() %>" />
@@ -95,18 +111,6 @@
             <liferay-ui:search-container-results>
             
             <%
-                int backgroundTasksCount = 0;
-                List<BackgroundTask> backgroundTasks = null;
-                
-                boolean completed = false;
-                
-                if ("completed".equals(navigation)) {
-                    completed = true; 
-                } 
-
-                backgroundTasks = BackgroundTaskManagerUtil.getBackgroundTasks(scopeGroupId, TaskRecordExportBackgroundTaskExecutor.class.getName(), 0, 20, orderByComparator);
-                backgroundTasksCount = BackgroundTaskManagerUtil.getBackgroundTasksCount(scopeGroupId, TaskRecordExportBackgroundTaskExecutor.class.getName());
-
                 searchContainer.setResults(backgroundTasks);
                 searchContainer.setTotal(backgroundTasksCount);
             %>
