@@ -2,13 +2,15 @@
     toolbar.jsp: The toolbar of the timetracker portlet
     
     Created:    2016-03-20 16:58 by Christian Berndt
-    Modified:   2017-03-24 23:06 by Christian Berndt
-    Version:    1.1.2
+    Modified:   2017-06-04 23:32 by Christian Berndt
+    Version:    1.1.3
 --%>
 
 <%@ include file="/init.jsp"%>
 
 <%
+    PortletURL portletURL = renderResponse.createRenderURL();
+
     TaskRecordSearch searchContainer = new TaskRecordSearch(liferayPortletRequest, portletURL);
 
     TaskRecordDisplayTerms displayTerms = (TaskRecordDisplayTerms) searchContainer.getDisplayTerms();
