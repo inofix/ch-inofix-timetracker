@@ -2,8 +2,8 @@
     export_task_records.jsp: Configure a task_records export.
     
     Created:    2017-05-16 17:30 by Christian Berndt
-    Modified:   2017-06-01 18:16 by Christian Berndt
-    Version:    1.0.1
+    Modified:   2017-06-04 23:34 by Christian Berndt
+    Version:    1.0.2
 --%>
 
 <%@ include file="/init.jsp" %>
@@ -12,7 +12,6 @@
 
 <%@page import="com.liferay.exportimport.kernel.exception.LARFileNameException"%>
 <%@page import="com.liferay.exportimport.kernel.model.ExportImportConfiguration"%>
-<%@page import="com.liferay.portal.kernel.backgroundtask.BackgroundTaskManagerUtil"%>
 
 <%
     long exportImportConfigurationId = 0;
@@ -20,6 +19,8 @@
     ExportImportConfiguration exportImportConfiguration = null;
   
     boolean configuredExport = (exportImportConfiguration == null) ? false : true;
+
+    PortletURL portletURL = renderResponse.createRenderURL();
 
     portletDisplay.setShowBackIcon(true);
     portletDisplay.setURLBack(portletURL.toString());

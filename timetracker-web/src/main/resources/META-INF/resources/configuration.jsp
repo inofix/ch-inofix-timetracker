@@ -2,8 +2,8 @@
     configuration.jsp: configuration of the timetracker portlet.
     
     Created:    2017-03-09 14:20 by Stefan Lübbers
-    Modified:   2017-03-31 19:22 by Christian Berndt
-    Version:    1.0.2
+    Modified:   2017-06-04 23:31 by Christian Berndt
+    Version:    1.0.3
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -17,7 +17,9 @@
         maxLength = portletPreferences.getValue("max-length", timetrackerConfiguration.maxLength());
         timeFormat = portletPreferences.getValue("time-format", timetrackerConfiguration.timeFormat());
     }
-    
+
+    PortletURL portletURL = renderResponse.createRenderURL();
+
     TaskRecordSearch searchContainer = new TaskRecordSearch(liferayPortletRequest, portletURL);
     List<String> headerList = searchContainer.getHeaderNames();
 %>

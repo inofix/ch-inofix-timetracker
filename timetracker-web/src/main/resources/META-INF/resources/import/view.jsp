@@ -1,0 +1,103 @@
+<%--
+    view.jsp: the import view.
+    
+    Created:    2017-06-01 21:08 by Christian Berndt
+    Modified:   2017-06-01 21:08 by Christian Berndt
+    Version:    1.0.0
+--%>
+
+<%@ include file="/init.jsp" %>
+
+<%@page import="com.liferay.portal.kernel.portlet.PortalPreferences"%>
+<%@page import="com.liferay.portal.kernel.util.PortletKeys"%>
+
+<%
+    boolean privateLayout = ParamUtil.getBoolean(request, "privateLayout");
+    
+    String displayStyle = ParamUtil.getString(request, "displayStyle", "descriptive");
+    String navigation = ParamUtil.getString(request, "navigation", "all");
+    
+    String orderByCol = ParamUtil.getString(request, "orderByCol");
+    String orderByType = ParamUtil.getString(request, "orderByType");
+    
+    PortalPreferences portalPreferences = PortletPreferencesFactoryUtil.getPortalPreferences(request);
+
+    if (Validator.isNotNull(orderByCol) && Validator.isNotNull(orderByType)) {
+        portalPreferences.setValue(PortletKeys.BACKGROUND_TASK, "entries-order-by-col", orderByCol);
+        portalPreferences.setValue(PortletKeys.BACKGROUND_TASK, "entries-order-by-type", orderByType);
+    }
+    else {
+        orderByCol = portalPreferences.getValue(PortletKeys.BACKGROUND_TASK, "entries-order-by-col", "create-date");
+        orderByType = portalPreferences.getValue(PortletKeys.BACKGROUND_TASK, "entries-order-by-type", "desc");
+    }
+    
+    String searchContainerId = "importTaskRecordsProcesses";
+    
+//     groupDisplayContextHelper groupDisplayContextHelper = new GroupDisplayContextHelper(request);
+%>
+    <% // TODO: check permissions  %>
+
+    <%-- 
+<c:choose>
+    <c:when test="<%= !GroupPermissionUtil.contains(permissionChecker, groupDisplayContextHelper.getGroupId(), ActionKeys.EXPORT_IMPORT_LAYOUTS) %>">
+        <div class="alert alert-info">
+            <liferay-ui:message key="you-do-not-have-permission-to-access-the-requested-resource" />
+        </div>
+    </c:when>
+    <c:otherwise>
+    --%>
+        <liferay-util:include page="/import/navigation.jsp" servletContext="<%= application %>" />
+
+        <liferay-util:include page="/import/processes_list/view.jsp" servletContext="<%= application %>">
+            <liferay-util:param name="groupId" value="<%= String.valueOf(scopeGroupId) %>" />
+<%--             <liferay-util:param name="groupId" value="<%= String.valueOf(groupDisplayContextHelper.getGroupId()) %>" /> --%>
+            <liferay-util:param name="displayStyle" value="<%= displayStyle %>" />
+            <liferay-util:param name="navigation" value="<%= navigation %>" />
+            <liferay-util:param name="orderByCol" value="<%= orderByCol %>" />
+            <liferay-util:param name="orderByType" value="<%= orderByType %>" />
+<%--             <liferay-util:param name="privateLayout" value="<%= String.valueOf(privateLayout) %>" /> --%>
+            <liferay-util:param name="searchContainerId" value="<%= searchContainerId %>" />
+        </liferay-util:include>
+
+        <portlet:renderURL var="addNewImportProcessURL">
+            <portlet:param name="mvcPath" value="/import/new_import/import_task_records.jsp" />
+            <portlet:param name="groupId" value="<%= String.valueOf(scopeGroupId) %>" />
+<%--             <portlet:param name="groupId" value="<%= String.valueOf(groupDisplayContextHelper.getGroupId()) %>" />           --%>
+<%--             <portlet:param name="privateLayout" value="<%= String.valueOf(privateLayout) %>" /> --%>
+            <portlet:param name="validate" value="<%= String.valueOf(Boolean.TRUE) %>" />
+        </portlet:renderURL>
+
+        <liferay-frontend:add-menu>
+            <liferay-frontend:add-menu-item title='<%= LanguageUtil.get(request, "import") %>' url="<%= addNewImportProcessURL %>" />
+        </liferay-frontend:add-menu>
+        <%-- 
+    </c:otherwise>
+</c:choose>
+--%>
+
+<aui:script use="liferay-export-import">
+    <liferay-portlet:resourceURL copyCurrentRenderParameters="<%= false %>" id="importTaskRecords" var="importProcessesURL">
+        <portlet:param name="<%= Constants.CMD %>" value="<%= Constants.IMPORT %>" />
+        <portlet:param name="<%= SearchContainer.DEFAULT_CUR_PARAM %>" value="<%= ParamUtil.getString(request, SearchContainer.DEFAULT_CUR_PARAM) %>" />
+        <portlet:param name="<%= SearchContainer.DEFAULT_DELTA_PARAM %>" value="<%= ParamUtil.getString(request, SearchContainer.DEFAULT_DELTA_PARAM) %>" />
+        <portlet:param name="groupId" value="<%= String.valueOf(scopeGroupId) %>" />
+<%--        <portlet:param name="groupId" value="<%= String.valueOf(groupDisplayContextHelper.getGroupId()) %>" /> --%>
+<%--        <portlet:param name="privateLayout" value="<%= String.valueOf(privateLayout) %>" /> --%>
+        <portlet:param name="displayStyle" value="<%= displayStyle %>" />
+        <portlet:param name="navigation" value="<%= navigation %>" />
+        <portlet:param name="orderByCol" value="<%= orderByCol %>" />
+        <portlet:param name="orderByType" value="<%= orderByType %>" />
+        <portlet:param name="searchContainerId" value="<%= searchContainerId %>" />
+    </liferay-portlet:resourceURL>
+
+    new Liferay.ExportImport(
+        {
+            incompleteProcessMessageNode: '#<portlet:namespace />incompleteProcessMessage',
+            locale: '<%= locale.toLanguageTag() %>',
+            namespace: '<portlet:namespace />',
+            processesNode: '#importProcessesSearchContainer',
+            processesResourceURL: '<%= HtmlUtil.escapeJS(importProcessesURL.toString()) %>',
+            timeZone: '<%= timeZone.getID() %>'
+        }
+    );
+</aui:script>

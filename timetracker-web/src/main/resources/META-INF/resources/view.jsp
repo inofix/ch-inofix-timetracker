@@ -2,8 +2,8 @@
     view.jsp: Default view of Inofix' timetracker.
     
     Created:     2013-10-06 16:52 by Christian Berndt
-    Modified:    2017-05-30 19:52 by Christian Berndt
-    Version:     1.6.2
+    Modified:    2017-06-04 23:32 by Christian Berndt
+    Version:     1.6.3
  --%>
 
 <%@ include file="/init.jsp" %>
@@ -24,6 +24,10 @@
     
     String backURL = ParamUtil.getString(request, "backURL");
     String keywords = ParamUtil.getString(request, "keywords");
+ 
+    PortletURL portletURL = renderResponse.createRenderURL();
+    portletURL.setParameter("tabs1", tabs1); 
+    portletURL.setParameter("tabs2", tabs2); 
     
     TaskRecordSearch taskRecordSearch = new TaskRecordSearch(renderRequest, "cur", portletURL);
     

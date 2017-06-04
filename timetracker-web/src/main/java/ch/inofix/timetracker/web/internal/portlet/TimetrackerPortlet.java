@@ -1,6 +1,5 @@
 package ch.inofix.timetracker.web.internal.portlet;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
@@ -13,13 +12,17 @@ import java.util.Map;
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
 import javax.portlet.Portlet;
+import javax.portlet.PortletConfig;
+import javax.portlet.PortletContext;
 import javax.portlet.PortletException;
 import javax.portlet.PortletRequest;
+import javax.portlet.PortletRequestDispatcher;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 import javax.portlet.ResourceRequest;
 import javax.portlet.ResourceResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -28,14 +31,24 @@ import org.osgi.service.component.annotations.Reference;
 
 import com.liferay.document.library.kernel.exception.FileSizeException;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalService;
+import com.liferay.exportimport.kernel.configuration.ExportImportConfigurationSettingsMapFactory;
+import com.liferay.exportimport.kernel.exception.LARFileException;
+import com.liferay.exportimport.kernel.exception.LARFileSizeException;
+import com.liferay.exportimport.kernel.exception.LARTypeException;
+import com.liferay.exportimport.kernel.exception.LayoutImportException;
 import com.liferay.exportimport.kernel.lar.ExportImportHelper;
 import com.liferay.exportimport.kernel.lar.ExportImportHelperUtil;
+import com.liferay.exportimport.kernel.lar.MissingReference;
+import com.liferay.exportimport.kernel.lar.MissingReferences;
 import com.liferay.exportimport.kernel.model.ExportImportConfiguration;
 import com.liferay.exportimport.kernel.service.ExportImportConfigurationLocalService;
+import com.liferay.exportimport.kernel.service.ExportImportService;
+import com.liferay.exportimport.kernel.staging.StagingUtil;
 import com.liferay.portal.kernel.backgroundtask.BackgroundTaskManagerUtil;
+import com.liferay.portal.kernel.exception.LayoutPrototypeException;
+import com.liferay.portal.kernel.exception.LocaleException;
 import com.liferay.portal.kernel.exception.NoSuchBackgroundTaskException;
 import com.liferay.portal.kernel.exception.NoSuchResourceException;
-import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -43,8 +56,8 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.portlet.JSONPortletResponseUtil;
+import com.liferay.portal.kernel.portlet.PortletConfigFactoryUtil;
 import com.liferay.portal.kernel.portlet.PortletResponseUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 import com.liferay.portal.kernel.repository.model.FileEntry;
@@ -54,9 +67,10 @@ import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.service.LayoutService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextFactory;
-import com.liferay.portal.kernel.service.UserLocalServiceUtil;
+import com.liferay.portal.kernel.servlet.ServletResponseUtil;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.servlet.SessionMessages;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -64,6 +78,7 @@ import com.liferay.portal.kernel.upload.UploadException;
 import com.liferay.portal.kernel.upload.UploadPortletRequest;
 import com.liferay.portal.kernel.upload.UploadRequestSizeException;
 import com.liferay.portal.kernel.util.Constants;
+import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HttpUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
@@ -71,9 +86,6 @@ import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StreamUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
-import com.liferay.portal.kernel.xml.Node;
-import com.liferay.portal.kernel.xml.SAXReaderUtil;
-import com.thoughtworks.xstream.XStream;
 
 import aQute.bnd.annotation.metatype.Configurable;
 import ch.inofix.timetracker.constants.PortletKeys;
@@ -82,7 +94,6 @@ import ch.inofix.timetracker.exception.TaskRecordEndDateException;
 import ch.inofix.timetracker.exception.TaskRecordStartDateException;
 import ch.inofix.timetracker.internal.exportimport.configuration.ExportImportTaskRecordsConfigurationSettingsMapFactory;
 import ch.inofix.timetracker.model.TaskRecord;
-import ch.inofix.timetracker.model.impl.TaskRecordImpl;
 import ch.inofix.timetracker.service.TaskRecordService;
 import ch.inofix.timetracker.web.configuration.ExportImportConfigurationConstants;
 import ch.inofix.timetracker.web.configuration.TimetrackerConfiguration;
@@ -232,104 +243,104 @@ public class TimetrackerPortlet extends MVCPortlet {
      * @param actionResponse
      * @deprecated use importInBackground instead
      */
-    @Deprecated
-    public void importXML(ActionRequest actionRequest, ActionResponse actionResponse) throws Exception {
-
-        ServiceContext serviceContext = ServiceContextFactory.getInstance(TaskRecord.class.getName(), actionRequest);
-
-        UploadPortletRequest uploadPortletRequest = PortalUtil.getUploadPortletRequest(actionRequest);
-
-        File file = uploadPortletRequest.getFile("file");
-
-        if (Validator.isNotNull(file)) {
-
-            com.liferay.portal.kernel.xml.Document document = SAXReaderUtil.read(file);
-
-            List<Node> nodes = document.selectNodes("/taskRecords/" + TaskRecordImpl.class.getName());
-
-            int numRecords = 0;
-
-            XStream xstream = new XStream();
-
-            ThemeDisplay themeDisplay = (ThemeDisplay) actionRequest.getAttribute(WebKeys.THEME_DISPLAY);
-
-            long groupId = themeDisplay.getScopeGroupId();
-            long userId = themeDisplay.getUserId();
-            User user = UserLocalServiceUtil.getUser(userId);
-            String userName = user.getFullName();
-
-            for (Node node : nodes) {
-
-                String xml = node.asXML();
-
-                TaskRecord importRecord = (TaskRecord) xstream.fromXML(xml);
-
-                long taskRecordId = importRecord.getTaskRecordId();
-                long companyId = PortalUtil.getCompanyId(actionRequest);
-
-                if (companyId != importRecord.getCompanyId()) {
-
-                    // Data is not from this portal instance
-                    importRecord.setCompanyId(companyId);
-                }
-
-                if (groupId != importRecord.getGroupId()) {
-
-                    // Data is not from this group
-                    importRecord.setGroupId(groupId);
-                }
-
-                User systemUser = null;
-                try {
-                    systemUser = UserLocalServiceUtil.getUser(importRecord.getUserId());
-                } catch (NoSuchUserException nsue) {
-                    _log.warn(nsue.getMessage());
-                }
-
-                // if (systemUser == null) {
-
-                // The record's user does not exist in this system.
-                // Use the current user's id and userName instead.
-                importRecord.setUserId(userId);
-                importRecord.setUserName(userName);
-
-                // } else {
-                //
-                // // Update the record with the system user's userName
-                // importRecord.setUserName(systemUser.getFullName());
-                // }
-
-                TaskRecord existingRecord = null;
-
-                try {
-                    existingRecord = _taskRecordService.getTaskRecord(taskRecordId);
-                } catch (NoSuchTaskRecordException ignore) {
-                }
-
-                if (existingRecord == null) {
-
-                    // Insert the imported record as new
-
-                    try {
-                        _taskRecordService.addTaskRecord(importRecord.getWorkPackage(), importRecord.getDescription(),
-                                importRecord.getTicketURL(), importRecord.getEndDate(), importRecord.getStartDate(),
-                                importRecord.getStatus(), importRecord.getDuration(), serviceContext);
-                    } catch (Exception e) {
-                        _log.error(e);
-                    }
-
-                }
-
-                numRecords++;
-            }
-
-            SessionMessages.add(actionRequest, REQUEST_PROCESSED,
-                    PortletUtil.translate("successfully-imported-x-task-records", numRecords));
-        } else {
-            SessionErrors.add(actionRequest, PortletUtil.translate("file-not-found"));
-        }
-
-    }
+//    @Deprecated
+//    public void importXML(ActionRequest actionRequest, ActionResponse actionResponse) throws Exception {
+//
+//        ServiceContext serviceContext = ServiceContextFactory.getInstance(TaskRecord.class.getName(), actionRequest);
+//
+//        UploadPortletRequest uploadPortletRequest = PortalUtil.getUploadPortletRequest(actionRequest);
+//
+//        File file = uploadPortletRequest.getFile("file");
+//
+//        if (Validator.isNotNull(file)) {
+//
+//            com.liferay.portal.kernel.xml.Document document = SAXReaderUtil.read(file);
+//
+//            List<Node> nodes = document.selectNodes("/taskRecords/" + TaskRecordImpl.class.getName());
+//
+//            int numRecords = 0;
+//
+//            XStream xstream = new XStream();
+//
+//            ThemeDisplay themeDisplay = (ThemeDisplay) actionRequest.getAttribute(WebKeys.THEME_DISPLAY);
+//
+//            long groupId = themeDisplay.getScopeGroupId();
+//            long userId = themeDisplay.getUserId();
+//            User user = UserLocalServiceUtil.getUser(userId);
+//            String userName = user.getFullName();
+//
+//            for (Node node : nodes) {
+//
+//                String xml = node.asXML();
+//
+//                TaskRecord importRecord = (TaskRecord) xstream.fromXML(xml);
+//
+//                long taskRecordId = importRecord.getTaskRecordId();
+//                long companyId = PortalUtil.getCompanyId(actionRequest);
+//
+//                if (companyId != importRecord.getCompanyId()) {
+//
+//                    // Data is not from this portal instance
+//                    importRecord.setCompanyId(companyId);
+//                }
+//
+//                if (groupId != importRecord.getGroupId()) {
+//
+//                    // Data is not from this group
+//                    importRecord.setGroupId(groupId);
+//                }
+//
+//                User systemUser = null;
+//                try {
+//                    systemUser = UserLocalServiceUtil.getUser(importRecord.getUserId());
+//                } catch (NoSuchUserException nsue) {
+//                    _log.warn(nsue.getMessage());
+//                }
+//
+//                // if (systemUser == null) {
+//
+//                // The record's user does not exist in this system.
+//                // Use the current user's id and userName instead.
+//                importRecord.setUserId(userId);
+//                importRecord.setUserName(userName);
+//
+//                // } else {
+//                //
+//                // // Update the record with the system user's userName
+//                // importRecord.setUserName(systemUser.getFullName());
+//                // }
+//
+//                TaskRecord existingRecord = null;
+//
+//                try {
+//                    existingRecord = _taskRecordService.getTaskRecord(taskRecordId);
+//                } catch (NoSuchTaskRecordException ignore) {
+//                }
+//
+//                if (existingRecord == null) {
+//
+//                    // Insert the imported record as new
+//
+//                    try {
+//                        _taskRecordService.addTaskRecord(importRecord.getWorkPackage(), importRecord.getDescription(),
+//                                importRecord.getTicketURL(), importRecord.getEndDate(), importRecord.getStartDate(),
+//                                importRecord.getStatus(), importRecord.getDuration(), serviceContext);
+//                    } catch (Exception e) {
+//                        _log.error(e);
+//                    }
+//
+//                }
+//
+//                numRecords++;
+//            }
+//
+//            SessionMessages.add(actionRequest, REQUEST_PROCESSED,
+//                    PortletUtil.translate("successfully-imported-x-task-records", numRecords));
+//        } else {
+//            SessionErrors.add(actionRequest, PortletUtil.translate("file-not-found"));
+//        }
+//
+//    }
 
     /**
      * From ImportLayoutsMVCCommand
@@ -343,44 +354,39 @@ public class TimetrackerPortlet extends MVCPortlet {
 
         String cmd = ParamUtil.getString(actionRequest, Constants.CMD);
 
+        _log.info("processAction");
+        _log.info("cmd = " + cmd);
+
         try {
             if (cmd.equals(Constants.ADD_TEMP)) {
-
                 addTempFileEntry(actionRequest, ExportImportHelper.TEMP_FOLDER_NAME);
 
-                // TODO
-                // validateFile(actionRequest, actionResponse,
-                // ExportImportHelper.TEMP_FOLDER_NAME);
-
+                validateFile(actionRequest, actionResponse, ExportImportHelper.TEMP_FOLDER_NAME);
                 hideDefaultSuccessMessage(actionRequest);
-
-            } else if (cmd.equals(Constants.DELETE)) {
-
-                deleteBackgroundTasks(actionRequest, actionResponse);
 
             } else if (cmd.equals(Constants.DELETE_TEMP)) {
 
-                // TODO
-                // deleteTempFileEntry(actionRequest, actionResponse,
-                // ExportImportHelper.TEMP_FOLDER_NAME);
-
+                deleteTempFileEntry(actionRequest, actionResponse, ExportImportHelper.TEMP_FOLDER_NAME);
                 hideDefaultSuccessMessage(actionRequest);
+
             } else if (cmd.equals(Constants.EXPORT)) {
 
                 exportTaskRecords(actionRequest, actionResponse);
+                hideDefaultSuccessMessage(actionRequest);
 
             } else if (cmd.equals(Constants.IMPORT)) {
 
                 hideDefaultSuccessMessage(actionRequest);
-
-                importData(actionRequest, ExportImportHelper.TEMP_FOLDER_NAME);
+                importTaskRecords(actionRequest, ExportImportHelper.TEMP_FOLDER_NAME);
 
                 String redirect = ParamUtil.getString(actionRequest, "redirect");
 
-                // super.sendRedirect(actionRequest, actionResponse);
+                _log.info("redirect = " + redirect);
+
                 // sendRedirect(actionRequest, actionResponse, redirect);
             }
         } catch (Exception e) {
+
             if (cmd.equals(Constants.ADD_TEMP) || cmd.equals(Constants.DELETE_TEMP)) {
 
                 hideDefaultSuccessMessage(actionRequest);
@@ -388,22 +394,20 @@ public class TimetrackerPortlet extends MVCPortlet {
                 // TODO
                 // handleUploadException(actionRequest, actionResponse,
                 // ExportImportHelper.TEMP_FOLDER_NAME, e);
-            } else {
-                // if ((e instanceof LARFileException) || (e instanceof
-                // LARFileSizeException)
-                // || (e instanceof LARTypeException)) {
-                //
-                // SessionErrors.add(actionRequest, e.getClass());
-                // } else if ((e instanceof LayoutPrototypeException) || (e
-                // instanceof LocaleException)) {
-                //
-                // SessionErrors.add(actionRequest, e.getClass(), e);
-                // } else {
-                _log.error(e, e);
 
-                // SessionErrors.add(actionRequest,
-                // LayoutImportException.class.getName());
-                // }
+            } else {
+                if ((e instanceof LARFileException) || (e instanceof LARFileSizeException)
+                        || (e instanceof LARTypeException)) {
+
+                    SessionErrors.add(actionRequest, e.getClass());
+                } else if ((e instanceof LayoutPrototypeException) || (e instanceof LocaleException)) {
+
+                    SessionErrors.add(actionRequest, e.getClass(), e);
+                } else {
+                    _log.error(e, e);
+
+                    SessionErrors.add(actionRequest, LayoutImportException.class.getName());
+                }
             }
         }
     }
@@ -429,11 +433,17 @@ public class TimetrackerPortlet extends MVCPortlet {
     public void serveResource(ResourceRequest resourceRequest, ResourceResponse resourceResponse)
             throws PortletException {
 
+        _log.info("serveResource");
+
         try {
             String resourceID = resourceRequest.getResourceID();
 
+            _log.info("resourceId = " + resourceID);
+
             if (resourceID.equals("getSum")) {
                 getSum(resourceRequest, resourceResponse);
+            } else if (resourceID.equals("importTaskRecords")) {
+                importTaskRecords(resourceRequest, resourceResponse);
             } else {
                 super.serveResource(resourceRequest, resourceResponse);
             }
@@ -534,8 +544,7 @@ public class TimetrackerPortlet extends MVCPortlet {
 
         UploadPortletRequest uploadPortletRequest = PortalUtil.getUploadPortletRequest(actionRequest);
 
-        // TODO
-        // checkExceededSizeLimit(uploadPortletRequest);
+        checkExceededSizeLimit(uploadPortletRequest);
 
         long groupId = ParamUtil.getLong(actionRequest, "groupId");
 
@@ -550,9 +559,7 @@ public class TimetrackerPortlet extends MVCPortlet {
 
             String contentType = uploadPortletRequest.getContentType("file");
 
-            FileEntry fileEntry = _taskRecordService.addTempFileEntry(groupId, folderName, sourceFileName, inputStream,
-                    contentType);
-
+            _layoutService.addTempFileEntry(groupId, folderName, sourceFileName, inputStream, contentType);
         } catch (Exception e) {
             UploadException uploadException = (UploadException) actionRequest.getAttribute(WebKeys.UPLOAD_EXCEPTION);
 
@@ -581,6 +588,22 @@ public class TimetrackerPortlet extends MVCPortlet {
         }
     }
 
+    protected void checkExceededSizeLimit(HttpServletRequest request) throws PortalException {
+
+        UploadException uploadException = (UploadException) request.getAttribute(WebKeys.UPLOAD_EXCEPTION);
+
+        if (uploadException != null) {
+            Throwable cause = uploadException.getCause();
+
+            if (uploadException.isExceededFileSizeLimit() || uploadException.isExceededUploadRequestSizeLimit()) {
+
+                throw new LARFileSizeException(cause);
+            }
+
+            throw new PortalException(cause);
+        }
+    }
+
     protected void deleteBackgroundTasks(ActionRequest actionRequest, ActionResponse actionResponse) throws Exception {
         try {
             long[] backgroundTaskIds = ParamUtil.getLongValues(actionRequest, "deleteBackgroundTaskIds");
@@ -603,6 +626,8 @@ public class TimetrackerPortlet extends MVCPortlet {
     protected void deleteTempFileEntry(ActionRequest actionRequest, ActionResponse actionResponse, String folderName)
             throws Exception {
 
+        _log.info("deleteTempFileEntry");
+
         ThemeDisplay themeDisplay = (ThemeDisplay) actionRequest.getAttribute(WebKeys.THEME_DISPLAY);
 
         JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
@@ -621,9 +646,12 @@ public class TimetrackerPortlet extends MVCPortlet {
         }
 
         JSONPortletResponseUtil.writeJSON(actionRequest, actionResponse, jsonObject);
+
     }
 
     protected void deleteTempFileEntry(long groupId, String folderName) throws PortalException {
+
+        _log.info("deleteTempFileEntry");
 
         String[] tempFileNames = _taskRecordService.getTempFileNames(groupId, folderName);
 
@@ -646,6 +674,8 @@ public class TimetrackerPortlet extends MVCPortlet {
 
     protected void exportTaskRecords(ActionRequest actionRequest, ActionResponse actionResponse) throws Exception {
 
+        _log.info("exportTaskRecords");
+
         ThemeDisplay themeDisplay = (ThemeDisplay) actionRequest.getAttribute(WebKeys.THEME_DISPLAY);
 
         long groupId = themeDisplay.getScopeGroupId();
@@ -664,9 +694,9 @@ public class TimetrackerPortlet extends MVCPortlet {
         String tabs1 = ParamUtil.getString(actionRequest, "tabs1");
         String tabs2 = ParamUtil.getString(actionRequest, "tabs2");
 
-        parameters.put("mvcPath", new String[] {mvcPath});
-        parameters.put("tabs1", new String[] {tabs1});
-        parameters.put("tabs2", new String[] {tabs2});
+        parameters.put("mvcPath", new String[] { mvcPath });
+        parameters.put("tabs1", new String[] { tabs1 });
+        parameters.put("tabs2", new String[] { tabs2 });
 
         actionResponse.setRenderParameters(parameters);
 
@@ -745,6 +775,34 @@ public class TimetrackerPortlet extends MVCPortlet {
                 taskName, ExportImportConfigurationConstants.TYPE_EXPORT_TASK_RECORDS, exportTaskRecordsSettingsMap);
     }
 
+    /**
+     * from com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCResourceCommand
+     *
+     * @param resourceRequest
+     * @return
+     */
+    protected PortletConfig getPortletConfig(ResourceRequest resourceRequest) {
+        String portletId = PortalUtil.getPortletId(resourceRequest);
+
+        return PortletConfigFactoryUtil.get(portletId);
+    }
+
+    /**
+     * from com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCResourceCommand
+     *
+     * @param resourceRequest
+     * @param path
+     * @return
+     */
+    protected PortletRequestDispatcher getPortletRequestDispatcher(ResourceRequest resourceRequest, String path) {
+
+        PortletConfig portletConfig = getPortletConfig(resourceRequest);
+
+        PortletContext portletContext = portletConfig.getPortletContext();
+
+        return portletContext.getRequestDispatcher(path);
+    }
+
     protected void getTaskRecord(PortletRequest portletRequest) throws Exception {
 
         long taskRecordId = ParamUtil.getLong(portletRequest, "taskRecordId");
@@ -758,7 +816,27 @@ public class TimetrackerPortlet extends MVCPortlet {
         portletRequest.setAttribute(TimetrackerWebKeys.TASK_RECORD, taskRecord);
     }
 
-    protected void importData(ActionRequest actionRequest, String folderName) throws Exception {
+    protected void handleUploadException(ActionRequest actionRequest, ActionResponse actionResponse, String folderName,
+            Exception e) throws Exception {
+
+        HttpServletResponse response = PortalUtil.getHttpServletResponse(actionResponse);
+
+        response.setContentType(ContentTypes.TEXT_HTML);
+        response.setStatus(HttpServletResponse.SC_OK);
+
+        ThemeDisplay themeDisplay = (ThemeDisplay) actionRequest.getAttribute(WebKeys.THEME_DISPLAY);
+
+        deleteTempFileEntry(themeDisplay.getScopeGroupId(), folderName);
+
+        JSONObject jsonObject = StagingUtil.getExceptionMessagesJSONObject(themeDisplay.getLocale(), e,
+                (ExportImportConfiguration) null);
+
+        JSONPortletResponseUtil.writeJSON(actionRequest, actionResponse, jsonObject);
+
+        ServletResponseUtil.write(response, String.valueOf(jsonObject.getInt("status")));
+    }
+
+    protected void importTaskRecords(ActionRequest actionRequest, String folderName) throws Exception {
 
         ThemeDisplay themeDisplay = (ThemeDisplay) actionRequest.getAttribute(WebKeys.THEME_DISPLAY);
 
@@ -772,7 +850,7 @@ public class TimetrackerPortlet extends MVCPortlet {
             inputStream = _dlFileEntryLocalService.getFileAsStream(fileEntry.getFileEntryId(), fileEntry.getVersion(),
                     false);
 
-            importData(actionRequest, fileEntry.getTitle(), inputStream);
+            importTaskRecords(actionRequest, fileEntry.getTitle(), inputStream);
 
             deleteTempFileEntry(groupId, folderName);
 
@@ -781,23 +859,43 @@ public class TimetrackerPortlet extends MVCPortlet {
         }
     }
 
-    protected void importData(ActionRequest actionRequest, String fileName, InputStream inputStream) throws Exception {
-
-        ThemeDisplay themeDisplay = (ThemeDisplay) actionRequest.getAttribute(WebKeys.THEME_DISPLAY);
+    protected void importTaskRecords(ActionRequest actionRequest, String fileName, InputStream inputStream)
+            throws Exception {
 
         long groupId = ParamUtil.getLong(actionRequest, "groupId");
-        boolean privateLayout = ParamUtil.getBoolean(actionRequest, "privateLayout");
 
-        _log.info("groupId = " + groupId);
+        ExportImportConfiguration exportImportConfiguration = getExportImportConfiguration(actionRequest);
 
-        // ExportImportConfiguration taskRecordConfiguration =
-        // ExportImportConfigurationFactory
-        // .buildDefaultLocalPublishingExportImportConfiguration(actionRequest);
-        //
-        // taskRecordConfiguration.setGroupId(groupId);
+        exportImportConfiguration.setName("TaskRecords");
+        exportImportConfiguration.setGroupId(groupId);
 
-        _taskRecordService.importTaskRecordsInBackground(inputStream);
+        _taskRecordService.importTaskRecordsInBackground(exportImportConfiguration, inputStream);
 
+    }
+
+    protected void importTaskRecords(ResourceRequest resourceRequest, ResourceResponse resourceResponse)
+            throws Exception {
+
+        String cmd = ParamUtil.getString(resourceRequest, Constants.CMD);
+
+        _log.info("importTaskRecords");
+
+        PortletRequestDispatcher portletRequestDispatcher = null;
+
+        if (cmd.equals(Constants.IMPORT)) {
+
+            _log.info("cmd = " + cmd);
+
+            portletRequestDispatcher = getPortletRequestDispatcher(resourceRequest, "/import/processes_list/view.jsp");
+        } else {
+
+            _log.info("cmd = " + cmd);
+
+            portletRequestDispatcher = getPortletRequestDispatcher(resourceRequest,
+                    "/import/new_import/import_task_records_resources.jsp");
+        }
+
+        portletRequestDispatcher.include(resourceRequest, resourceResponse);
     }
 
     @Reference
@@ -808,19 +906,83 @@ public class TimetrackerPortlet extends MVCPortlet {
     @Reference(unbind = "-")
     protected void setExportImportConfigurationLocalService(
             ExportImportConfigurationLocalService exportImportConfigurationLocalService) {
-
         _exportImportConfigurationLocalService = exportImportConfigurationLocalService;
     }
 
-    @Reference
+    @Reference(unbind = "-")
+    protected void setExportImportService(ExportImportService exportImportService) {
+        _exportImportService = exportImportService;
+    }
+
+    @Reference(unbind = "-")
+    protected void setLayoutService(LayoutService layoutService) {
+        _layoutService = layoutService;
+    }
+
+    @Reference(unbind = "-")
     protected void setTaskRecordService(TaskRecordService taskRecordService) {
         this._taskRecordService = taskRecordService;
     }
 
+    protected void validateFile(ActionRequest actionRequest, ActionResponse actionResponse, String folderName)
+            throws Exception {
+
+        ThemeDisplay themeDisplay = (ThemeDisplay) actionRequest.getAttribute(WebKeys.THEME_DISPLAY);
+
+        long groupId = ParamUtil.getLong(actionRequest, "groupId");
+
+        FileEntry fileEntry = ExportImportHelperUtil.getTempFileEntry(groupId, themeDisplay.getUserId(), folderName);
+
+        InputStream inputStream = null;
+
+        try {
+            inputStream = _dlFileEntryLocalService.getFileAsStream(fileEntry.getFileEntryId(), fileEntry.getVersion(),
+                    false);
+
+            MissingReferences missingReferences = validateFile(actionRequest, inputStream);
+
+            Map<String, MissingReference> weakMissingReferences = missingReferences.getWeakMissingReferences();
+
+            if (weakMissingReferences.isEmpty()) {
+                return;
+            }
+
+            JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
+
+            if ((weakMissingReferences != null) && !weakMissingReferences.isEmpty()) {
+
+                jsonObject.put("warningMessages",
+                        StagingUtil.getWarningMessagesJSONArray(themeDisplay.getLocale(), weakMissingReferences));
+            }
+
+            JSONPortletResponseUtil.writeJSON(actionRequest, actionResponse, jsonObject);
+        } finally {
+            StreamUtil.cleanUp(inputStream);
+        }
+    }
+
+    protected MissingReferences validateFile(ActionRequest actionRequest, InputStream inputStream) throws Exception {
+
+        ThemeDisplay themeDisplay = (ThemeDisplay) actionRequest.getAttribute(WebKeys.THEME_DISPLAY);
+
+        long groupId = ParamUtil.getLong(actionRequest, "groupId");
+        boolean privateLayout = ParamUtil.getBoolean(actionRequest, "privateLayout");
+
+        Map<String, Serializable> importLayoutSettingsMap = ExportImportConfigurationSettingsMapFactory
+                .buildImportLayoutSettingsMap(themeDisplay.getUserId(), groupId, privateLayout, null,
+                        actionRequest.getParameterMap(), themeDisplay.getLocale(), themeDisplay.getTimeZone());
+
+        ExportImportConfiguration exportImportConfiguration = _exportImportConfigurationLocalService
+                .addDraftExportImportConfiguration(themeDisplay.getUserId(),
+                        ExportImportConfigurationConstants.TYPE_IMPORT_TASK_RECORDS, importLayoutSettingsMap);
+
+        return _exportImportService.validateImportLayoutsFile(exportImportConfiguration, inputStream);
+    }
+
     private DLFileEntryLocalService _dlFileEntryLocalService;
-
     private ExportImportConfigurationLocalService _exportImportConfigurationLocalService;
-
+    private ExportImportService _exportImportService;
+    private LayoutService _layoutService;
     private TaskRecordService _taskRecordService;
 
     private volatile TimetrackerConfiguration _timetrackerConfiguration;

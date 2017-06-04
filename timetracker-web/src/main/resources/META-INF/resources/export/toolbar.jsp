@@ -2,8 +2,8 @@
     toolbar.jsp: the export toolbar.
     
     Created:    2017-05-16 17:30 by Christian Berndt
-    Modified:   2017-05-30 23:48 by Christian Berndt
-    Version:    1.0.1
+    Modified:   2017-06-04 23:33 by Christian Berndt
+    Version:    1.0.2
 --%>
 
 <%@ include file="/init.jsp" %>
@@ -18,6 +18,8 @@
     String orderByType = ParamUtil.getString(request, "orderByType");
     String navigation = ParamUtil.getString(request, "navigation", "all");
     String searchContainerId = ParamUtil.getString(request, "searchContainerId");
+    
+    PortletURL portletURL = renderResponse.createRenderURL();
 
     portletURL.setParameter("groupId", String.valueOf(groupId));
     portletURL.setParameter("displayStyle", displayStyle);

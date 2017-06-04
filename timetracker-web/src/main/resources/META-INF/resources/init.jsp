@@ -2,8 +2,8 @@
     init.jsp: Common setup code for the timetracker portlet.
 
     Created:     2014-02-01 15:31 by Christian Berndt
-    Modified:    2017-06-01 18:48 by Christian Berndt
-    Version:     1.0.8 
+    Modified:    2017-06-01 21:51 by Christian Berndt
+    Version:     1.0.9
 --%>
 
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
@@ -28,11 +28,16 @@
 <%@page import="ch.inofix.timetracker.web.internal.constants.TimetrackerWebKeys"%>
 <%@page import="ch.inofix.timetracker.web.configuration.TimetrackerConfiguration"%>
 
+<%@page import="com.liferay.exportimport.kernel.lar.ExportImportHelper"%>
+<%@page import="com.liferay.exportimport.kernel.lar.ExportImportHelperUtil"%>
+<%@page import="com.liferay.portal.kernel.backgroundtask.BackgroundTaskManagerUtil"%>
 <%@page import="com.liferay.portal.kernel.dao.search.SearchContainer"%>
 <%@page import="com.liferay.portal.kernel.language.LanguageUtil"%>
+<%@page import="com.liferay.portal.kernel.model.Group"%>
 <%@page import="com.liferay.portal.kernel.model.User"%>
 <%@page import="com.liferay.portal.kernel.portlet.LiferayWindowState"%>
 <%@page import="com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil"%>
+<%@page import="com.liferay.portal.kernel.repository.model.FileEntry"%>
 <%@page import="com.liferay.portal.kernel.search.Document"%>
 <%@page import="com.liferay.portal.kernel.search.Hits"%>
 <%@page import="com.liferay.portal.kernel.search.Sort"%>
@@ -49,9 +54,12 @@
 <%@page import="com.liferay.portal.kernel.util.ListUtil"%>
 <%@page import="com.liferay.portal.kernel.util.ParamUtil"%>
 <%@page import="com.liferay.portal.kernel.util.PortalUtil"%>
+<%@page import="com.liferay.portal.kernel.util.PrefsPropsUtil"%>
+<%@page import="com.liferay.portal.kernel.util.PropsKeys"%>
 <%@page import="com.liferay.portal.kernel.util.SetUtil"%>
 <%@page import="com.liferay.portal.kernel.util.StringPool"%>
 <%@page import="com.liferay.portal.kernel.util.StringUtil"%>
+<%@page import="com.liferay.portal.kernel.util.TextFormatter"%>
 <%@page import="com.liferay.portal.kernel.util.Validator"%>
 <%@page import="com.liferay.portal.kernel.util.WebKeys"%>
 <%@page import="com.liferay.portal.kernel.workflow.WorkflowConstants"%>
@@ -62,6 +70,7 @@
 <%@page import="java.util.ArrayList"%>
 <%@page import="java.util.Arrays"%>
 <%@page import="java.util.Date" %>
+<%@page import="java.util.HashMap"%>
 <%@page import="java.util.List"%>
 <%@page import="java.util.Set"%>
 
@@ -78,11 +87,7 @@
 <%
     String tabs1 = ParamUtil.getString(request, "tabs1", "browse");
     String tabs2 = ParamUtil.getString(request, "tabs2", "export");
-
-    PortletURL portletURL = renderResponse.createRenderURL();
-    portletURL.setParameter("tabs1", tabs1); 
-    portletURL.setParameter("tabs2", tabs2); 
    
-    TimetrackerConfiguration timetrackerConfiguration = (TimetrackerConfiguration) renderRequest
+    TimetrackerConfiguration timetrackerConfiguration = (TimetrackerConfiguration) request
             .getAttribute(TimetrackerConfiguration.class.getName());
 %>
