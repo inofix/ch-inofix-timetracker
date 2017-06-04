@@ -14,7 +14,6 @@
 
 package ch.inofix.timetracker.service.impl;
 
-import java.io.File;
 import java.io.InputStream;
 import java.util.Date;
 import java.util.List;
@@ -52,10 +51,11 @@ import ch.inofix.timetracker.service.permission.TimetrackerPortletPermission;
  * can be accessed remotely.
  * </p>
  *
- * @author Christian Berndt, Stefan Luebbers
+ * @author Christian Berndt
+ * @author Stefan Luebbers
  * @created 2015-05-07 23:50
- * @modified 2017-04-09 22:50
- * @version 1.1.1
+ * @modified 2017-06-04 16:59
+ * @version 1.1.2
  * @see TaskRecordServiceBaseImpl
  * @see ch.inofix.timetracker.service.TaskRecordServiceUtil
  */
@@ -188,24 +188,6 @@ public class TaskRecordServiceImpl extends TaskRecordServiceBaseImpl {
 
         return TempFileEntryUtil.getTempFileNames(groupId, getUserId(),
                 DigesterUtil.digestHex(Digester.SHA_256, folderName));
-    }
-
-    @Override
-    public long importTaskRecordsInBackground(File file)
-            throws PortalException {
-
-        _log.info("importTaskRecordsInBackground()");
-//
-//        Map<String, Serializable> settingsMap = taskRecordConfiguration.getSettingsMap();
-//
-//        long targetGroupId = MapUtil.getLong(settingsMap, "targetGroupId");
-
-        // TODO
-        // GroupPermissionUtil.check(
-        // getPermissionChecker(), targetGroupId,
-        // TaskRecordActionKeys.IMPORT_TASK_RECORDS);
-
-        return taskRecordLocalService.importTaskRecordsInBackground(getUserId(), file);
     }
 
     @Override
