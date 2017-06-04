@@ -20,7 +20,12 @@ import com.liferay.portal.kernel.util.FileUtil;
 import ch.inofix.timetracker.service.TaskRecordLocalServiceUtil;
 
 //import TaskRecordImportBackgroundTaskExecutor.TaskRecordImportCallable;
-
+/**
+ * @author Christian Berndt
+ * @created 2017-06-04 17:51
+ * @modified 2017-06-04 17:51
+ * @version 1.0.0
+ */
 public class TaskRecordImportBackgroundTaskExecutor extends BaseExportImportBackgroundTaskExecutor {
 
     public TaskRecordImportBackgroundTaskExecutor() {
@@ -60,8 +65,11 @@ public class TaskRecordImportBackgroundTaskExecutor extends BaseExportImportBack
 
                 FileUtil.write(file, attachmentsFileEntry.getContentStream());
 
+                _log.info(file.getAbsoluteFile());
+
                 TransactionInvokerUtil.invoke(transactionConfig,
                         new TaskRecordImportCallable(exportImportConfiguration, file));
+
             } catch (Throwable t) {
                 if (_log.isDebugEnabled()) {
                     _log.debug(t, t);
@@ -91,15 +99,7 @@ public class TaskRecordImportBackgroundTaskExecutor extends BaseExportImportBack
         @Override
         public Void call() throws PortalException {
 
-            _log.info("call()");
-
-            _log.info(_exportImportConfiguration);
-
-            // TODO
-            // ExportImportLocalServiceUtil.importTaskRecordsDataDeletions(_exportImportConfiguration,
-            // _file);
-            //
-            TaskRecordLocalServiceUtil.importTaskRecords(_file);
+            TaskRecordLocalServiceUtil.importTaskRecords(_exportImportConfiguration, _file);
 
             return null;
         }

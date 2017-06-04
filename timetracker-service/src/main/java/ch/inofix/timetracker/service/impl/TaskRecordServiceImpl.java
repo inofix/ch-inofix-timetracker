@@ -15,8 +15,10 @@
 package ch.inofix.timetracker.service.impl;
 
 import java.io.InputStream;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import com.liferay.exportimport.kernel.model.ExportImportConfiguration;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -28,6 +30,7 @@ import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.Digester;
 import com.liferay.portal.kernel.util.DigesterUtil;
+import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.TempFileEntryUtil;
 
 import aQute.bnd.annotation.ProviderType;
@@ -151,8 +154,9 @@ public class TaskRecordServiceImpl extends TaskRecordServiceBaseImpl {
             throws PortalException {
 
         // TODO: enable permission check
-//        TimetrackerPortletPermission.check(getPermissionChecker(), exportImportConfiguration.getGroupId(),
-//                TaskRecordActionKeys.EXPORT_TASK_RECORDS);
+        // TimetrackerPortletPermission.check(getPermissionChecker(),
+        // exportImportConfiguration.getGroupId(),
+        // TaskRecordActionKeys.EXPORT_TASK_RECORDS);
 
         return taskRecordLocalService.exportTaskRecordsAsFileInBackground(userId, exportImportConfiguration);
 
@@ -184,28 +188,32 @@ public class TaskRecordServiceImpl extends TaskRecordServiceBaseImpl {
     public String[] getTempFileNames(long groupId, String folderName) throws PortalException {
 
         // TODO
-        // GroupPermissionUtil.check(getPermissionChecker(), groupId, TaskRecordActionKeys.IMPORT_TASK_RECORDS);
+        // GroupPermissionUtil.check(getPermissionChecker(), groupId,
+        // TaskRecordActionKeys.IMPORT_TASK_RECORDS);
 
         return TempFileEntryUtil.getTempFileNames(groupId, getUserId(),
                 DigesterUtil.digestHex(Digester.SHA_256, folderName));
     }
 
     @Override
-    public long importTaskRecordsInBackground(
+    public long importTaskRecordsInBackground(ExportImportConfiguration exportImportConfiguration,
             InputStream inputStream) throws PortalException {
 
         _log.info("importTaskRecordsInBackground()");
 
-//        Map<String, Serializable> settingsMap = taskRecordConfiguration.getSettingsMap();
+        Map<String, Serializable> settingsMap = exportImportConfiguration.getSettingsMap();
 
-//        long targetGroupId = MapUtil.getLong(settingsMap, "targetGroupId");
+        long targetGroupId = MapUtil.getLong(settingsMap, "targetGroupId");
+
+        _log.info("targetGroupId = " + targetGroupId);
 
         // TODO
         // GroupPermissionUtil.check(
         // getPermissionChecker(), targetGroupId,
         // TaskRecordActionKeys.IMPORT_TASK_RECORDS);
 
-        return taskRecordLocalService.importTaskRecordsInBackground(getUserId(), inputStream);
+        return taskRecordLocalService.importTaskRecordsInBackground(getUserId(), exportImportConfiguration,
+                inputStream);
     }
 
     @Override
