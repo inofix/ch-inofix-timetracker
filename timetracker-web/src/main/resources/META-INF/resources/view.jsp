@@ -2,8 +2,8 @@
     view.jsp: Default view of Inofix' timetracker.
     
     Created:     2013-10-06 16:52 by Christian Berndt
-    Modified:    2017-06-05 17:18 by Christian Berndt
-    Version:     1.6.4
+    Modified:    2017-06-05 21:50 by Christian Berndt
+    Version:     1.6.5
 --%>
 
 <%@ include file="/init.jsp" %>
@@ -68,6 +68,8 @@
     request.setAttribute("view.jsp-displayStyle", displayStyle);
     
     request.setAttribute("view.jsp-searchContainer", searchContainer);
+    
+    request.setAttribute("view.jsp-total", hits.getLength());
 
 %>
 
@@ -76,7 +78,7 @@
 <liferay-util:include page="/navigation.jsp" servletContext="<%= application %>" />
 
 <liferay-util:include page="/toolbar.jsp" servletContext="<%= application %>">
-    <liferay-util:param name="searchContainerId" value="entries" />
+    <liferay-util:param name="searchContainerId" value="taskRecords" />
 </liferay-util:include>
 
 <div class="container-fluid-1280">
@@ -141,4 +143,3 @@
 </div>
 
 <liferay-util:include page="/add_button.jsp" servletContext="<%= application %>" />
-

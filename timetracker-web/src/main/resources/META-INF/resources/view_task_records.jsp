@@ -2,19 +2,20 @@
     view_task_records.jsp: search-container of Inofix' timetracker.
     
     Created:     2017-06-05 13:22 by Christian Berndt
-    Modified:    2017-06-05 13.22 by Christian Berndt
-    Version:     1.0.0
+    Modified:    2017-06-05 21:49 by Christian Berndt
+    Version:     1.0.1
 --%>
 
 <%@ include file="/init.jsp"%>
 
+<%@page import="ch.inofix.timetracker.web.internal.search.EntriesChecker"%>
+
 <%
     SearchContainer searchContainer = (SearchContainer)request.getAttribute("view.jsp-searchContainer");
 
-    // TODO
-//     EntriesChecker entriesChecker = new EntriesChecker(liferayPortletRequest, liferayPortletResponse);
+    EntriesChecker entriesChecker = new EntriesChecker(liferayPortletRequest, liferayPortletResponse);
     
-//     bookmarksSearchContainer.setRowChecker(entriesChecker);
+    searchContainer.setRowChecker(entriesChecker);
 
     String displayStyle = GetterUtil.getString((String)request.getAttribute("view.jsp-displayStyle"));
     
