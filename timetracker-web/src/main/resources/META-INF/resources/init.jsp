@@ -2,8 +2,8 @@
     init.jsp: Common setup code for the timetracker portlet.
 
     Created:     2014-02-01 15:31 by Christian Berndt
-    Modified:    2017-06-01 21:51 by Christian Berndt
-    Version:     1.0.9
+    Modified:    2017-06-05 13:14 by Christian Berndt
+    Version:     1.1.0
 --%>
 
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
@@ -16,6 +16,7 @@
 <%@taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui"%>
 <%@taglib uri="http://liferay.com/tld/util" prefix="liferay-util"%>
 
+<%@page import="ch.inofix.timetracker.constants.PortletKeys"%>
 <%@page import="ch.inofix.timetracker.constants.TaskRecordActionKeys"%>
 <%@page import="ch.inofix.timetracker.exception.NoSuchTaskRecordException"%>
 <%@page import="ch.inofix.timetracker.model.TaskRecord"%>
@@ -35,6 +36,7 @@
 <%@page import="com.liferay.portal.kernel.language.LanguageUtil"%>
 <%@page import="com.liferay.portal.kernel.model.Group"%>
 <%@page import="com.liferay.portal.kernel.model.User"%>
+<%@page import="com.liferay.portal.kernel.portlet.PortalPreferences"%>
 <%@page import="com.liferay.portal.kernel.portlet.LiferayWindowState"%>
 <%@page import="com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil"%>
 <%@page import="com.liferay.portal.kernel.repository.model.FileEntry"%>
@@ -85,6 +87,11 @@
 <portlet:defineObjects />
 
 <%
+    PortalPreferences portalPreferences = PortletPreferencesFactoryUtil.getPortalPreferences(request);
+
+    // TODO: read markupView from configuration
+    String markupView = "lexicon";
+
     String tabs1 = ParamUtil.getString(request, "tabs1", "browse");
     String tabs2 = ParamUtil.getString(request, "tabs2", "export");
    

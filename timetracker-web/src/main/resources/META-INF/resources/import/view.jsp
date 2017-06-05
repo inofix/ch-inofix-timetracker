@@ -2,8 +2,8 @@
     view.jsp: the import view.
     
     Created:    2017-06-01 21:08 by Christian Berndt
-    Modified:   2017-06-01 21:08 by Christian Berndt
-    Version:    1.0.0
+    Modified:   2017-06-05 17:18 by Christian Berndt
+    Version:    1.0.1
 --%>
 
 <%@ include file="/init.jsp" %>
@@ -20,7 +20,7 @@
     String orderByCol = ParamUtil.getString(request, "orderByCol");
     String orderByType = ParamUtil.getString(request, "orderByType");
     
-    PortalPreferences portalPreferences = PortletPreferencesFactoryUtil.getPortalPreferences(request);
+//     PortalPreferences portalPreferences = PortletPreferencesFactoryUtil.getPortalPreferences(request);
 
     if (Validator.isNotNull(orderByCol) && Validator.isNotNull(orderByType)) {
         portalPreferences.setValue(PortletKeys.BACKGROUND_TASK, "entries-order-by-col", orderByCol);
