@@ -2,35 +2,89 @@
     toolbar.jsp: The toolbar of the timetracker portlet
     
     Created:    2016-03-20 16:58 by Christian Berndt
-    Modified:   2017-06-04 23:32 by Christian Berndt
-    Version:    1.1.3
+    Modified:   2017-06-05 12:51 by Christian Berndt
+    Version:    1.1.4
 --%>
 
 <%@ include file="/init.jsp"%>
 
+<%@page import="com.liferay.portal.kernel.language.UnicodeLanguageUtil"%>
+<%@page import="com.liferay.portal.kernel.portlet.PortletURLUtil"%>
+<%@page import="com.liferay.trash.kernel.util.TrashUtil"%>
+
 <%
+    String searchContainerId = ParamUtil.getString(request, "searchContainerId");
+    
+    int total = GetterUtil.getInteger((String)request.getAttribute("view.jsp-total"));
+    
     PortletURL portletURL = renderResponse.createRenderURL();
+    
+//     TaskRecordSearch searchContainer = new TaskRecordSearch(liferayPortletRequest, portletURL);
 
-    TaskRecordSearch searchContainer = new TaskRecordSearch(liferayPortletRequest, portletURL);
+//     TaskRecordDisplayTerms displayTerms = (TaskRecordDisplayTerms) searchContainer.getDisplayTerms();
 
-    TaskRecordDisplayTerms displayTerms = (TaskRecordDisplayTerms) searchContainer.getDisplayTerms();
+//     long companyId = themeDisplay.getCompanyId();
 
-    long companyId = themeDisplay.getCompanyId();
+//     Sort sort = SortFactoryUtil.getSort(User.class, "lastName", "asc");
+//     //TODO replace with remoteService
+//     int numUsers = UserLocalServiceUtil.searchCount(companyId, null, WorkflowConstants.STATUS_APPROVED, null);
+//     //TODO replace with remoteService
+//     Hits hits = UserLocalServiceUtil.search(companyId, null, WorkflowConstants.STATUS_APPROVED, null, 0,
+//             numUsers, sort);
 
-    Sort sort = SortFactoryUtil.getSort(User.class, "lastName", "asc");
-    //TODO replace with remoteService
-    int numUsers = UserLocalServiceUtil.searchCount(companyId, null, WorkflowConstants.STATUS_APPROVED, null);
-    //TODO replace with remoteService
-    Hits hits = UserLocalServiceUtil.search(companyId, null, WorkflowConstants.STATUS_APPROVED, null, 0,
-            numUsers, sort);
+//     List<Document> documents = hits.toList();
 
-    List<Document> documents = hits.toList();
-
-    boolean ignoreEndDate = ParamUtil.getBoolean(request, "ignoreEndDate", true);
-    boolean ignoreStartDate = ParamUtil.getBoolean(request, "ignoreStartDate", true);
-    int status = ParamUtil.getInteger(request, "status", WorkflowConstants.STATUS_ANY);
+//     boolean ignoreEndDate = ParamUtil.getBoolean(request, "ignoreEndDate", true);
+//     boolean ignoreStartDate = ParamUtil.getBoolean(request, "ignoreStartDate", true);
+//     int status = ParamUtil.getInteger(request, "status", WorkflowConstants.STATUS_ANY);
 %>
 
+<liferay-frontend:management-bar
+    disabled="<%= total == 0 %>"
+    includeCheckBox="<%= true %>"
+    searchContainerId="<%= searchContainerId %>"
+>
+    <liferay-frontend:management-bar-buttons>
+        <%-- 
+        <liferay-frontend:management-bar-sidenav-toggler-button
+            icon="info-circle"
+            label="info"
+        />
+        --%>
+        <liferay-util:include page="/display_style_buttons.jsp" servletContext="<%= application %>" />
+    </liferay-frontend:management-bar-buttons>
+
+    <liferay-frontend:management-bar-filters>
+
+        <%
+        String[] navigationKeys = null;
+
+        if (themeDisplay.isSignedIn()) {
+            navigationKeys = new String[] {"all", "recent", "mine"};
+        }
+        else {
+            navigationKeys = new String[] {"all", "recent"};
+        }
+        %>
+
+        <liferay-frontend:management-bar-navigation
+            navigationKeys="<%= navigationKeys %>"
+            portletURL="<%= PortletURLUtil.clone(portletURL, liferayPortletResponse) %>"
+        />
+    </liferay-frontend:management-bar-filters>
+
+    <liferay-frontend:management-bar-action-buttons>
+        <%--    
+        <liferay-frontend:management-bar-sidenav-toggler-button
+            icon="info-circle"
+            label="info"
+        />
+        --%>
+        <liferay-frontend:management-bar-button href='<%= "javascript:" + renderResponse.getNamespace() + "deleteEntries();" %>' icon='<%= TrashUtil.isTrashEnabled(scopeGroupId) ? "trash" : "times" %>' label='<%= TrashUtil.isTrashEnabled(scopeGroupId) ? "recycle-bin" : "delete" %>' />
+    </liferay-frontend:management-bar-action-buttons>
+</liferay-frontend:management-bar>
+
+<%-- 
 <aui:nav-bar>
 
     <aui:nav id="toolbarContainer" cssClass="pull-left toolbar-container">
@@ -43,8 +97,8 @@
                                     + "downloadTaskRecords();";
             %>
 
-            <%-- <aui:nav-item href="<%=downloadTaskRecordsURL%>" iconCssClass="icon-download"
-                label="download-selected-task-records" /> --%>
+            <aui:nav-item href="<%=downloadTaskRecordsURL%>" iconCssClass="icon-download"
+                label="download-selected-task-records" /> 
 
             <%
                 String deleteTaskRecordsURL = "javascript:" + renderResponse.getNamespace()
@@ -82,7 +136,6 @@
         </aui:nav-item>
 
 
-        <%-- 
         <aui:nav-item dropdown="<%=true%>" id="exportButtonContainer"
             label="export">
 
@@ -119,7 +172,6 @@
             </aui:nav-item>
         </aui:nav-item>
         
-        --%>
         
     </aui:nav>
     
@@ -222,3 +274,4 @@
     </aui:nav-bar-search>
 
 </aui:nav-bar>
+--%>

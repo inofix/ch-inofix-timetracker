@@ -3,11 +3,13 @@
     for the main view of the timetracker portlet.
 
     Created:     2013-10-07 14:41 by Christian Berndt
-    Modified:    2016-11-26 16:15 by Christian Berndt
-    Version:     1.1.6
+    Modified:    2017-06-05 13:59 by Christian Berndt
+    Version:     1.1.7
 --%>
 
 <%
+    String[] columns = (String[])request.getAttribute("view.jsp-columns");
+
     String dateFormatPattern =
         ((SimpleDateFormat) (DateFormat.getDateTimeInstance(
             DateFormat.MEDIUM, DateFormat.SHORT, locale))).toPattern();
@@ -34,6 +36,9 @@
 <%
     // Crop workpackages if they are too long
     
+    // TODO: read maxLength from configuration
+    int maxLength = 50; 
+
     String workPackageString = taskRecord.getWorkPackage();
     
     if (Validator.isNotNull(workPackageString)) {

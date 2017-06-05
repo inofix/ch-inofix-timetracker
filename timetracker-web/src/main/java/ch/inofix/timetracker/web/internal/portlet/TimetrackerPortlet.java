@@ -106,8 +106,8 @@ import ch.inofix.timetracker.web.internal.portlet.util.PortletUtil;
  * @author Christian Berndt
  * @author Stefan Luebbers
  * @created 2013-10-07 10:47
- * @modified 2017-06-05 12:28
- * @version 1.6.7
+ * @modified 2017-06-05 15:53
+ * @version 1.6.8
  */
 @Component(immediate = true, property = { "com.liferay.portlet.css-class-wrapper=portlet-timetracker",
         "com.liferay.portlet.display-category=category.inofix",
@@ -243,104 +243,115 @@ public class TimetrackerPortlet extends MVCPortlet {
      * @param actionResponse
      * @deprecated use importInBackground instead
      */
-//    @Deprecated
-//    public void importXML(ActionRequest actionRequest, ActionResponse actionResponse) throws Exception {
-//
-//        ServiceContext serviceContext = ServiceContextFactory.getInstance(TaskRecord.class.getName(), actionRequest);
-//
-//        UploadPortletRequest uploadPortletRequest = PortalUtil.getUploadPortletRequest(actionRequest);
-//
-//        File file = uploadPortletRequest.getFile("file");
-//
-//        if (Validator.isNotNull(file)) {
-//
-//            com.liferay.portal.kernel.xml.Document document = SAXReaderUtil.read(file);
-//
-//            List<Node> nodes = document.selectNodes("/taskRecords/" + TaskRecordImpl.class.getName());
-//
-//            int numRecords = 0;
-//
-//            XStream xstream = new XStream();
-//
-//            ThemeDisplay themeDisplay = (ThemeDisplay) actionRequest.getAttribute(WebKeys.THEME_DISPLAY);
-//
-//            long groupId = themeDisplay.getScopeGroupId();
-//            long userId = themeDisplay.getUserId();
-//            User user = UserLocalServiceUtil.getUser(userId);
-//            String userName = user.getFullName();
-//
-//            for (Node node : nodes) {
-//
-//                String xml = node.asXML();
-//
-//                TaskRecord importRecord = (TaskRecord) xstream.fromXML(xml);
-//
-//                long taskRecordId = importRecord.getTaskRecordId();
-//                long companyId = PortalUtil.getCompanyId(actionRequest);
-//
-//                if (companyId != importRecord.getCompanyId()) {
-//
-//                    // Data is not from this portal instance
-//                    importRecord.setCompanyId(companyId);
-//                }
-//
-//                if (groupId != importRecord.getGroupId()) {
-//
-//                    // Data is not from this group
-//                    importRecord.setGroupId(groupId);
-//                }
-//
-//                User systemUser = null;
-//                try {
-//                    systemUser = UserLocalServiceUtil.getUser(importRecord.getUserId());
-//                } catch (NoSuchUserException nsue) {
-//                    _log.warn(nsue.getMessage());
-//                }
-//
-//                // if (systemUser == null) {
-//
-//                // The record's user does not exist in this system.
-//                // Use the current user's id and userName instead.
-//                importRecord.setUserId(userId);
-//                importRecord.setUserName(userName);
-//
-//                // } else {
-//                //
-//                // // Update the record with the system user's userName
-//                // importRecord.setUserName(systemUser.getFullName());
-//                // }
-//
-//                TaskRecord existingRecord = null;
-//
-//                try {
-//                    existingRecord = _taskRecordService.getTaskRecord(taskRecordId);
-//                } catch (NoSuchTaskRecordException ignore) {
-//                }
-//
-//                if (existingRecord == null) {
-//
-//                    // Insert the imported record as new
-//
-//                    try {
-//                        _taskRecordService.addTaskRecord(importRecord.getWorkPackage(), importRecord.getDescription(),
-//                                importRecord.getTicketURL(), importRecord.getEndDate(), importRecord.getStartDate(),
-//                                importRecord.getStatus(), importRecord.getDuration(), serviceContext);
-//                    } catch (Exception e) {
-//                        _log.error(e);
-//                    }
-//
-//                }
-//
-//                numRecords++;
-//            }
-//
-//            SessionMessages.add(actionRequest, REQUEST_PROCESSED,
-//                    PortletUtil.translate("successfully-imported-x-task-records", numRecords));
-//        } else {
-//            SessionErrors.add(actionRequest, PortletUtil.translate("file-not-found"));
-//        }
-//
-//    }
+    // @Deprecated
+    // public void importXML(ActionRequest actionRequest, ActionResponse
+    // actionResponse) throws Exception {
+    //
+    // ServiceContext serviceContext =
+    // ServiceContextFactory.getInstance(TaskRecord.class.getName(),
+    // actionRequest);
+    //
+    // UploadPortletRequest uploadPortletRequest =
+    // PortalUtil.getUploadPortletRequest(actionRequest);
+    //
+    // File file = uploadPortletRequest.getFile("file");
+    //
+    // if (Validator.isNotNull(file)) {
+    //
+    // com.liferay.portal.kernel.xml.Document document =
+    // SAXReaderUtil.read(file);
+    //
+    // List<Node> nodes = document.selectNodes("/taskRecords/" +
+    // TaskRecordImpl.class.getName());
+    //
+    // int numRecords = 0;
+    //
+    // XStream xstream = new XStream();
+    //
+    // ThemeDisplay themeDisplay = (ThemeDisplay)
+    // actionRequest.getAttribute(WebKeys.THEME_DISPLAY);
+    //
+    // long groupId = themeDisplay.getScopeGroupId();
+    // long userId = themeDisplay.getUserId();
+    // User user = UserLocalServiceUtil.getUser(userId);
+    // String userName = user.getFullName();
+    //
+    // for (Node node : nodes) {
+    //
+    // String xml = node.asXML();
+    //
+    // TaskRecord importRecord = (TaskRecord) xstream.fromXML(xml);
+    //
+    // long taskRecordId = importRecord.getTaskRecordId();
+    // long companyId = PortalUtil.getCompanyId(actionRequest);
+    //
+    // if (companyId != importRecord.getCompanyId()) {
+    //
+    // // Data is not from this portal instance
+    // importRecord.setCompanyId(companyId);
+    // }
+    //
+    // if (groupId != importRecord.getGroupId()) {
+    //
+    // // Data is not from this group
+    // importRecord.setGroupId(groupId);
+    // }
+    //
+    // User systemUser = null;
+    // try {
+    // systemUser = UserLocalServiceUtil.getUser(importRecord.getUserId());
+    // } catch (NoSuchUserException nsue) {
+    // _log.warn(nsue.getMessage());
+    // }
+    //
+    // // if (systemUser == null) {
+    //
+    // // The record's user does not exist in this system.
+    // // Use the current user's id and userName instead.
+    // importRecord.setUserId(userId);
+    // importRecord.setUserName(userName);
+    //
+    // // } else {
+    // //
+    // // // Update the record with the system user's userName
+    // // importRecord.setUserName(systemUser.getFullName());
+    // // }
+    //
+    // TaskRecord existingRecord = null;
+    //
+    // try {
+    // existingRecord = _taskRecordService.getTaskRecord(taskRecordId);
+    // } catch (NoSuchTaskRecordException ignore) {
+    // }
+    //
+    // if (existingRecord == null) {
+    //
+    // // Insert the imported record as new
+    //
+    // try {
+    // _taskRecordService.addTaskRecord(importRecord.getWorkPackage(),
+    // importRecord.getDescription(),
+    // importRecord.getTicketURL(), importRecord.getEndDate(),
+    // importRecord.getStartDate(),
+    // importRecord.getStatus(), importRecord.getDuration(), serviceContext);
+    // } catch (Exception e) {
+    // _log.error(e);
+    // }
+    //
+    // }
+    //
+    // numRecords++;
+    // }
+    //
+    // SessionMessages.add(actionRequest, REQUEST_PROCESSED,
+    // PortletUtil.translate("successfully-imported-x-task-records",
+    // numRecords));
+    // } else {
+    // SessionErrors.add(actionRequest,
+    // PortletUtil.translate("file-not-found"));
+    // }
+    //
+    // }
 
     /**
      * From ImportLayoutsMVCCommand
@@ -353,9 +364,6 @@ public class TimetrackerPortlet extends MVCPortlet {
     public void processAction(ActionRequest actionRequest, ActionResponse actionResponse) {
 
         String cmd = ParamUtil.getString(actionRequest, Constants.CMD);
-
-        _log.info("processAction");
-        _log.info("cmd = " + cmd);
 
         try {
             if (cmd.equals(Constants.ADD_TEMP)) {
@@ -384,11 +392,11 @@ public class TimetrackerPortlet extends MVCPortlet {
                 hideDefaultSuccessMessage(actionRequest);
                 importTaskRecords(actionRequest, ExportImportHelper.TEMP_FOLDER_NAME);
 
-                String redirect = ParamUtil.getString(actionRequest, "redirect");
+            } else if (cmd.equals(Constants.UPDATE)) {
 
-                _log.info("redirect = " + redirect);
+                updateTaskRecord(actionRequest, actionResponse);
+                addSuccessMessage(actionRequest, actionResponse);
 
-                // sendRedirect(actionRequest, actionResponse, redirect);
             }
         } catch (Exception e) {
 
@@ -537,6 +545,8 @@ public class TimetrackerPortlet extends MVCPortlet {
         String redirect = getEditTaskRecordURL(actionRequest, actionResponse, taskRecord);
 
         actionRequest.setAttribute(WebKeys.REDIRECT, redirect);
+
+        actionRequest.setAttribute(TimetrackerWebKeys.TASK_RECORD, taskRecord);
     }
 
     @Activate
