@@ -2,8 +2,8 @@
     toolbar.jsp: The toolbar of the timetracker portlet
     
     Created:    2016-03-20 16:58 by Christian Berndt
-    Modified:   2017-06-05 12:51 by Christian Berndt
-    Version:    1.1.4
+    Modified:   2017-06-05 21:49 by Christian Berndt
+    Version:    1.1.5
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -15,7 +15,7 @@
 <%
     String searchContainerId = ParamUtil.getString(request, "searchContainerId");
     
-    int total = GetterUtil.getInteger((String)request.getAttribute("view.jsp-total"));
+    int total = GetterUtil.getInteger(request.getAttribute("view.jsp-total"));
     
     PortletURL portletURL = renderResponse.createRenderURL();
     
