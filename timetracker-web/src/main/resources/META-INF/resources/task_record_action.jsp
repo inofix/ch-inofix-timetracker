@@ -2,8 +2,8 @@
     task_record_action.jsp: The action menu of the timetrackers's default view.
     
     Created:    2017-03-25 11:57 by Christian Berndt
-    Modified:   2017-03-28 15:27 by Stefan Luebbers
-    Version:    1.0.0
+    Modified:   2017-06-05 12:19 by Christian Berndt
+    Version:    1.0.1
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -57,6 +57,7 @@
     <c:if test="<%=hasDeletePermission%>">
 
         <portlet:actionURL var="deleteURL" name="deleteTaskRecord">
+            <portlet:param name="cmd" value="<%= Constants.DELETE %>"/>
             <portlet:param name="redirect" value="<%=currentURL%>" />
             <portlet:param name="taskRecordId"
                 value="<%=String.valueOf(taskRecord.getTaskRecordId())%>" />

@@ -106,8 +106,8 @@ import ch.inofix.timetracker.web.internal.portlet.util.PortletUtil;
  * @author Christian Berndt
  * @author Stefan Luebbers
  * @created 2013-10-07 10:47
- * @modified 2017-06-01 18:18
- * @version 1.6.6
+ * @modified 2017-06-05 12:28
+ * @version 1.6.7
  */
 @Component(immediate = true, property = { "com.liferay.portlet.css-class-wrapper=portlet-timetracker",
         "com.liferay.portlet.display-category=category.inofix",
@@ -363,6 +363,11 @@ public class TimetrackerPortlet extends MVCPortlet {
 
                 validateFile(actionRequest, actionResponse, ExportImportHelper.TEMP_FOLDER_NAME);
                 hideDefaultSuccessMessage(actionRequest);
+
+            } else if (cmd.equals(Constants.DELETE)) {
+
+                deleteTaskRecord(actionRequest, actionResponse);
+                addSuccessMessage(actionRequest, actionResponse);
 
             } else if (cmd.equals(Constants.DELETE_TEMP)) {
 
