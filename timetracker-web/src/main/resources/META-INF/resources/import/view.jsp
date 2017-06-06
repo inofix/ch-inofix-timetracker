@@ -2,14 +2,14 @@
     view.jsp: the import view.
     
     Created:    2017-06-01 21:08 by Christian Berndt
-    Modified:   2017-06-05 17:18 by Christian Berndt
-    Version:    1.0.1
+    Modified:   2017-06-07 00:54 by Christian Berndt
+    Version:    1.0.2
 --%>
 
 <%@ include file="/init.jsp" %>
 
 <%@page import="com.liferay.portal.kernel.portlet.PortalPreferences"%>
-<%@page import="com.liferay.portal.kernel.util.PortletKeys"%>
+<%-- <%@page import="com.liferay.portal.kernel.util.PortletKeys"%> --%>
 
 <%
     boolean privateLayout = ParamUtil.getBoolean(request, "privateLayout");
@@ -23,12 +23,12 @@
 //     PortalPreferences portalPreferences = PortletPreferencesFactoryUtil.getPortalPreferences(request);
 
     if (Validator.isNotNull(orderByCol) && Validator.isNotNull(orderByType)) {
-        portalPreferences.setValue(PortletKeys.BACKGROUND_TASK, "entries-order-by-col", orderByCol);
-        portalPreferences.setValue(PortletKeys.BACKGROUND_TASK, "entries-order-by-type", orderByType);
+//         portalPreferences.setValue(PortletKeys.BACKGROUND_TASK, "entries-order-by-col", orderByCol);
+//         portalPreferences.setValue(PortletKeys.BACKGROUND_TASK, "entries-order-by-type", orderByType);
     }
     else {
-        orderByCol = portalPreferences.getValue(PortletKeys.BACKGROUND_TASK, "entries-order-by-col", "create-date");
-        orderByType = portalPreferences.getValue(PortletKeys.BACKGROUND_TASK, "entries-order-by-type", "desc");
+//         orderByCol = portalPreferences.getValue(PortletKeys.BACKGROUND_TASK, "entries-order-by-col", "create-date");
+//         orderByType = portalPreferences.getValue(PortletKeys.BACKGROUND_TASK, "entries-order-by-type", "desc");
     }
     
     String searchContainerId = "importTaskRecordsProcesses";
@@ -46,8 +46,6 @@
     </c:when>
     <c:otherwise>
     --%>
-        <liferay-util:include page="/import/navigation.jsp" servletContext="<%= application %>" />
-
         <liferay-util:include page="/import/processes_list/view.jsp" servletContext="<%= application %>">
             <liferay-util:param name="groupId" value="<%= String.valueOf(scopeGroupId) %>" />
 <%--             <liferay-util:param name="groupId" value="<%= String.valueOf(groupDisplayContextHelper.getGroupId()) %>" /> --%>

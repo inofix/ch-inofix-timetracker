@@ -2,8 +2,8 @@
     view.jsp: Default view of Inofix' timetracker.
     
     Created:     2013-10-06 16:52 by Christian Berndt
-    Modified:    2017-06-05 21:50 by Christian Berndt
-    Version:     1.6.5
+    Modified:    2017-06-07 00:52 by Christian Berndt
+    Version:     1.6.6
 --%>
 
 <%@ include file="/init.jsp" %>
@@ -28,9 +28,8 @@
  
     PortletURL portletURL = renderResponse.createRenderURL();
     portletURL.setParameter("tabs1", tabs1); 
-    portletURL.setParameter("tabs2", tabs2); 
     
-//     SearchContainer searchContainer = new SearchContainer(liferayPortletRequest, null, null, "curEntry", SearchContainer.DEFAULT_DELTA, portletURL, null, "no-task-records-were-found");
+    String section = ParamUtil.getString(request, "section", "timetracker");
     
     SearchContainer searchContainer = new TaskRecordSearch(renderRequest, "cur", portletURL);
     
@@ -77,69 +76,47 @@
 
 <liferay-util:include page="/navigation.jsp" servletContext="<%= application %>" />
 
-<liferay-util:include page="/toolbar.jsp" servletContext="<%= application %>">
-    <liferay-util:param name="searchContainerId" value="taskRecords" />
-</liferay-util:include>
-
-<div class="container-fluid-1280">
-
-    <div id="<portlet:namespace />timetrackerContainer">
-    
-        <liferay-ui:error exception="<%= PrincipalException.class %>"
-            message="you-dont-have-the-required-permissions" />
-            
-        <portlet:actionURL name="editSet" var="editSetURL">
-        </portlet:actionURL>          
+<c:choose>
+    <c:when test="<%= "export-import".equals(section) %>">
+        <liferay-util:include page="/export_import.jsp" servletContext="<%= application %>"/>
+    </c:when>
+    <c:otherwise>
+        <liferay-util:include page="/toolbar.jsp" servletContext="<%= application %>">
+            <liferay-util:param name="searchContainerId" value="taskRecords" />
+        </liferay-util:include>
         
-        <aui:form action="<%= editSetURL %>" name="fm" 
-            onSubmit='<%= "event.preventDefault(); " + renderResponse.getNamespace() + "editSet();" %>'>
+        <div class="container-fluid-1280">
+        
+            <div id="<portlet:namespace />timetrackerContainer">
             
-            <aui:input name="<%= Constants.CMD %>" type="hidden"/>  
-            <aui:input name="redirect" type="hidden" value="<%= currentURL %>" />
+                <liferay-ui:error exception="<%= PrincipalException.class %>"
+                    message="you-dont-have-the-required-permissions" />
                     
-            <liferay-util:include page="/view_task_records.jsp" servletContext="<%= application %>" />
-        
-        </aui:form>
-              
-        <%--  
-        <liferay-ui:tabs
-            names="browse,export-import"
-            param="tabs1" url="<%= portletURL.toString() %>" />
-    
-        <c:choose>
-    
-            <c:when test='<%=tabs1.equals("export-import")%>'>
-            
-     
-            <liferay-ui:tabs
-                names="export,import,delete"
-                param="tabs2" url="<%= portletURL.toString() %>" /> 
+                <portlet:actionURL name="editSet" var="editSetURL">
+                </portlet:actionURL>          
                 
-                <c:if test="<%= tabs2.equals("export") %>">
-                    <liferay-util:include page="/export/view.jsp" servletContext="<%= application %>"  >
-                        <liferay-util:param name="orderByCol" value="create-date"/>
-                    </liferay-util:include>
-                </c:if>      
-            
-                <c:if test="<%= tabs2.equals("import") %>">
-                    <liferay-util:include page="/import.jsp" servletContext="<%= application %>"  />
-                </c:if>      
-            
-                <c:if test="<%= tabs2.equals("delete") %>">
-                    <liferay-util:include page="/delete_task_records.jsp" servletContext="<%= application %>"  />
-                </c:if>
+                <aui:form action="<%= editSetURL %>" name="fm" 
+                    onSubmit='<%= "event.preventDefault(); " + renderResponse.getNamespace() + "editSet();" %>'>
+                    
+                    <aui:input name="<%= Constants.CMD %>" type="hidden"/>  
+                    <aui:input name="redirect" type="hidden" value="<%= currentURL %>" />
+                            
+                    <liferay-util:include page="/view_task_records.jsp" servletContext="<%= application %>" />
                 
-            </c:when>
-    
-            <c:otherwise> 
-    
-                <liferay-util:include page="/view_task_records.jsp" servletContext="<%= application %>" />
-
-            </c:otherwise>
-        </c:choose>
+                </aui:form>
+                      
+                <%--   
+                    
+                        <c:if test="<%= tabs2.equals("delete") %>">
+                            <liferay-util:include page="/delete_task_records.jsp" servletContext="<%= application %>"  />
+                        </c:if>
         
-        --%>
-    </div>
-</div>
+                
+                --%>
+            </div>
+        </div>
+        
+        <liferay-util:include page="/add_button.jsp" servletContext="<%= application %>" />    
+    </c:otherwise>
+</c:choose>
 
-<liferay-util:include page="/add_button.jsp" servletContext="<%= application %>" />
