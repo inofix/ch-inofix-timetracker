@@ -2,8 +2,8 @@
     init.jsp: Common setup code for the timetracker portlet.
 
     Created:     2014-02-01 15:31 by Christian Berndt
-    Modified:    2017-06-05 13:14 by Christian Berndt
-    Version:     1.1.0
+    Modified:    2017-06-06 22:24 by Christian Berndt
+    Version:     1.1.1
 --%>
 
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
@@ -31,12 +31,19 @@
 
 <%@page import="com.liferay.exportimport.kernel.lar.ExportImportHelper"%>
 <%@page import="com.liferay.exportimport.kernel.lar.ExportImportHelperUtil"%>
+<%@page import="com.liferay.portal.kernel.backgroundtask.BackgroundTask"%>
+<%@page import="com.liferay.portal.kernel.backgroundtask.BackgroundTaskConstants"%>
 <%@page import="com.liferay.portal.kernel.backgroundtask.BackgroundTaskManagerUtil"%>
+<%@page import="com.liferay.portal.kernel.backgroundtask.BackgroundTaskStatus"%>
+<%@page import="com.liferay.portal.kernel.backgroundtask.BackgroundTaskStatusRegistryUtil"%>
 <%@page import="com.liferay.portal.kernel.dao.search.SearchContainer"%>
+<%@page import="com.liferay.portal.kernel.dao.search.EmptyOnClickRowChecker"%>
 <%@page import="com.liferay.portal.kernel.language.LanguageUtil"%>
+<%@page import="com.liferay.portal.kernel.language.UnicodeLanguageUtil"%>
 <%@page import="com.liferay.portal.kernel.model.Group"%>
 <%@page import="com.liferay.portal.kernel.model.User"%>
 <%@page import="com.liferay.portal.kernel.portlet.PortalPreferences"%>
+<%@page import="com.liferay.portal.kernel.portlet.PortletURLUtil"%>
 <%@page import="com.liferay.portal.kernel.portlet.LiferayWindowState"%>
 <%@page import="com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil"%>
 <%@page import="com.liferay.portal.kernel.repository.model.FileEntry"%>
@@ -45,6 +52,7 @@
 <%@page import="com.liferay.portal.kernel.search.Sort"%>
 <%@page import="com.liferay.portal.kernel.search.SortFactoryUtil"%>
 <%@page import="com.liferay.portal.kernel.security.auth.PrincipalException"%>
+<%@page import="com.liferay.portal.kernel.security.permission.ResourceActionsUtil"%>
 <%@page import="com.liferay.portal.kernel.service.UserLocalServiceUtil"%>
 <%@page import="com.liferay.portal.kernel.util.Constants"%>
 <%@page import="com.liferay.portal.kernel.util.DateUtil"%>

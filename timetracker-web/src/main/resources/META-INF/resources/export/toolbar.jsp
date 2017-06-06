@@ -2,14 +2,11 @@
     toolbar.jsp: the export toolbar.
     
     Created:    2017-05-16 17:30 by Christian Berndt
-    Modified:   2017-06-04 23:33 by Christian Berndt
-    Version:    1.0.2
+    Modified:   2017-06-07 00:52 by Christian Berndt
+    Version:    1.0.3
 --%>
 
 <%@ include file="/init.jsp" %>
-
-<%@page import="com.liferay.portal.kernel.portlet.PortletURLUtil"%>
-<%@page import="com.liferay.portal.kernel.language.UnicodeLanguageUtil"%>
 
 <%
     long groupId = ParamUtil.getLong(request, "groupId");
@@ -23,13 +20,13 @@
 
     portletURL.setParameter("groupId", String.valueOf(groupId));
     portletURL.setParameter("displayStyle", displayStyle);
+    portletURL.setParameter("mvcPath", "/view.jsp"); 
     portletURL.setParameter("navigation", navigation);
     portletURL.setParameter("orderByCol", orderByCol);
     portletURL.setParameter("orderByType", orderByType);
     portletURL.setParameter("searchContainerId", String.valueOf(searchContainerId));
+    portletURL.setParameter("section", "export-import");
 %>
-
-<% // TODO enable set operations %>
 
 <liferay-frontend:management-bar
     includeCheckBox="<%= true %>"

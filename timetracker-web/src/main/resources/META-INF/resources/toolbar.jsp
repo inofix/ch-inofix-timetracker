@@ -2,17 +2,19 @@
     toolbar.jsp: The toolbar of the timetracker portlet
     
     Created:    2016-03-20 16:58 by Christian Berndt
-    Modified:   2017-06-05 21:49 by Christian Berndt
-    Version:    1.1.5
+    Modified:   2017-06-06 00:46 by Christian Berndt
+    Version:    1.1.6
 --%>
 
 <%@ include file="/init.jsp"%>
 
-<%@page import="com.liferay.portal.kernel.language.UnicodeLanguageUtil"%>
-<%@page import="com.liferay.portal.kernel.portlet.PortletURLUtil"%>
 <%@page import="com.liferay.trash.kernel.util.TrashUtil"%>
 
 <%
+    String orderByCol = ParamUtil.getString(request, "orderByCol");
+
+    String orderByType = ParamUtil.getString(request, "orderByType");
+
     String searchContainerId = ParamUtil.getString(request, "searchContainerId");
     
     int total = GetterUtil.getInteger(request.getAttribute("view.jsp-total"));
@@ -44,34 +46,26 @@
     includeCheckBox="<%= true %>"
     searchContainerId="<%= searchContainerId %>"
 >
-    <liferay-frontend:management-bar-buttons>
-        <%-- 
-        <liferay-frontend:management-bar-sidenav-toggler-button
-            icon="info-circle"
-            label="info"
-        />
-        --%>
-        <liferay-util:include page="/display_style_buttons.jsp" servletContext="<%= application %>" />
-    </liferay-frontend:management-bar-buttons>
 
     <liferay-frontend:management-bar-filters>
-
-        <%
-        String[] navigationKeys = null;
-
-        if (themeDisplay.isSignedIn()) {
-            navigationKeys = new String[] {"all", "recent", "mine"};
-        }
-        else {
-            navigationKeys = new String[] {"all", "recent"};
-        }
-        %>
-
-        <liferay-frontend:management-bar-navigation
-            navigationKeys="<%= navigationKeys %>"
-            portletURL="<%= PortletURLUtil.clone(portletURL, liferayPortletResponse) %>"
+        <liferay-frontend:management-bar-sort
+            orderByCol="<%= orderByCol %>"
+            orderByType="<%= orderByType %>"
+            orderColumns='<%= new String[] {"modified-date", "start-date", "task-record-id", "work-package"} %>'
+            portletURL="<%= portletURL %>"
         />
     </liferay-frontend:management-bar-filters>
+    
+    <liferay-frontend:management-bar-buttons>     
+    
+       <portlet:renderURL var="exportImportURL">
+            <portlet:param name="mvcPath" value="/export_import.jsp"/>
+        </portlet:renderURL>     
+            
+        <liferay-frontend:management-bar-button href="<%= exportImportURL %>" icon="import-export" label="export-import" />
+            
+        <liferay-util:include page="/display_style_buttons.jsp" servletContext="<%= application %>" />
+    </liferay-frontend:management-bar-buttons>
 
     <liferay-frontend:management-bar-action-buttons>
         <%--    

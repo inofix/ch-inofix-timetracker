@@ -2,16 +2,14 @@
     display_styles_buttons.jsp: Select the display style of the Timetracker.
     
     Created:    2017-06-05 13:06 by Christian Berndt
-    Modified:   2017-06-05 13:06 by Christian Berndt
-    Version:    1.0.0
+    Modified:   2017-06-05 22:15 by Christian Berndt
+    Version:    1.0.1
 --%>
 
 <%@ include file="/init.jsp" %>
 
 <%
     String navigation = ParamUtil.getString(request, "navigation", "all");
-
-    int total = GetterUtil.getInteger((String)request.getAttribute("view.jsp-total"));
 
     String displayStyle = ParamUtil.getString(request, "displayStyle");
 
