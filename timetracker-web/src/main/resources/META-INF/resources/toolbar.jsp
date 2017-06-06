@@ -2,8 +2,8 @@
     toolbar.jsp: The toolbar of the timetracker portlet
     
     Created:    2016-03-20 16:58 by Christian Berndt
-    Modified:   2017-06-06 00:46 by Christian Berndt
-    Version:    1.1.6
+    Modified:   2017-06-07 00:59 by Christian Berndt
+    Version:    1.1.7
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -56,14 +56,7 @@
         />
     </liferay-frontend:management-bar-filters>
     
-    <liferay-frontend:management-bar-buttons>     
-    
-       <portlet:renderURL var="exportImportURL">
-            <portlet:param name="mvcPath" value="/export_import.jsp"/>
-        </portlet:renderURL>     
-            
-        <liferay-frontend:management-bar-button href="<%= exportImportURL %>" icon="import-export" label="export-import" />
-            
+    <liferay-frontend:management-bar-buttons>            
         <liferay-util:include page="/display_style_buttons.jsp" servletContext="<%= application %>" />
     </liferay-frontend:management-bar-buttons>
 
