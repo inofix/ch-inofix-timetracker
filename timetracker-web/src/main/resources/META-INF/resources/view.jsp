@@ -74,7 +74,8 @@
 
 <% // TODO: add trash bin support %>
 
-<liferay-util:include page="/navigation.jsp" servletContext="<%= application %>" />
+<liferay-util:include page="/navigation.jsp"
+    servletContext="<%=application%>"/>
 
 <c:choose>
     <c:when test="<%= "export-import".equals(section) %>">

@@ -2,8 +2,8 @@
     edit_task_record.jsp: edit a single task-record.
 
     Created:     2013-10-07 10:41 by Christian Berndt
-    Modified:    2017-06-05 16:05 by Christian Berndt
-    Version:     1.6.1
+    Modified:    2017-06-09 18:44 by Christian Berndt
+    Version:     1.6.2
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -77,8 +77,8 @@
         durationInMinutes =
             String.valueOf(taskRecord.getDurationInMinutes());
 
-        Date fromDate = taskRecord.getStartDate();
-        Date untilDate = taskRecord.getEndDate();
+        Date fromDate = taskRecord.getFromDate();
+        Date untilDate = taskRecord.getUntilDate();
         
         if (fromDate != null) {
             
