@@ -2,8 +2,8 @@
     view.jsp: list export processes
     
     Created:    2017-06-06 22:52 by Christian Berndt
-    Modified:   2017-06-06 22:52 by Christian Berndt
-    Version:    1.0.0
+    Modified:   2017-06-08 00:25 by Christian Berndt
+    Version:    1.0.1
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -17,7 +17,7 @@
 %>
 
 <div id="<portlet:namespace />exportProcessesSearchContainer">
-    <liferay-util:include page="/export/toolbar.jsp" servletContext="<%= application %>">
+    <liferay-util:include page="/export_import_toolbar.jsp" servletContext="<%= application %>">
         <liferay-util:param name="groupId" value="<%= String.valueOf(scopeGroupId) %>" />
         <liferay-util:param name="displayStyle" value="<%= displayStyle %>" />
         <liferay-util:param name="navigation" value="<%= navigation %>" />
