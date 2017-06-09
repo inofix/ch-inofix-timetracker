@@ -22,20 +22,20 @@ import com.liferay.portal.kernel.exception.PortalException;
  * @author Christian Berndt
  */
 @ProviderType
-public class TaskRecordStartDateException extends PortalException {
+public class TaskRecordUntilDateException extends PortalException {
 
-	public TaskRecordStartDateException() {
+	public TaskRecordUntilDateException() {
 	}
 
-	public TaskRecordStartDateException(String msg) {
+	public TaskRecordUntilDateException(String msg) {
 		super(msg);
 	}
 
-	public TaskRecordStartDateException(String msg, Throwable cause) {
+	public TaskRecordUntilDateException(String msg, Throwable cause) {
 		super(msg, cause);
 	}
 
-	public TaskRecordStartDateException(Throwable cause) {
+	public TaskRecordUntilDateException(Throwable cause) {
 		super(cause);
 	}
 
