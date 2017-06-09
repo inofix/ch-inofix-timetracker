@@ -2,8 +2,8 @@
     export_import.jsp: Import taskRecords from an uploaded file. 
     
     Created:    2016-03-21 21:51 by Christian Berndt
-    Modified:   2017-06-01 21:33 by Christian Berndt
-    Version:    1.0.7
+    Modified:   2017-06-08 00:40 by Christian Berndt
+    Version:    1.0.8
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -13,8 +13,9 @@ String redirect = ParamUtil.getString(request, "redirect");
 
 PortletURL portletURL = renderResponse.createRenderURL();
 
+portletURL.setParameter("mvcPath", "/view.jsp");
 portletURL.setParameter("redirect", redirect);
-portletURL.setParameter("mvcPath", "/export_import.jsp");
+portletURL.setParameter("section", "export-import");
 
 // TODO: check export-import permissions
 %>

@@ -2,8 +2,8 @@
     init.jsp: Common setup code for the timetracker portlet.
 
     Created:     2014-02-01 15:31 by Christian Berndt
-    Modified:    2017-06-06 22:24 by Christian Berndt
-    Version:     1.1.1
+    Modified:    2017-06-08 23:18 by Christian Berndt
+    Version:     1.1.2
 --%>
 
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
@@ -87,6 +87,7 @@
 <%@page import="javax.portlet.PortletPreferences"%>
 <%@page import="javax.portlet.PortletURL"%>
 <%@page import="javax.portlet.ResourceURL"%>
+<%@page import="javax.portlet.WindowState"%>
 
 <liferay-frontend:defineObjects />
 
