@@ -5,12 +5,12 @@ import javax.portlet.PortletRequest;
 import com.liferay.portal.kernel.dao.search.DAOParamUtil;
 
 /**
- * 
+ *
  * @author Christian Berndt
  * @created 2013-10-06 18:26
- * @modified 2016-11-26 14:15
- * @version 1.0.1
- * 
+ * @modified 2017-06-09 18:01
+ * @version 1.0.2
+ *
  */
 public class TaskRecordSearchTerms extends TaskRecordDisplayTerms {
 
@@ -19,10 +19,10 @@ public class TaskRecordSearchTerms extends TaskRecordDisplayTerms {
         super(portletRequest);
 
         description = DAOParamUtil.getString(portletRequest, DESCRIPTION);
-        endDate = DAOParamUtil.getString(portletRequest, END_DATE);
+        fromDate = DAOParamUtil.getString(portletRequest, FROM_DATE);
         groupId = DAOParamUtil.getLong(portletRequest, GROUP_ID);
-        startDate = DAOParamUtil.getString(portletRequest, START_DATE);
         status = DAOParamUtil.getInteger(portletRequest, STATUS);
+        untilDate = DAOParamUtil.getString(portletRequest, UNTIL_DATE);
         userId = DAOParamUtil.getLong(portletRequest, USER_ID);
         workPackage = DAOParamUtil.getString(portletRequest, WORK_PACKAGE);
 

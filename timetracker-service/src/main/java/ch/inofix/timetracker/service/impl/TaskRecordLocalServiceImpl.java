@@ -79,8 +79,8 @@ import ch.inofix.timetracker.service.base.TaskRecordLocalServiceBaseImpl;
  *
  * @author Christian Berndt
  * @created 2013-10-06 21:24
- * @modified 2017-06-04 23.25
- * @version 1.5.8
+ * @modified 2017-06-09 18:21
+ * @version 1.5.9
  * @see TaskRecordLocalServiceBaseImpl
  * @see ch.inofix.timetracker.service.TaskRecordLocalServiceUtil
  */
@@ -95,8 +95,9 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
      */
     @Override
     @Indexable(type = IndexableType.REINDEX)
-    public TaskRecord addTaskRecord(long userId, String workPackage, String description, String ticketURL, Date endDate,
-            Date startDate, int status, long duration, ServiceContext serviceContext) throws PortalException {
+    public TaskRecord addTaskRecord(long userId, String workPackage, String description, String ticketURL,
+            Date untilDate, Date fromDate, int status, long duration, ServiceContext serviceContext)
+            throws PortalException {
 
         // TaskRecord
 
@@ -120,8 +121,8 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
         taskRecord.setWorkPackage(workPackage);
         taskRecord.setDescription(description);
         taskRecord.setTicketURL(ticketURL);
-        taskRecord.setEndDate(endDate);
-        taskRecord.setStartDate(startDate);
+        taskRecord.setUntilDate(untilDate);
+        taskRecord.setFromDate(fromDate);
         taskRecord.setStatus(status);
         taskRecord.setDuration(duration);
 
@@ -462,7 +463,7 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
     @Override
     @Indexable(type = IndexableType.REINDEX)
     public TaskRecord updateTaskRecord(long taskRecordId, long userId, String workPackage, String description,
-            String ticketURL, Date endDate, Date startDate, int status, long duration, ServiceContext serviceContext)
+            String ticketURL, Date untilDate, Date fromDate, int status, long duration, ServiceContext serviceContext)
             throws PortalException {
 
         // TaskRecord
@@ -485,8 +486,8 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
         taskRecord.setWorkPackage(workPackage);
         taskRecord.setDescription(description);
         taskRecord.setTicketURL(ticketURL);
-        taskRecord.setEndDate(endDate);
-        taskRecord.setStartDate(startDate);
+        taskRecord.setUntilDate(untilDate);
+        taskRecord.setFromDate(fromDate);
         taskRecord.setStatus(status);
         taskRecord.setDuration(duration);
 

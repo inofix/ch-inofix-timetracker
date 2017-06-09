@@ -33,8 +33,8 @@ import ch.inofix.timetracker.service.TaskRecordLocalService;
  *
  * @author Christian Berndt
  * @created 2017-06-04 18:07
- * @modified 2017-06-04 18:07
- * @version 1.0.0
+ * @modified 2017-06-09 18:14
+ * @version 1.0.1
  *
  */
 @Component(immediate = true, property = { "model.class.name=ch.inofix.timetracker.model.TaskRecord" }, service = {
@@ -95,7 +95,7 @@ public class TaskRecordImportController extends BaseExportImportController imple
 
         Document document = SAXReaderUtil.read(file);
 
-//        _log.info(document.asXML());
+        // _log.info(document.asXML());
 
         List<Node> nodes = document.selectNodes("TaskRecords/ch.inofix.timetracker.model.impl.TaskRecordImpl");
 
@@ -118,14 +118,15 @@ public class TaskRecordImportController extends BaseExportImportController imple
 
             TaskRecord taskRecord = null;
 
-//            taskRecord = _taskRecordLocalService.fetchTaskRecord(importTaskRecord.getTaskRecordId());
+            // taskRecord =
+            // _taskRecordLocalService.fetchTaskRecord(importTaskRecord.getTaskRecordId());
 
             long userId = 0;
             String workPackage = null;
             String description = null;
             String ticketURL = null;
-            Date endDate = null;
-            Date startDate = null;
+            Date fromDate = null;
+            Date untilDate = null;
             int status = -1;
             long duration = 0;
 
@@ -140,13 +141,13 @@ public class TaskRecordImportController extends BaseExportImportController imple
                 workPackage = importTaskRecord.getWorkPackage();
                 description = importTaskRecord.getDescription();
                 ticketURL = importTaskRecord.getTicketURL();
-                endDate = importTaskRecord.getEndDate();
-                startDate = importTaskRecord.getStartDate();
+                fromDate = importTaskRecord.getFromDate();
+                untilDate = importTaskRecord.getUntilDate();
                 status = importTaskRecord.getStatus();
                 duration = importTaskRecord.getDuration();
 
-                taskRecord = _taskRecordLocalService.addTaskRecord(userId, workPackage, description, ticketURL, endDate,
-                        startDate, status, duration, serviceContext);
+                taskRecord = _taskRecordLocalService.addTaskRecord(userId, workPackage, description, ticketURL,
+                        untilDate, fromDate, status, duration, serviceContext);
 
             }
 
