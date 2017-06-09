@@ -25,8 +25,8 @@ import ch.inofix.timetracker.service.TaskRecordLocalService;
  *
  * @author Christian Berndt
  * @created 2016-04-17 23:35
- * @modified 2016-04-17 23:35
- * @version 1.0.0
+ * @modified 2016-06-09 18:17
+ * @version 1.0.1
  *
  */
 @Component(immediate = true, service = StagedModelDataHandler.class)
@@ -115,21 +115,21 @@ public class TaskRecordStagedModelDataHandler extends BaseStagedModelDataHandler
                 serviceContext.setUuid(taskRecord.getUuid());
 
                 importedTaskRecord = _taskRecordLocalService.addTaskRecord(userId, taskRecord.getWorkPackage(),
-                        taskRecord.getDescription(), taskRecord.getTicketURL(), taskRecord.getEndDate(),
-                        taskRecord.getStartDate(), taskRecord.getStatus(), taskRecord.getDuration(), serviceContext);
+                        taskRecord.getDescription(), taskRecord.getTicketURL(), taskRecord.getUntilDate(),
+                        taskRecord.getFromDate(), taskRecord.getStatus(), taskRecord.getDuration(), serviceContext);
 
             } else {
 
                 importedTaskRecord = _taskRecordLocalService.updateTaskRecord(userId,
                         existingTaskRecord.getTaskRecordId(), taskRecord.getWorkPackage(), taskRecord.getDescription(),
-                        taskRecord.getTicketURL(), taskRecord.getEndDate(), taskRecord.getStartDate(),
+                        taskRecord.getTicketURL(), taskRecord.getUntilDate(), taskRecord.getFromDate(),
                         taskRecord.getStatus(), taskRecord.getDuration(), serviceContext);
             }
         } else {
 
             importedTaskRecord = _taskRecordLocalService.addTaskRecord(userId, taskRecord.getWorkPackage(),
-                    taskRecord.getDescription(), taskRecord.getTicketURL(), taskRecord.getEndDate(),
-                    taskRecord.getStartDate(), taskRecord.getStatus(), taskRecord.getDuration(), serviceContext);
+                    taskRecord.getDescription(), taskRecord.getTicketURL(), taskRecord.getUntilDate(),
+                    taskRecord.getFromDate(), taskRecord.getStatus(), taskRecord.getDuration(), serviceContext);
         }
 
         portletDataContext.importClassedModel(taskRecord, importedTaskRecord);

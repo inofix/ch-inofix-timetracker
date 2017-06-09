@@ -28,14 +28,14 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import ch.inofix.timetracker.model.TaskRecord;
 import ch.inofix.timetracker.service.TaskRecordLocalService;
-//import ch.inofix.timetracker.web.internal.search.TaskRecordDisplayTerms;
 
 /**
  *
- * @author Christian Berndt, Stefan Luebbers
+ * @author Christian Berndt
+ * @author Stefan Luebbers
  * @created 2016-11-26 15:04
- * @modified 2017-03-16 15:15
- * @version 1.0.0
+ * @modified 2017-06-09 18:18
+ * @version 1.0.2
  *
  */
 @Component(immediate = true, service = Indexer.class)
@@ -83,8 +83,8 @@ public class TaskRecordIndexer extends BaseIndexer<TaskRecord> {
         document.addTextSortable("description", taskRecord.getDescription());
         document.addDateSortable(Field.CREATE_DATE, taskRecord.getCreateDate());
         document.addDateSortable("modifiedDate", taskRecord.getModifiedDate());
-        document.addDateSortable("startDate", taskRecord.getStartDate());
-        document.addDateSortable("endDate", taskRecord.getEndDate());
+        document.addDateSortable("fromDate", taskRecord.getFromDate());
+        document.addDateSortable("untilDate", taskRecord.getUntilDate());
         document.addNumberSortable("duration", taskRecord.getDuration());
 
         return document;

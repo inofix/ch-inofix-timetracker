@@ -25,12 +25,13 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import ch.inofix.timetracker.model.TaskRecord;
 
 /**
- * 
- * @author Christian Berndt, Stefan Luebbers
+ *
+ * @author Christian Berndt
+ * @Stefan Luebbers
  * @created 2013-10-06 18:26
- * @modified 2017-03-16 15:28
- * @version 1.0.1
- * 
+ * @modified 2017-06-09 17:59
+ * @version 1.0.2
+ *
  */
 public class TaskRecordSearch extends SearchContainer<TaskRecord> {
 
@@ -40,8 +41,8 @@ public class TaskRecordSearch extends SearchContainer<TaskRecord> {
     static Map<String, String> orderableHeaders = new HashMap<String, String>();
 
     static {
-        headerNames.add("task-record-Id");
-        headerNames.add("status");  //has no "name" in search_columns.jspf
+        headerNames.add("task-record-id");
+        headerNames.add("status"); // has no "name" in search_columns.jspf
         headerNames.add("work-package");
         headerNames.add("user-name");
         headerNames.add("ticket-url");
@@ -96,10 +97,10 @@ public class TaskRecordSearch extends SearchContainer<TaskRecord> {
         iteratorURL.setParameter(TaskRecordDisplayTerms.TICKET_URL, displayTerms.getTicketURL());
         iteratorURL.setParameter(TaskRecordDisplayTerms.CREATE_DATE, displayTerms.getCreateDate());
         iteratorURL.setParameter(TaskRecordDisplayTerms.MODIFIED_DATE, displayTerms.getModifiedDate());
-        iteratorURL.setParameter(TaskRecordDisplayTerms.START_DATE, displayTerms.getStartDate());
-        iteratorURL.setParameter(TaskRecordDisplayTerms.END_DATE, displayTerms.getEndDate());
+        iteratorURL.setParameter(TaskRecordDisplayTerms.FROM_DATE, displayTerms.getFromDate());
+        iteratorURL.setParameter(TaskRecordDisplayTerms.UNTIL_DATE, displayTerms.getUntilDate());
         iteratorURL.setParameter(TaskRecordDisplayTerms.DURATION, String.valueOf(displayTerms.getDuration()));
-        
+
         try {
             PortalPreferences preferences = PortletPreferencesFactoryUtil.getPortalPreferences(portletRequest);
 
