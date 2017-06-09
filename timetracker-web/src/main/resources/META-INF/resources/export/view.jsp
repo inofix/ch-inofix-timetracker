@@ -1,5 +1,5 @@
 <%--
-    view.jsp: Export taskRecords in background to a file.
+    view.jsp: the export view.
     
     Created:    2017-04-18 23:11 by Christian Berndt
     Modified:   2017-06-07 00:53 by Christian Berndt
@@ -8,16 +8,16 @@
 
 <%@ include file="/init.jsp"%>
 
-<%@page import="ch.inofix.timetracker.background.task.TaskRecordExportBackgroundTaskExecutor"%>
+<%-- <%@page import="ch.inofix.timetracker.background.task.TaskRecordExportBackgroundTaskExecutor"%> --%>
 
-<%@page import="com.liferay.background.task.kernel.util.comparator.BackgroundTaskComparatorFactoryUtil"%>
-<%@page import="com.liferay.portal.kernel.backgroundtask.BackgroundTask"%>
-<%@page import="com.liferay.portal.kernel.dao.search.EmptyOnClickRowChecker"%>
-<%@page import="com.liferay.portal.kernel.dao.search.RowChecker"%>
-<%@page import="com.liferay.portal.kernel.portletfilerepository.PortletFileRepositoryUtil"%>
-<%@page import="com.liferay.portal.kernel.util.TextFormatter"%>
-<%@page import="com.liferay.portal.kernel.util.OrderByComparator"%>
-<%@page import="com.liferay.portal.kernel.util.StringBundler"%>
+<%-- <%@page import="com.liferay.background.task.kernel.util.comparator.BackgroundTaskComparatorFactoryUtil"%> --%>
+<%-- <%@page import="com.liferay.portal.kernel.backgroundtask.BackgroundTask"%> --%>
+<%-- <%@page import="com.liferay.portal.kernel.dao.search.EmptyOnClickRowChecker"%> --%>
+<%-- <%@page import="com.liferay.portal.kernel.dao.search.RowChecker"%> --%>
+<%-- <%@page import="com.liferay.portal.kernel.portletfilerepository.PortletFileRepositoryUtil"%> --%>
+<%-- <%@page import="com.liferay.portal.kernel.util.TextFormatter"%> --%>
+<%-- <%@page import="com.liferay.portal.kernel.util.OrderByComparator"%> --%>
+<%-- <%@page import="com.liferay.portal.kernel.util.StringBundler"%> --%>
 
 <%
     String displayStyle = ParamUtil.getString(request, "displayStyle", "list");

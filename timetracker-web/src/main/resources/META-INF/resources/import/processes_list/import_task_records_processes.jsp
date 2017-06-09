@@ -1,14 +1,14 @@
 <%--
-    export_task_records_processes.jsp: list of export processes
+    import_task_records_processes.jsp: list of import processes
     
-    Created:    2017-06-06 23:36 by Christian Berndt
-    Modified:   2017-06-06 23:36 by Christian Berndt
+    Created:    2017-06-08 00:21 by Christian Berndt
+    Modified:   2017-06-08 00:21 by Christian Berndt
     Version:    1.0.0
 --%>
 
 <%@ include file="/init.jsp" %>
 
-<%@page import="ch.inofix.timetracker.background.task.TaskRecordExportBackgroundTaskExecutor"%>
+<%@page import="ch.inofix.timetracker.background.task.TaskRecordImportBackgroundTaskExecutor"%>
 
 <%@page import="com.liferay.background.task.kernel.util.comparator.BackgroundTaskComparatorFactoryUtil"%>
 <%@page import="com.liferay.portal.kernel.portletfilerepository.PortletFileRepositoryUtil"%>
@@ -17,7 +17,6 @@
 
 <%
     long groupId = ParamUtil.getLong(request, "groupId");
-//     boolean privateLayout = ParamUtil.getBoolean(request, "privateLayout");
     String displayStyle = ParamUtil.getString(request, "displayStyle");
     String navigation = ParamUtil.getString(request, "navigation");
     String orderByCol = ParamUtil.getString(request, "orderByCol");
@@ -26,9 +25,7 @@
     
     PortletURL portletURL = liferayPortletResponse.createRenderURL();
     
-//     portletURL.setParameter("mvcRenderCommandName", "exportLayoutsView");
     portletURL.setParameter("groupId", String.valueOf(groupId));
-//     portletURL.setParameter("privateLayout", String.valueOf(privateLayout));
     portletURL.setParameter("displayStyle", displayStyle);
     portletURL.setParameter("navigation", navigation);
     portletURL.setParameter("orderByCol", orderByCol);
@@ -63,8 +60,8 @@
             List<BackgroundTask> backgroundTasks = null;
 
             if (navigation.equals("all")) {
-//                 backgroundTasksCount = BackgroundTaskManagerUtil.getBackgroundTasksCount(groupId, TaskRecordExportBackgroundTaskExecutor.class.getName());
-//                 backgroundTasks = BackgroundTaskManagerUtil.getBackgroundTasks(groupId, TaskRecordExportBackgroundTaskExecutor.class.getName(), searchContainer.getStart(), searchContainer.getEnd(), searchContainer.getOrderByComparator());
+                backgroundTasksCount = BackgroundTaskManagerUtil.getBackgroundTasksCount(groupId, TaskRecordImportBackgroundTaskExecutor.class.getName());
+                backgroundTasks = BackgroundTaskManagerUtil.getBackgroundTasks(groupId, TaskRecordImportBackgroundTaskExecutor.class.getName(), searchContainer.getStart(), searchContainer.getEnd(), searchContainer.getOrderByComparator());
             }
             else {
                 boolean completed = false;
@@ -73,8 +70,8 @@
                     completed = true;
                 }
 
-//                 backgroundTasksCount = BackgroundTaskManagerUtil.getBackgroundTasksCount(groupId, TaskRecordExportBackgroundTaskExecutor.class.getName(), completed);
-//                 backgroundTasks = BackgroundTaskManagerUtil.getBackgroundTasks(groupId, TaskRecordExportBackgroundTaskExecutor.class.getName(), completed, searchContainer.getStart(), searchContainer.getEnd(), searchContainer.getOrderByComparator());
+                backgroundTasksCount = BackgroundTaskManagerUtil.getBackgroundTasksCount(groupId, TaskRecordImportBackgroundTaskExecutor.class.getName(), completed);
+                backgroundTasks = BackgroundTaskManagerUtil.getBackgroundTasks(groupId, TaskRecordImportBackgroundTaskExecutor.class.getName(), completed, searchContainer.getStart(), searchContainer.getEnd(), searchContainer.getOrderByComparator());
             }
 
             searchContainer.setResults(backgroundTasks);
@@ -286,8 +283,8 @@
             <liferay-ui:search-container-column-text>
                 <c:if test="<%= !backgroundTask.isInProgress() %>">
                     <liferay-ui:icon-menu direction="left-side" icon="<%= StringPool.BLANK %>" markupView="<%= markupView %>" message="<%= StringPool.BLANK %>" showWhenSingleIcon="<%= true %>">
-                        <portlet:actionURL name="editExportConfiguration" var="relaunchURL">
-                            <portlet:param name="mvcRenderCommandName" value="editExportConfiguration" />
+                        <portlet:actionURL name="editImportConfiguration" var="relaunchURL">
+<%--                             <portlet:param name="mvcRenderCommandName" value="editImportConfiguration" /> --%>
                             <portlet:param name="<%= Constants.CMD %>" value="<%= Constants.RELAUNCH %>" />
                             <portlet:param name="redirect" value="<%= portletURL.toString() %>" />
                             <portlet:param name="backgroundTaskId" value="<%= String.valueOf(backgroundTask.getBackgroundTaskId()) %>" />
@@ -315,7 +312,6 @@
         </liferay-ui:search-container-row>
 
         <liferay-ui:search-iterator displayStyle="<%= displayStyle %>" markupView="<%= markupView %>" />
-<%--         <liferay-ui:search-iterator displayStyle="<%= displayStyle %>" markupView="lexicon" resultRowSplitter="<%= new ExportImportResultRowSplitter() %>" /> --%>
+<%--         <liferay-ui:search-iterator displayStyle="<%= displayStyle %>" markupView="lexicon" resultRowSplitter="<%= new ImportImportResultRowSplitter() %>" /> --%>
     </liferay-ui:search-container>
 </aui:form>
-
