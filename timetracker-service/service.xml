@@ -6,8 +6,8 @@
     service.xml: Model and service description of Inofix' timetracker
     
     Created:    2013-10-21 14:16 by Christian Berndt
-    Modified:   2017-04-17 14:44 by Christian Berndt   
-    Version:    1.0.1
+    Modified:   2017-06-09 18:10 by Christian Berndt   
+    Version:    1.0.2
 -->
 
 <service-builder package-path="ch.inofix.timetracker">
@@ -41,14 +41,14 @@
         <column name="workPackage" type="String" />
         <column name="description" type="String" />
         <column name="ticketURL" type="String" />
-        <column name="startDate" type="Date" />
-        <column name="endDate" type="Date" />
+        <column name="fromDate" type="Date" />
+        <column name="untilDate" type="Date" />
         <column name="duration" type="long" />
 
         <!-- Order -->
 
         <order by="asc">
-            <order-column name="endDate" />
+            <order-column name="untilDate" />
         </order>
 
         <!-- Finder methods -->
@@ -66,7 +66,7 @@
     </entity>
 
     <exceptions>
-        <exception>TaskRecordEndDate</exception>
-        <exception>TaskRecordStartDate</exception>
+        <exception>TaskRecordFromDate</exception>
+        <exception>TaskRecordUntilDate</exception>
     </exceptions>
 </service-builder>
