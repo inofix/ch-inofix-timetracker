@@ -29,8 +29,8 @@ import ch.inofix.timetracker.model.TaskRecord;
  * @author Christian Berndt
  * @Stefan Luebbers
  * @created 2013-10-06 18:26
- * @modified 2017-06-09 17:59
- * @version 1.0.2
+ * @modified 2017-06-10 23:25
+ * @version 1.0.3
  *
  */
 public class TaskRecordSearch extends SearchContainer<TaskRecord> {
@@ -41,29 +41,29 @@ public class TaskRecordSearch extends SearchContainer<TaskRecord> {
     static Map<String, String> orderableHeaders = new HashMap<String, String>();
 
     static {
-        headerNames.add("task-record-id");
+        headerNames.add("create-date");
+        headerNames.add("description");
+        headerNames.add("duration");
+        headerNames.add("from-date");
+        headerNames.add("modified-date");
         headerNames.add("status"); // has no "name" in search_columns.jspf
+        headerNames.add("task-record-id");
+        headerNames.add("ticket-url");
         headerNames.add("work-package");
         headerNames.add("user-name");
-        headerNames.add("ticket-url");
-        headerNames.add("description");
-        headerNames.add("create-date");
-        headerNames.add("modified-date");
-        headerNames.add("start-date");
-        headerNames.add("end-date");
-        headerNames.add("duration");
+        headerNames.add("until-date");
 
-        orderableHeaders.put("taskRecordId", "taskRecordId");
-        orderableHeaders.put("status", "status");
-        orderableHeaders.put("workPackage", "workPackage");
-        orderableHeaders.put("userName", "userName");
-        orderableHeaders.put("ticketURL", "ticketURL");
-        orderableHeaders.put("description", "description");
-        orderableHeaders.put("createDate", "createDate");
-        orderableHeaders.put("modifiedDate", "modifiedDate");
-        orderableHeaders.put("startDate", "startDate");
-        orderableHeaders.put("endDate", "endDate");
-        orderableHeaders.put("duration", "duration");
+        orderableHeaders.put("create-date", "createDate_Number_sortable");
+        orderableHeaders.put("description", "description_sortable");
+        orderableHeaders.put("duration", "duration_Number_sortable");
+        orderableHeaders.put("from-date", "fromDate_Number_sortable");
+        orderableHeaders.put("status", "status_Number_sortable");
+        orderableHeaders.put("task-record-id", "taskRecordId_Number_sortable");
+        orderableHeaders.put("ticket-url", "ticketURL_sortable");
+        orderableHeaders.put("work-package", "workPackage_sortable");
+        orderableHeaders.put("user-name", "userName_sortable");
+        orderableHeaders.put("modified-date", "modifiedDate_Number_sortable");
+        orderableHeaders.put("until-date", "untilDate_Number_sortable");
     }
 
     public TaskRecordSearch(PortletRequest portletRequest, PortletURL iteratorURL) {
@@ -108,16 +108,15 @@ public class TaskRecordSearch extends SearchContainer<TaskRecord> {
             String orderByType = ParamUtil.getString(portletRequest, "orderByType");
 
             if (Validator.isNotNull(orderByCol) && Validator.isNotNull(orderByType)) {
-
                 preferences.setValue(portletId, "task-records-order-by-col", orderByCol);
                 preferences.setValue(portletId, "task-records-order-by-type", orderByType);
             } else {
-                orderByCol = preferences.getValue(portletId, "task-records-order-by-col", "last-name");
+                orderByCol = preferences.getValue(portletId, "task-records-order-by-col", "modifie-date");
                 orderByType = preferences.getValue(portletId, "task-records-order-by-type", "asc");
             }
 
             setOrderableHeaders(orderableHeaders);
-            setOrderByCol(orderByCol);
+            setOrderByCol(orderableHeaders.get(orderByCol));
             setOrderByType(orderByType);
 
         } catch (Exception e) {
