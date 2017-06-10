@@ -33,6 +33,8 @@ import ch.inofix.timetracker.model.impl.TaskRecordImpl;
  * @modified 2017-04-17 15:21
  * @version 1.0.0
  */
+@Deprecated
+/** Use TaskRecordImportController */
 public class TaskRecordImporter {
 
     public void importReferences(long userId, long groupId, boolean privateLayout, Map<String, String[]> parameterMap,
@@ -55,7 +57,6 @@ public class TaskRecordImporter {
         String urlTitle = GetterUtil.getString(ArrayUtil.getValue(parameterMap.get("urlTitle"), 0),
                 LanguageUtil.get(serviceContext.getLocale(), "new-bibliography-url-title"));
 
-
         try {
 
             int numProcessed = 0;
@@ -64,9 +65,9 @@ public class TaskRecordImporter {
             int numUpdated = 0;
 
             // TODO
-//            StopWatch stopWatch = new StopWatch();
+            // StopWatch stopWatch = new StopWatch();
 
-//            stopWatch.start();
+            // stopWatch.start();
 
             InputStream inputStream = new FileInputStream(file);
 
@@ -75,80 +76,80 @@ public class TaskRecordImporter {
             // TODO: retrieve preamble from file
             String preamble = null;
 
-
             _log.info("Start import");
 
-            com.liferay.portal.kernel.xml.Document document =
-                    SAXReaderUtil.read(file);
+            com.liferay.portal.kernel.xml.Document document = SAXReaderUtil.read(file);
 
-                List<Node> nodes =
-                    document.selectNodes("/taskRecords/" +
-                        TaskRecordImpl.class.getName());
+            List<Node> nodes = document.selectNodes("/taskRecords/" + TaskRecordImpl.class.getName());
 
-//                XStream xstream = new XStream();
+            // XStream xstream = new XStream();
 
-//            Collection<BibTeXEntry> bibTeXEntries = database.getEntries().values();
+            // Collection<BibTeXEntry> bibTeXEntries =
+            // database.getEntries().values();
 
-//            _log.info("bibTeXEntries.size() = " + bibTeXEntries.size());
+            // _log.info("bibTeXEntries.size() = " + bibTeXEntries.size());
 
-//            if (bibTeXEntries.size() == 0) {
-//
-//                throw new NoReferencesException();
-//
-//            }
+            // if (bibTeXEntries.size() == 0) {
+            //
+            // throw new NoReferencesException();
+            //
+            // }
 
             for (Node node : nodes) {
 
-//                if (value != null) {
+                // if (value != null) {
 
-                        if (updateExisting) {
+                if (updateExisting) {
 
-//                                    reference = ReferenceServiceUtil.updateReference(referenceId, userId, bibTeX,
-//                                            serviceContext);
+                    // reference =
+                    // ReferenceServiceUtil.updateReference(referenceId, userId,
+                    // bibTeX,
+                    // serviceContext);
 
-                            numUpdated++;
+                    numUpdated++;
 
-                        } else {
+                } else {
 
-                            numIgnored++;
+                    numIgnored++;
 
-                        }
-//                            } else {
-
-                        // reference exists, but belongs to another user
-
-                        _log.info("adding reference");
-
-                        numImported++;
-                    }
-
-//                } else {
-
-                    // no bibshare-id
-
-                    _log.info("adding reference");
-
-                    numImported++;
-
-//                    reference = ReferenceServiceUtil.addReference(userId, bibTeX, bibliographyIds, serviceContext);
-//                }
-
-                if (numProcessed % 100 == 0 && numProcessed > 0) {
-
-                    float completed = ((Integer) numProcessed).floatValue()
-                            / ((Integer) nodes.size()).floatValue() * 100;
-
-                    // TODO
-//                    _log.info("Processed " + numProcessed + " of " + nodes.size() + " taskRecords in "
-//                            + stopWatch.getTime() + " ms (" + completed + "%).");
                 }
+                // } else {
 
-                numProcessed++;
+                // reference exists, but belongs to another user
 
-//            }
+                _log.info("adding reference");
+
+                numImported++;
+            }
+
+            // } else {
+
+            // no bibshare-id
+
+            _log.info("adding reference");
+
+            numImported++;
+
+            // reference = ReferenceServiceUtil.addReference(userId, bibTeX,
+            // bibliographyIds, serviceContext);
+            // }
+
+            if (numProcessed % 100 == 0 && numProcessed > 0) {
+
+                float completed = ((Integer) numProcessed).floatValue() / ((Integer) nodes.size()).floatValue() * 100;
 
                 // TODO
-//            _log.info("Import took " + stopWatch.getTime() + " ms");
+                // _log.info("Processed " + numProcessed + " of " + nodes.size()
+                // + " taskRecords in "
+                // + stopWatch.getTime() + " ms (" + completed + "%).");
+            }
+
+            numProcessed++;
+
+            // }
+
+            // TODO
+            // _log.info("Import took " + stopWatch.getTime() + " ms");
             _log.info("Processed " + numProcessed + " references.");
             _log.info("Imported " + numImported + " references.");
             _log.info("Ignored " + numIgnored + " references.");
@@ -160,7 +161,6 @@ public class TaskRecordImporter {
             _log.error(e);
         }
     }
-
 
     private static Log _log = LogFactoryUtil.getLog(TaskRecordImporter.class.getName());
 

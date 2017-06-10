@@ -2,8 +2,8 @@
     search.jsp: The extended search of the timetracker portlet.
 
     Created:     2017-06-05 22:04 by Christian Berndt
-    Modified:    2017-06-05 22:04 by Christian Berndt
-    Version:     1.0.0
+    Modified:    2017-06-10 18:14 by Christian Berndt
+    Version:     1.0.1
 --%>
 
 <%@ include file="/init.jsp" %>
@@ -25,11 +25,9 @@
             name="<%=TaskRecordDisplayTerms.WORK_PACKAGE%>" size="20"
             value="<%=displayTerms.getWorkPackage()%>" />
             
-        <%-- 
         <aui:input inlineField="<%=true%>"
             name="<%=TaskRecordDisplayTerms.DESCRIPTION%>" size="20"
             value="<%=displayTerms.getDescription()%>" />
-        --%>
         
         <aui:input
             dateTogglerCheckboxLabel="ignore-from-date"

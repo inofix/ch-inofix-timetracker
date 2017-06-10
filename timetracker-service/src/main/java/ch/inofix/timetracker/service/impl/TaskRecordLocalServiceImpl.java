@@ -19,6 +19,7 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -45,6 +46,7 @@ import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
+import com.liferay.portal.kernel.search.QueryConfig;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
@@ -55,6 +57,7 @@ import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import aQute.bnd.annotation.ProviderType;
@@ -79,8 +82,8 @@ import ch.inofix.timetracker.service.base.TaskRecordLocalServiceBaseImpl;
  *
  * @author Christian Berndt
  * @created 2013-10-06 21:24
- * @modified 2017-06-09 18:21
- * @version 1.5.9
+ * @modified 2017-06-10 22:34
+ * @version 1.6.0
  * @see TaskRecordLocalServiceBaseImpl
  * @see ch.inofix.timetracker.service.TaskRecordLocalServiceUtil
  */
@@ -406,27 +409,37 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
             sort = new Sort(Field.MODIFIED_DATE, true);
         }
 
+        String description = null;
+        String workPackage = null;
+        boolean andOperator = false;
+
+        if (Validator.isNotNull(keywords)) {
+
+            description = keywords;
+            workPackage = keywords;
+
+        } else {
+            andOperator = true;
+        }
+
+        return search(userId, groupId, workPackage, description, WorkflowConstants.STATUS_ANY, null, null, null,
+                andOperator, start, end, sort);
+
+    }
+
+    @Override
+    public Hits search(long userId, long groupId, String workPackage, String description, int status, Date fromDate,
+            Date untilDate, LinkedHashMap<String, Object> params, boolean andSearch, int start, int end, Sort sort)
+            throws PortalException {
+
+        if (sort == null) {
+            sort = new Sort(Field.MODIFIED_DATE, true);
+        }
+
         Indexer<TaskRecord> indexer = IndexerRegistryUtil.getIndexer(TaskRecord.class.getName());
 
-        SearchContext searchContext = new SearchContext();
-
-        searchContext.setAttribute(Field.STATUS, WorkflowConstants.STATUS_ANY);
-
-        searchContext.setAttribute("paginationType", "more");
-
-        Group group = GroupLocalServiceUtil.getGroup(groupId);
-
-        searchContext.setCompanyId(group.getCompanyId());
-
-        searchContext.setEnd(end);
-        if (groupId > 0) {
-            searchContext.setGroupIds(new long[] { groupId });
-        }
-        searchContext.setSorts(sort);
-        searchContext.setStart(start);
-        searchContext.setUserId(userId);
-
-        searchContext.setKeywords(keywords);
+        SearchContext searchContext = buildSearchContext(userId, groupId, workPackage, description, status, fromDate,
+                untilDate, params, andSearch, start, end, sort);
 
         return indexer.search(searchContext);
 
@@ -520,6 +533,63 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
 
         resourceLocalService.updateResources(taskRecord.getCompanyId(), taskRecord.getGroupId(),
                 TaskRecord.class.getName(), taskRecord.getTaskRecordId(), groupPermissions, guestPermissions);
+    }
+
+    protected SearchContext buildSearchContext(long userId, long groupId, String workPackage, String description,
+            int status, Date fromDate, Date untilDate, LinkedHashMap<String, Object> params, boolean andSearch,
+            int start, int end, Sort sort) throws PortalException {
+
+        SearchContext searchContext = new SearchContext();
+
+        searchContext.setAttribute(Field.STATUS, status);
+
+        if (Validator.isNotNull(description)) {
+            searchContext.setAttribute("description", description);
+        }
+
+        if (Validator.isNotNull(workPackage)) {
+            searchContext.setAttribute("workPackage", workPackage);
+        }
+
+        searchContext.setAttribute("paginationType", "more");
+
+        Group group = GroupLocalServiceUtil.getGroup(groupId);
+
+        searchContext.setCompanyId(group.getCompanyId());
+
+        searchContext.setEnd(end);
+        if (groupId > 0) {
+            searchContext.setGroupIds(new long[] { groupId });
+        }
+        searchContext.setSorts(sort);
+        searchContext.setStart(start);
+        searchContext.setUserId(userId);
+
+        searchContext.setAndSearch(andSearch);
+
+        if (params != null) {
+
+            String keywords = (String) params.remove("keywords");
+
+            if (Validator.isNotNull(keywords)) {
+                searchContext.setKeywords(keywords);
+            }
+        }
+
+        QueryConfig queryConfig = new QueryConfig();
+
+        queryConfig.setHighlightEnabled(false);
+        queryConfig.setScoreEnabled(false);
+
+        searchContext.setQueryConfig(queryConfig);
+
+        if (sort != null) {
+            searchContext.setSorts(sort);
+        }
+
+        searchContext.setStart(start);
+
+        return searchContext;
     }
 
     private static final Log _log = LogFactoryUtil.getLog(TaskRecordLocalServiceImpl.class.getName());

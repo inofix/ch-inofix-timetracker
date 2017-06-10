@@ -3,7 +3,6 @@ package ch.inofix.timetracker.web.internal.portlet;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -50,7 +49,6 @@ import com.liferay.portal.kernel.exception.LocaleException;
 import com.liferay.portal.kernel.exception.NoSuchBackgroundTaskException;
 import com.liferay.portal.kernel.exception.NoSuchResourceException;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.LanguageUtil;
@@ -61,7 +59,6 @@ import com.liferay.portal.kernel.portlet.PortletConfigFactoryUtil;
 import com.liferay.portal.kernel.portlet.PortletResponseUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 import com.liferay.portal.kernel.repository.model.FileEntry;
-import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.SearchException;
@@ -79,7 +76,6 @@ import com.liferay.portal.kernel.upload.UploadPortletRequest;
 import com.liferay.portal.kernel.upload.UploadRequestSizeException;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.ContentTypes;
-import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HttpUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
@@ -95,6 +91,8 @@ import ch.inofix.timetracker.exception.TaskRecordUntilDateException;
 import ch.inofix.timetracker.internal.exportimport.configuration.ExportImportTaskRecordsConfigurationSettingsMapFactory;
 import ch.inofix.timetracker.model.TaskRecord;
 import ch.inofix.timetracker.service.TaskRecordService;
+import ch.inofix.timetracker.service.TaskRecordServiceUtil;
+import ch.inofix.timetracker.service.util.TaskRecordUtil;
 import ch.inofix.timetracker.web.configuration.ExportImportConfigurationConstants;
 import ch.inofix.timetracker.web.configuration.TimetrackerConfiguration;
 import ch.inofix.timetracker.web.internal.constants.TimetrackerWebKeys;
@@ -106,8 +104,8 @@ import ch.inofix.timetracker.web.internal.portlet.util.PortletUtil;
  * @author Christian Berndt
  * @author Stefan Luebbers
  * @created 2013-10-07 10:47
- * @modified 2017-06-05 15:53
- * @version 1.6.8
+ * @modified 2017-06-10 22:37
+ * @version 1.6.9
  */
 @Component(immediate = true, property = { "com.liferay.portlet.css-class-wrapper=portlet-timetracker",
         "com.liferay.portlet.display-category=category.inofix",
@@ -158,83 +156,6 @@ public class TimetrackerPortlet extends MVCPortlet {
         renderRequest.setAttribute(TimetrackerConfiguration.class.getName(), _timetrackerConfiguration);
 
         super.doView(renderRequest, renderResponse);
-    }
-
-    /**
-     * @param resourceRequest
-     * @param resourceResponse
-     * @throws IOException
-     * @throws SearchException
-     * @since 1.1.5
-     */
-    public void getSum(ResourceRequest resourceRequest, ResourceResponse resourceResponse) throws Exception {
-
-        HttpServletRequest request = PortalUtil.getHttpServletRequest(resourceRequest);
-
-        List<TaskRecord> taskRecords = getTaskRecords(request);
-
-        long minutes = 0;
-
-        for (TaskRecord taskRecord : taskRecords) {
-            minutes = minutes + taskRecord.getDurationInMinutes();
-        }
-
-        double hours = 0;
-
-        if (minutes > 0) {
-            hours = ((double) minutes) / 60;
-        }
-
-        PortletResponseUtil.write(resourceResponse, String.valueOf(hours));
-
-    }
-
-    /**
-     * @param resourceRequest
-     * @param resourceResponse
-     * @return
-     * @since 1.1.6
-     * @throws SearchException
-     */
-    public List<TaskRecord> getTaskRecords(HttpServletRequest request) throws Exception {
-
-        ThemeDisplay themeDisplay = (ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY);
-
-        String keywords = ParamUtil.getString(request, "keywords");
-        String orderByCol = ParamUtil.getString(request, "orderByCol", "modifiedDate");
-        String orderByType = ParamUtil.getString(request, "orderByType", "desc");
-
-        boolean reverse = "desc".equals(orderByType);
-
-        Sort sort = new Sort(orderByCol, reverse);
-
-        Hits hits = _taskRecordService.search(themeDisplay.getUserId(), themeDisplay.getScopeGroupId(), keywords, 0,
-                Integer.MAX_VALUE, sort);
-
-        List<TaskRecord> taskRecords = new ArrayList<TaskRecord>();
-
-        for (int i = 0; i < hits.getDocs().length; i++) {
-            Document doc = hits.doc(i);
-
-            long taskRecordId = GetterUtil.getLong(doc.get(Field.ENTRY_CLASS_PK));
-
-            TaskRecord taskRecord = null;
-
-            try {
-                taskRecord = _taskRecordService.getTaskRecord(taskRecordId);
-            } catch (PortalException pe) {
-                _log.error(pe.getLocalizedMessage());
-            } catch (SystemException se) {
-                _log.error(se.getLocalizedMessage());
-            }
-
-            if (taskRecord != null) {
-                taskRecords.add(taskRecord);
-            }
-        }
-
-        return taskRecords;
-
     }
 
     /**
@@ -330,12 +251,8 @@ public class TimetrackerPortlet extends MVCPortlet {
     public void serveResource(ResourceRequest resourceRequest, ResourceResponse resourceResponse)
             throws PortletException {
 
-        _log.info("serveResource");
-
         try {
             String resourceID = resourceRequest.getResourceID();
-
-            _log.info("resourceId = " + resourceID);
 
             if (resourceID.equals("getSum")) {
                 getSum(resourceRequest, resourceResponse);
@@ -687,6 +604,35 @@ public class TimetrackerPortlet extends MVCPortlet {
     }
 
     /**
+     * @param resourceRequest
+     * @param resourceResponse
+     * @throws IOException
+     * @throws SearchException
+     * @since 1.1.5
+     */
+    protected void getSum(ResourceRequest resourceRequest, ResourceResponse resourceResponse) throws Exception {
+
+        HttpServletRequest request = PortalUtil.getHttpServletRequest(resourceRequest);
+
+        List<TaskRecord> taskRecords = getTaskRecords(request);
+
+        long minutes = 0;
+
+        for (TaskRecord taskRecord : taskRecords) {
+            minutes = minutes + taskRecord.getDurationInMinutes();
+        }
+
+        double hours = 0;
+
+        if (minutes > 0) {
+            hours = ((double) minutes) / 60;
+        }
+
+        PortletResponseUtil.write(resourceResponse, String.valueOf(hours));
+
+    }
+
+    /**
      * from com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCResourceCommand
      *
      * @param resourceRequest
@@ -713,6 +659,53 @@ public class TimetrackerPortlet extends MVCPortlet {
         TaskRecord taskRecord = _taskRecordService.getTaskRecord(taskRecordId);
 
         portletRequest.setAttribute(TimetrackerWebKeys.TASK_RECORD, taskRecord);
+    }
+
+    /**
+     * @param resourceRequest
+     * @param resourceResponse
+     * @return
+     * @since 1.1.6
+     * @throws SearchException
+     */
+    protected List<TaskRecord> getTaskRecords(HttpServletRequest request) throws Exception {
+
+        ThemeDisplay themeDisplay = (ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY);
+
+        String description = ParamUtil.getString(request, "description");
+        boolean advancedSearch = ParamUtil.getBoolean(request, "advancedSearch", false);
+        // TODO: check parameter name
+        boolean andOperator = ParamUtil.getBoolean(request, "andOperator", true);
+        // TODO:
+        int end = ParamUtil.getInteger(request, "end");
+        Date fromDate = null;
+        String keywords = ParamUtil.getString(request, "keywords");
+        String orderByCol = ParamUtil.getString(request, "orderByCol", "modifiedDate");
+        String orderByType = ParamUtil.getString(request, "orderByType", "desc");
+        int start = ParamUtil.getInteger(request, "start");
+        int status = ParamUtil.getInteger(request, Field.STATUS);
+        // TODO:
+        Date untilDate = null;
+        String workPackage = ParamUtil.getString(request, "workPackage");
+
+        boolean reverse = "desc".equals(orderByType);
+
+        Sort sort = new Sort(orderByCol, reverse);
+
+        Hits hits = null;
+
+        if (advancedSearch) {
+            hits = TaskRecordServiceUtil.search(themeDisplay.getUserId(), themeDisplay.getScopeGroupId(), workPackage,
+                    description, status, fromDate, untilDate, null, andOperator, start, end, sort);
+        } else {
+            hits = TaskRecordServiceUtil.search(themeDisplay.getUserId(), themeDisplay.getScopeGroupId(), keywords,
+                    start, end, sort);
+        }
+
+        List<TaskRecord> taskRecords = TaskRecordUtil.getTaskRecords(hits);
+
+        return taskRecords;
+
     }
 
     protected void handleUploadException(ActionRequest actionRequest, ActionResponse actionResponse, String folderName,

@@ -2,14 +2,11 @@
     view.jsp: Default view of Inofix' timetracker.
     
     Created:     2013-10-06 16:52 by Christian Berndt
-    Modified:    2017-06-07 00:52 by Christian Berndt
+    Modified:    2017-06-10 18:48 by Christian Berndt
     Version:     1.6.6
 --%>
 
 <%@ include file="/init.jsp" %>
-
-<%@page import="com.liferay.portal.kernel.search.Sort"%>
-<%@page import="com.liferay.portal.kernel.search.Field"%>
 
 <%
     String [] columns = new String[] {"task-record-id", "work-package", "start-date"};
@@ -25,13 +22,14 @@
     
     String backURL = ParamUtil.getString(request, "backURL");
     String keywords = ParamUtil.getString(request, "keywords");
+    int status = ParamUtil.getInteger(request, "status"); 
  
     PortletURL portletURL = renderResponse.createRenderURL();
     portletURL.setParameter("tabs1", tabs1); 
     
     String section = ParamUtil.getString(request, "section", "timetracker");
     
-    SearchContainer searchContainer = new TaskRecordSearch(renderRequest, "cur", portletURL);
+    TaskRecordSearch searchContainer = new TaskRecordSearch(renderRequest, "cur", portletURL);
     
     boolean reverse = false; 
     if (searchContainer.getOrderByType().equals("desc")) {
@@ -41,35 +39,36 @@
     Sort sort = new Sort(searchContainer.getOrderByCol(), reverse);
     
     TaskRecordSearchTerms searchTerms = (TaskRecordSearchTerms) searchContainer.getSearchTerms();
-
-    Hits hits = TaskRecordServiceUtil.search(themeDisplay.getUserId(), themeDisplay.getScopeGroupId(), keywords,
-            searchContainer.getStart(), searchContainer.getEnd(), sort);
-            
-    List<Document> documents = ListUtil.toList(hits.getDocs());
-        
-    List<TaskRecord> taskRecords = new ArrayList<TaskRecord>();
     
-    for (Document document : documents) {
-        try {
-            long taskRecordId = GetterUtil.getLong(document.get("entryClassPK"));
+    // TODO
+    Date fromDate = null; 
+    Date untilDate = null; 
+    
+    Hits hits = null;
 
-            TaskRecord taskRecord = TaskRecordServiceUtil.getTaskRecord(taskRecordId);
-            taskRecords.add(taskRecord); 
-        } catch (Exception e) {
-            System.out.println("ERROR: timetracker/view.jsp Failed to getTaskRecord: " + e); 
-        }
+    if (searchTerms.isAdvancedSearch()) {
+                
+        hits = TaskRecordServiceUtil.search(themeDisplay.getUserId(), scopeGroupId,
+                searchTerms.getWorkPackage(), searchTerms.getDescription(), status, fromDate,
+                untilDate, null, searchTerms.isAndOperator(), searchContainer.getStart(),
+                searchContainer.getEnd(), sort);
+    } else {
+        hits = TaskRecordServiceUtil.search(themeDisplay.getUserId(), scopeGroupId, keywords,
+                searchContainer.getStart(), searchContainer.getEnd(), sort);
     }
-    searchContainer.setResults(taskRecords); 
-    searchContainer.setTotal(hits.getLength());
-    
-    request.setAttribute("view.jsp-columns", columns);
-    
-    request.setAttribute("view.jsp-displayStyle", displayStyle);
-    
-    request.setAttribute("view.jsp-searchContainer", searchContainer);
-    
-    request.setAttribute("view.jsp-total", hits.getLength());
 
+    List<TaskRecord> taskRecords = TaskRecordUtil.getTaskRecords(hits);
+
+    searchContainer.setResults(taskRecords);
+    searchContainer.setTotal(hits.getLength());
+
+    request.setAttribute("view.jsp-columns", columns);
+
+    request.setAttribute("view.jsp-displayStyle", displayStyle);
+
+    request.setAttribute("view.jsp-searchContainer", searchContainer);
+
+    request.setAttribute("view.jsp-total", hits.getLength());
 %>
 
 <% // TODO: add trash bin support %>
@@ -121,3 +120,6 @@
     </c:otherwise>
 </c:choose>
 
+<%!
+    private static Log _log = LogFactoryUtil.getLog("ch_inofix_timetracker_web.view_jsp");
+%>

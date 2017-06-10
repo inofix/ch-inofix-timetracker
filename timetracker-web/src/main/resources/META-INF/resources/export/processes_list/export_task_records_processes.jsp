@@ -77,8 +77,8 @@
 //                 backgroundTasks = BackgroundTaskManagerUtil.getBackgroundTasks(groupId, TaskRecordExportBackgroundTaskExecutor.class.getName(), completed, searchContainer.getStart(), searchContainer.getEnd(), searchContainer.getOrderByComparator());
             }
 
-            searchContainer.setResults(backgroundTasks);
-            searchContainer.setTotal(backgroundTasksCount);
+//             searchContainer.setResults(backgroundTasks);
+//             searchContainer.setTotal(backgroundTasksCount);
             %>
 
         </liferay-ui:search-container-results>

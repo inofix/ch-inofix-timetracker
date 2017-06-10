@@ -2,8 +2,8 @@
  * main.scss: css specific to the timetracker-portlet.
  *
  * Created:     2013-10-09 22:44 by Christian Berndt
- * Modified:    2017-06-08 23:34 by Christian Berndt
- * Version:     1.1.9
+ * Modified:    2017-06-10 22:40 by Christian Berndt
+ * Version:     1.2.0
  * 
  */
 @import "bourbon";
@@ -77,6 +77,12 @@
         
         .form-group-inline {
             vertical-align: top;
+        }
+        
+        .lfr-input-date {
+            .form-control {
+                width: 100px;
+            }
         }
     }
     
