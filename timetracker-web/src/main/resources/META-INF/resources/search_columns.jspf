@@ -3,8 +3,8 @@
     for the main view of the timetracker portlet.
 
     Created:     2013-10-07 14:41 by Christian Berndt
-    Modified:    2017-06-09 18:32 by Christian Berndt
-    Version:     1.1.8
+    Modified:    2017-06-10 23:25 by Christian Berndt
+    Version:     1.1.9
 --%>
 
 <%
@@ -72,21 +72,15 @@
         name="duration" orderable="true" href="<%=detailURL%>"
         orderableProperty="duration_Number_sortable" />
 </c:if>
-<c:if test='<%="until-date".equals(column)%>'>
-    <liferay-ui:search-container-column-text property="untilDate" 
-        value="<%= untilDateString %>"
-        name="until-date" orderable="true" href="<%=detailURL%>"
-        orderableProperty="untilDate_Number_sortable" />
+<c:if test='<%="from-date".equals(column)%>'>
+    <liferay-ui:search-container-column-text value="<%= fromDateString %>"
+        name="from-date" orderable="true" href="<%=detailURL%>"
+        orderableProperty="fromDate_Number_sortable" />
 </c:if>
 <c:if test='<%="modified-date".equals(column)%>'>
     <liferay-ui:search-container-column-date property="modifiedDate"
         name="modified-date" orderable="true" href="<%=detailURL%>"
         orderableProperty="modifiedDate_Number_sortable"  />
-</c:if>
-<c:if test='<%="from-date".equals(column)%>'>
-    <liferay-ui:search-container-column-text value="<%= fromDateString %>"
-        name="from-date" orderable="true" href="<%=detailURL%>"
-        orderableProperty="fromDate_Number_sortable" />
 </c:if>
 <c:if test='<%="status".equals(column)%>'>
     <liferay-ui:search-container-column-status property="status"
@@ -101,6 +95,12 @@
     <liferay-ui:search-container-column-text property="ticketURL"
         name="ticket-url" orderable="true" href="<%=detailURL%>"
         orderableProperty="ticketURL_sortable" />
+</c:if>
+<c:if test='<%="until-date".equals(column)%>'>
+    <liferay-ui:search-container-column-text property="untilDate" 
+        value="<%= untilDateString %>"
+        name="until-date" orderable="true" href="<%=detailURL%>"
+        orderableProperty="untilDate_Number_sortable" />
 </c:if>
 <c:if test='<%="user-name".equals(column)%>'>
     <liferay-ui:search-container-column-text property="userName"

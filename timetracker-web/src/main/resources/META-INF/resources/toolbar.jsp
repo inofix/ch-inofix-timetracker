@@ -2,8 +2,8 @@
     toolbar.jsp: The toolbar of the timetracker portlet
     
     Created:    2016-03-20 16:58 by Christian Berndt
-    Modified:   2017-06-10 16:31 by Christian Berndt
-    Version:    1.1.8
+    Modified:   2017-06-10 23:26 by Christian Berndt
+    Version:    1.1.9
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -11,9 +11,11 @@
 <%@page import="com.liferay.trash.kernel.util.TrashUtil"%>
 
 <%
-    String orderByCol = ParamUtil.getString(request, "orderByCol");
+    String[] columns = (String[])request.getAttribute("view.jsp-columns");
 
-    String orderByType = ParamUtil.getString(request, "orderByType");
+    String orderByCol = ParamUtil.getString(request, "orderByCol", "modified-date");
+
+    String orderByType = ParamUtil.getString(request, "orderByType", "desc");
 
     String searchContainerId = ParamUtil.getString(request, "searchContainerId");
     
@@ -32,7 +34,7 @@
         <liferay-frontend:management-bar-sort
             orderByCol="<%= orderByCol %>"
             orderByType="<%= orderByType %>"
-            orderColumns='<%= new String[] {"modified-date", "start-date", "task-record-id", "work-package"} %>'
+            orderColumns='<%= columns %>'
             portletURL="<%= portletURL %>"
         />
     </liferay-frontend:management-bar-filters>
