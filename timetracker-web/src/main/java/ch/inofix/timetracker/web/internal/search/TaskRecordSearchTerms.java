@@ -27,5 +27,4 @@ public class TaskRecordSearchTerms extends TaskRecordDisplayTerms {
         workPackage = DAOParamUtil.getString(portletRequest, WORK_PACKAGE);
 
     }
-
 }

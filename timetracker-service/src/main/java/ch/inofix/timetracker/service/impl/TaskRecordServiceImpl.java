@@ -17,6 +17,7 @@ package ch.inofix.timetracker.service.impl;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -57,8 +58,8 @@ import ch.inofix.timetracker.service.permission.TimetrackerPortletPermission;
  * @author Christian Berndt
  * @author Stefan Luebbers
  * @created 2015-05-07 23:50
- * @modified 2017-06-04 16:59
- * @version 1.1.2
+ * @modified 2017-06-09 00:51
+ * @version 1.1.3
  * @see TaskRecordServiceBaseImpl
  * @see ch.inofix.timetracker.service.TaskRecordServiceUtil
  */
@@ -221,6 +222,15 @@ public class TaskRecordServiceImpl extends TaskRecordServiceBaseImpl {
             throws PortalException {
 
         return taskRecordLocalService.search(userId, groupId, keywords, start, end, sort);
+    }
+
+    @Override
+    public Hits search(long userId, long groupId, String workPackage, String description, int status, Date fromDate,
+            Date untilDate, LinkedHashMap<String, Object> params, boolean andSearch, int start, int end, Sort sort) throws PortalException {
+
+        return taskRecordLocalService.search(userId, groupId, workPackage, description, status, fromDate, untilDate,
+                params, andSearch, start, end, sort);
+
     }
 
     @Override

@@ -6,7 +6,8 @@ Export-Package:\
     ch.inofix.timetracker.internal.exportimport.configuration,\
     ch.inofix.timetracker.model.impl,\
     ch.inofix.timetracker.search,\
-    ch.inofix.timetracker.service.permission
+    ch.inofix.timetracker.service.permission,\
+    ch.inofix.timetracker.service.util
 Liferay-Require-SchemaVersion: 1.0.0
 Liferay-Service: true
 Include-Resource: @commons-lang3-3.5.jar

@@ -2,8 +2,8 @@
     init.jsp: Common setup code for the timetracker portlet.
 
     Created:     2014-02-01 15:31 by Christian Berndt
-    Modified:    2017-06-08 23:18 by Christian Berndt
-    Version:     1.1.2
+    Modified:    2017-06-10 15:41 by Christian Berndt
+    Version:     1.1.3
 --%>
 
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
@@ -23,6 +23,7 @@
 <%@page import="ch.inofix.timetracker.service.permission.TaskRecordPermission"%>
 <%@page import="ch.inofix.timetracker.service.permission.TimetrackerPortletPermission"%>
 <%@page import="ch.inofix.timetracker.service.TaskRecordServiceUtil"%>
+<%@page import="ch.inofix.timetracker.service.util.TaskRecordUtil"%>
 <%@page import="ch.inofix.timetracker.web.internal.search.TaskRecordDisplayTerms"%>
 <%@page import="ch.inofix.timetracker.web.internal.search.TaskRecordSearch"%>
 <%@page import="ch.inofix.timetracker.web.internal.search.TaskRecordSearchTerms"%>
@@ -40,6 +41,8 @@
 <%@page import="com.liferay.portal.kernel.dao.search.EmptyOnClickRowChecker"%>
 <%@page import="com.liferay.portal.kernel.language.LanguageUtil"%>
 <%@page import="com.liferay.portal.kernel.language.UnicodeLanguageUtil"%>
+<%@page import="com.liferay.portal.kernel.log.Log"%>
+<%@page import="com.liferay.portal.kernel.log.LogFactoryUtil"%>
 <%@page import="com.liferay.portal.kernel.model.Group"%>
 <%@page import="com.liferay.portal.kernel.model.User"%>
 <%@page import="com.liferay.portal.kernel.portlet.PortalPreferences"%>

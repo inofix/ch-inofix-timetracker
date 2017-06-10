@@ -1,5 +1,6 @@
 package ch.inofix.timetracker.search;
 
+import java.util.LinkedHashMap;
 import java.util.Locale;
 
 import javax.portlet.PortletRequest;
@@ -17,13 +18,17 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.BaseIndexer;
+import com.liferay.portal.kernel.search.BooleanQuery;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.IndexWriterHelperUtil;
 import com.liferay.portal.kernel.search.Indexer;
+import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.Summary;
+import com.liferay.portal.kernel.search.filter.BooleanFilter;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import ch.inofix.timetracker.model.TaskRecord;
@@ -34,8 +39,8 @@ import ch.inofix.timetracker.service.TaskRecordLocalService;
  * @author Christian Berndt
  * @author Stefan Luebbers
  * @created 2016-11-26 15:04
- * @modified 2017-06-09 18:18
- * @version 1.0.2
+ * @modified 2017-06-10 22:34
+ * @version 1.0.3
  *
  */
 @Component(immediate = true, service = Indexer.class)
@@ -62,6 +67,32 @@ public class TaskRecordIndexer extends BaseIndexer<TaskRecord> {
         // TODO: reactivate permission check
         return true;// TaskRecordPermission.contains(permissionChecker,
                     // entryClassPK, ActionKeys.VIEW);
+    }
+
+    @Override
+    public void postProcessContextBooleanFilter(BooleanFilter contextBooleanFilter, SearchContext searchContext)
+            throws Exception {
+
+        addStatus(contextBooleanFilter, searchContext);
+    }
+
+    @Override
+    public void postProcessSearchQuery(BooleanQuery searchQuery, BooleanFilter fullQueryBooleanFilter,
+            SearchContext searchContext) throws Exception {
+
+        addSearchTerm(searchQuery, searchContext, "description", false);
+        // TODO: add ticketURL
+        addSearchTerm(searchQuery, searchContext, "workPackage", false);
+
+        LinkedHashMap<String, Object> params = (LinkedHashMap<String, Object>) searchContext.getAttribute("params");
+
+        if (params != null) {
+            String expandoAttributes = (String) params.get("expandoAttributes");
+
+            if (Validator.isNotNull(expandoAttributes)) {
+                addSearchExpando(searchQuery, searchContext, expandoAttributes);
+            }
+        }
     }
 
     @Override
