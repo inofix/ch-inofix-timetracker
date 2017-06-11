@@ -20,7 +20,11 @@ import com.liferay.exportimport.kernel.lifecycle.ExportImportLifecycleManager;
 import com.liferay.exportimport.kernel.model.ExportImportConfiguration;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.xml.Document;
 import com.liferay.portal.kernel.xml.Node;
 import com.liferay.portal.kernel.xml.SAXReaderUtil;
@@ -33,8 +37,8 @@ import ch.inofix.timetracker.service.TaskRecordLocalService;
  *
  * @author Christian Berndt
  * @created 2017-06-04 18:07
- * @modified 2017-06-09 18:14
- * @version 1.0.1
+ * @modified 2017-06-10 12:34
+ * @version 1.0.2
  *
  */
 @Component(immediate = true, property = { "model.class.name=ch.inofix.timetracker.model.TaskRecord" }, service = {
@@ -53,8 +57,6 @@ public class TaskRecordImportController extends BaseExportImportController imple
     @Override
     public void importFile(ExportImportConfiguration exportImportConfiguration, File file) throws Exception {
 
-        _log.info("importFile");
-
         PortletDataContext portletDataContext = null;
 
         try {
@@ -64,7 +66,7 @@ public class TaskRecordImportController extends BaseExportImportController imple
             // Map<String, Serializable> settingsMap =
             // exportImportConfiguration.getSettingsMap();
 
-            doImportFile(file);
+            doImportFile(file, exportImportConfiguration.getUserId(), exportImportConfiguration.getGroupId());
             ExportImportThreadLocal.setTaskRecordImportInProcess(false);
 
         } catch (Throwable t) {
@@ -85,9 +87,7 @@ public class TaskRecordImportController extends BaseExportImportController imple
 
     }
 
-    protected void doImportFile(File file) throws Exception {
-
-        _log.info("doImportFile");
+    protected void doImportFile(File file, long userId, long groupId) throws Exception {
 
         StopWatch stopWatch = new StopWatch();
 
@@ -99,19 +99,13 @@ public class TaskRecordImportController extends BaseExportImportController imple
 
         List<Node> nodes = document.selectNodes("TaskRecords/ch.inofix.timetracker.model.impl.TaskRecordImpl");
 
-        _log.info(nodes.size());
-
         for (Node node : nodes) {
 
             String xml = node.asXML();
 
-            _log.info(xml);
-
             _xStream.setClassLoader(TaskRecordImportController.class.getClassLoader());
 
             TaskRecord importTaskRecord = (TaskRecord) _xStream.fromXML(xml);
-
-            _log.info(importTaskRecord);
 
             // TODO: process import configuration - have a look at
             // PortletDataContextImpl
@@ -121,7 +115,6 @@ public class TaskRecordImportController extends BaseExportImportController imple
             // taskRecord =
             // _taskRecordLocalService.fetchTaskRecord(importTaskRecord.getTaskRecordId());
 
-            long userId = 0;
             String workPackage = null;
             String description = null;
             String ticketURL = null;
@@ -131,13 +124,35 @@ public class TaskRecordImportController extends BaseExportImportController imple
             long duration = 0;
 
             ServiceContext serviceContext = new ServiceContext();
-            serviceContext.setScopeGroupId(importTaskRecord.getGroupId());
+
+            Group group = null;
+            try {
+                group = GroupLocalServiceUtil.getGroup(importTaskRecord.getGroupId());
+            } catch (Exception e) {
+                _log.warn(e.getMessage());
+            }
+
+            if (group != null) {
+                groupId = importTaskRecord.getGroupId();
+            }
+
+            serviceContext.setScopeGroupId(groupId);
 
             if (taskRecord == null) {
 
                 // insert as new
 
-                userId = importTaskRecord.getUserId();
+                User user = null;
+                try {
+                    user = UserLocalServiceUtil.getUser(importTaskRecord.getUserId());
+                } catch (Exception e) {
+                    _log.warn(e.getMessage());
+                }
+
+                if (user != null) {
+                    userId = importTaskRecord.getUserId();
+                }
+
                 workPackage = importTaskRecord.getWorkPackage();
                 description = importTaskRecord.getDescription();
                 ticketURL = importTaskRecord.getTicketURL();
