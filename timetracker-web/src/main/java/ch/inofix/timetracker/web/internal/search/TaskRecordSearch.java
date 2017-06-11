@@ -29,8 +29,8 @@ import ch.inofix.timetracker.model.TaskRecord;
  * @author Christian Berndt
  * @Stefan Luebbers
  * @created 2013-10-06 18:26
- * @modified 2017-06-10 23:25
- * @version 1.0.3
+ * @modified 2017-06-11 12:37
+ * @version 1.0.4
  *
  */
 public class TaskRecordSearch extends SearchContainer<TaskRecord> {
@@ -111,7 +111,7 @@ public class TaskRecordSearch extends SearchContainer<TaskRecord> {
                 preferences.setValue(portletId, "task-records-order-by-col", orderByCol);
                 preferences.setValue(portletId, "task-records-order-by-type", orderByType);
             } else {
-                orderByCol = preferences.getValue(portletId, "task-records-order-by-col", "modifie-date");
+                orderByCol = preferences.getValue(portletId, "task-records-order-by-col", "modified-date");
                 orderByType = preferences.getValue(portletId, "task-records-order-by-type", "asc");
             }
 

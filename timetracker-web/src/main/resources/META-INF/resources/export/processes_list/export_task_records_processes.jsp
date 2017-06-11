@@ -2,8 +2,8 @@
     export_task_records_processes.jsp: list of export processes
     
     Created:    2017-06-06 23:36 by Christian Berndt
-    Modified:   2017-06-06 23:36 by Christian Berndt
-    Version:    1.0.0
+    Modified:   2017-06-11 12:39 by Christian Berndt
+    Version:    1.0.1
 --%>
 
 <%@ include file="/init.jsp" %>
@@ -58,13 +58,13 @@
     >
         <liferay-ui:search-container-results>
 
-            <%
+        <%
             int backgroundTasksCount = 0;
             List<BackgroundTask> backgroundTasks = null;
 
             if (navigation.equals("all")) {
-//                 backgroundTasksCount = BackgroundTaskManagerUtil.getBackgroundTasksCount(groupId, TaskRecordExportBackgroundTaskExecutor.class.getName());
-//                 backgroundTasks = BackgroundTaskManagerUtil.getBackgroundTasks(groupId, TaskRecordExportBackgroundTaskExecutor.class.getName(), searchContainer.getStart(), searchContainer.getEnd(), searchContainer.getOrderByComparator());
+                backgroundTasksCount = BackgroundTaskManagerUtil.getBackgroundTasksCount(groupId, TaskRecordExportBackgroundTaskExecutor.class.getName());
+                backgroundTasks = BackgroundTaskManagerUtil.getBackgroundTasks(groupId, TaskRecordExportBackgroundTaskExecutor.class.getName(), searchContainer.getStart(), searchContainer.getEnd(), searchContainer.getOrderByComparator());
             }
             else {
                 boolean completed = false;
@@ -72,14 +72,13 @@
                 if (navigation.equals("completed")) {
                     completed = true;
                 }
-
-//                 backgroundTasksCount = BackgroundTaskManagerUtil.getBackgroundTasksCount(groupId, TaskRecordExportBackgroundTaskExecutor.class.getName(), completed);
-//                 backgroundTasks = BackgroundTaskManagerUtil.getBackgroundTasks(groupId, TaskRecordExportBackgroundTaskExecutor.class.getName(), completed, searchContainer.getStart(), searchContainer.getEnd(), searchContainer.getOrderByComparator());
+                backgroundTasksCount = BackgroundTaskManagerUtil.getBackgroundTasksCount(groupId, TaskRecordExportBackgroundTaskExecutor.class.getName(), completed);
+                backgroundTasks = BackgroundTaskManagerUtil.getBackgroundTasks(groupId, TaskRecordExportBackgroundTaskExecutor.class.getName(), completed, searchContainer.getStart(), searchContainer.getEnd(), searchContainer.getOrderByComparator());
             }
 
-//             searchContainer.setResults(backgroundTasks);
-//             searchContainer.setTotal(backgroundTasksCount);
-            %>
+            searchContainer.setResults(backgroundTasks);
+            searchContainer.setTotal(backgroundTasksCount);
+        %>
 
         </liferay-ui:search-container-results>
 
