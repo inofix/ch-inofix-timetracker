@@ -105,13 +105,10 @@
                 
                 </aui:form>
                       
-                <%--   
-                    
-                        <c:if test="<%= tabs2.equals("delete") %>">
-                            <liferay-util:include page="/delete_task_records.jsp" servletContext="<%= application %>"  />
-                        </c:if>
-        
-                
+                <%--                     
+                    <c:if test="<%= tabs2.equals("delete") %>">
+                        <liferay-util:include page="/delete_task_records.jsp" servletContext="<%= application %>"  />
+                    </c:if>
                 --%>
             </div>
         </div>
