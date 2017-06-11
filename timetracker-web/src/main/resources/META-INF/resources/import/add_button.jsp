@@ -2,8 +2,8 @@
     add_button.jsp: create a new import process
     
     Created:    2017-06-08 00:32 by Christian Berndt
-    Modified:   2017-06-08 00:32 by Christian Berndt
-    Version:    1.0.0
+    Modified:   2017-06-11 12:40 by Christian Berndt
+    Version:    1.0.1
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -20,5 +20,5 @@
         <portlet:param name="tabs1" value="export-import" />
     </portlet:renderURL>
 
-    <liferay-frontend:add-menu-item title='<%= LanguageUtil.get(request, "new-export-process") %>' url="<%= addExportProcessURL.toString() %>" />
+    <liferay-frontend:add-menu-item title='<%= LanguageUtil.get(request, "new-import-process") %>' url="<%= addExportProcessURL.toString() %>" />
 </liferay-frontend:add-menu>
