@@ -104,8 +104,8 @@ import ch.inofix.timetracker.web.internal.portlet.util.PortletUtil;
  * @author Christian Berndt
  * @author Stefan Luebbers
  * @created 2013-10-07 10:47
- * @modified 2017-06-10 22:37
- * @version 1.6.9
+ * @modified 2017-06-13 20:10
+ * @version 1.7.0
  */
 @Component(immediate = true, property = { "com.liferay.portlet.css-class-wrapper=portlet-timetracker",
         "com.liferay.portlet.display-category=category.inofix",
@@ -196,6 +196,18 @@ public class TimetrackerPortlet extends MVCPortlet {
 
                 hideDefaultSuccessMessage(actionRequest);
                 importTaskRecords(actionRequest, ExportImportHelper.TEMP_FOLDER_NAME);
+
+                Map<String, String[]> parameters = new HashMap<>();
+
+                String mvcPath = ParamUtil.getString(actionRequest, "mvcPath");
+                String tabs1 = ParamUtil.getString(actionRequest, "tabs1");
+                String tabs2 = ParamUtil.getString(actionRequest, "tabs2");
+
+                parameters.put("mvcPath", new String[] { mvcPath });
+                parameters.put("tabs1", new String[] { tabs1 });
+                parameters.put("tabs2", new String[] { tabs2 });
+
+                actionResponse.setRenderParameters(parameters);
 
             } else if (cmd.equals(Constants.UPDATE)) {
 
@@ -489,8 +501,6 @@ public class TimetrackerPortlet extends MVCPortlet {
     }
 
     protected void exportTaskRecords(ActionRequest actionRequest, ActionResponse actionResponse) throws Exception {
-
-        _log.info("exportTaskRecords");
 
         ThemeDisplay themeDisplay = (ThemeDisplay) actionRequest.getAttribute(WebKeys.THEME_DISPLAY);
 

@@ -2,8 +2,8 @@
     import_task_records_resources.jsp: configure the task records import.
     
     Created:    2017-06-01 21:45 by Christian Berndt
-    Modified:   2017-06-01 21:45 by Christian Berndt
-    Version:    1.0.0
+    Modified:   2017-06-13 19:39 by Christian Berndt
+    Version:    1.0.1
 --%>
 
 <%@ include file="/init.jsp" %>
@@ -48,9 +48,12 @@
 
 <% // TODO: what else can go wrong? see import_layouts_resources.jsp %>
 
-<portlet:actionURL name="importTaskRecords" var="importTaskRecordsURL">
+<portlet:actionURL var="importTaskRecordsURL">
     <portlet:param name="<%= Constants.CMD %>" value="<%= Constants.IMPORT %>" />
     <portlet:param name="groupId" value="<%= String.valueOf(groupId) %>" />
+    <portlet:param name="mvcPath" value="/view.jsp"/>
+    <portlet:param name="tabs1" value="export-import"/>
+    <portlet:param name="tabs2" value="import"/>
 </portlet:actionURL>
 
 <aui:form action="<%= importTaskRecordsURL %>" cssClass="lfr-export-dialog" method="post" name="fm1">
@@ -62,7 +65,7 @@
     <aui:input name="redirect" type="hidden" value="<%= portletURL.toString() %>" />
         
     <div class="export-dialog-tree">
-        <aui:fieldset-group markupView="lexicon">
+        <aui:fieldset-group markupView="<%= markupView %>">
             <aui:fieldset cssClass="options-group" label="file-summary">
                 <dl class="import-file-details options">
                     <dt>

@@ -2,8 +2,8 @@
     view.jsp: Default view of Inofix' timetracker.
     
     Created:     2013-10-06 16:52 by Christian Berndt
-    Modified:    2017-06-13 10:12 by Christian Berndt
-    Version:     1.6.7
+    Modified:    2017-06-13 20:16 by Christian Berndt
+    Version:     1.6.8
 --%>
 
 <%@ include file="/init.jsp" %>
@@ -85,7 +85,7 @@
     servletContext="<%=application%>"/>
 
 <c:choose>
-    <c:when test="<%= "export-import".equals(section) %>">
+    <c:when test="<%= "export-import".equals(tabs1) %>">
         <liferay-util:include page="/export_import.jsp" servletContext="<%= application %>"/>
     </c:when>
     <c:otherwise>
@@ -112,12 +112,6 @@
                     <liferay-util:include page="/view_task_records.jsp" servletContext="<%= application %>" />
                 
                 </aui:form>
-                      
-                <%--                     
-                    <c:if test="<%= tabs2.equals("delete") %>">
-                        <liferay-util:include page="/delete_task_records.jsp" servletContext="<%= application %>"  />
-                    </c:if>
-                --%>
             </div>
         </div>
         
