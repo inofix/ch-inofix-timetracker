@@ -2,17 +2,27 @@
     search.jsp: The extended search of the timetracker portlet.
 
     Created:     2017-06-05 22:04 by Christian Berndt
-    Modified:    2017-06-10 18:14 by Christian Berndt
-    Version:     1.0.1
+    Modified:    2017-06-13 00:55 by Christian Berndt
+    Version:     1.0.2
 --%>
 
 <%@ include file="/init.jsp" %>
 
 <%
     TaskRecordDisplayTerms displayTerms = new TaskRecordDisplayTerms(renderRequest);
-    boolean ignoreUntilDate = ParamUtil.getBoolean(request, "ignoreUntilDate", true); 
-    boolean ignoreFromDate = ParamUtil.getBoolean(request, "ignoreFromDate", true); 
     int status = ParamUtil.getInteger(request, "status");
+    
+    int fromDateDay = ParamUtil.getInteger(request, "fromDateDay"); 
+    int fromDateMonth = ParamUtil.getInteger(request, "fromDateMonth"); 
+    int fromDateYear = ParamUtil.getInteger(request, "fromDateYear"); 
+    Date fromDate = PortalUtil.getDate(fromDateMonth, fromDateDay, fromDateYear);
+    boolean ignoreFromDate = fromDate == null; 
+    
+    int untilDateDay = ParamUtil.getInteger(request, "untilDateDay"); 
+    int untilDateMonth = ParamUtil.getInteger(request, "untilDateMonth"); 
+    int untilDateYear = ParamUtil.getInteger(request, "untilDateYear"); 
+    Date untilDate = PortalUtil.getDate(untilDateMonth, untilDateDay, untilDateYear);
+    boolean ignoreUntilDate = untilDate == null; 
 %>
 
 <liferay-ui:search-toggle
@@ -37,7 +47,7 @@
 
         <aui:input
             dateTogglerCheckboxLabel="ignore-until-date"
-            disabled="<%=ignoreUntilDate%>" formName="searchFm"
+            disabled="<%=ignoreUntilDate%>" formName="searchFm"           
             name="untilDate" model="<%= TaskRecord.class %>"
             inlineField="<%= true %>" />
             

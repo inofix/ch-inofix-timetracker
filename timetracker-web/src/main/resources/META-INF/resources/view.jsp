@@ -2,8 +2,8 @@
     view.jsp: Default view of Inofix' timetracker.
     
     Created:     2013-10-06 16:52 by Christian Berndt
-    Modified:    2017-06-10 18:48 by Christian Berndt
-    Version:     1.6.6
+    Modified:    2017-06-13 10:12 by Christian Berndt
+    Version:     1.6.7
 --%>
 
 <%@ include file="/init.jsp" %>
@@ -40,9 +40,17 @@
     
     TaskRecordSearchTerms searchTerms = (TaskRecordSearchTerms) searchContainer.getSearchTerms();
     
-    // TODO
-    Date fromDate = null; 
-    Date untilDate = null; 
+    int fromDateDay = ParamUtil.getInteger(request, "fromDateDay"); 
+    int fromDateMonth = ParamUtil.getInteger(request, "fromDateMonth"); 
+    int fromDateYear = ParamUtil.getInteger(request, "fromDateYear"); 
+    
+    Date fromDate = PortalUtil.getDate(fromDateMonth, fromDateDay, fromDateYear); 
+
+    int untilDateDay = ParamUtil.getInteger(request, "untilDateDay"); 
+    int untilDateMonth = ParamUtil.getInteger(request, "untilDateMonth"); 
+    int untilDateYear = ParamUtil.getInteger(request, "untilDateYear"); 
+    
+    Date untilDate = PortalUtil.getDate(untilDateMonth, untilDateDay, untilDateYear); 
     
     Hits hits = null;
 
