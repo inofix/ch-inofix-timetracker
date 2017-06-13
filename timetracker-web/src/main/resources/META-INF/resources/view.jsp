@@ -2,8 +2,8 @@
     view.jsp: Default view of Inofix' timetracker.
     
     Created:     2013-10-06 16:52 by Christian Berndt
-    Modified:    2017-06-13 20:16 by Christian Berndt
-    Version:     1.6.8
+    Modified:    2017-06-13 23:59 by Christian Berndt
+    Version:     1.6.9
 --%>
 
 <%@ include file="/init.jsp" %>
@@ -108,6 +108,7 @@
                     
                     <aui:input name="<%= Constants.CMD %>" type="hidden"/>  
                     <aui:input name="redirect" type="hidden" value="<%= currentURL %>" />
+                    <aui:input name="deleteTaskRecordIds" type="hidden" />
                             
                     <liferay-util:include page="/view_task_records.jsp" servletContext="<%= application %>" />
                 

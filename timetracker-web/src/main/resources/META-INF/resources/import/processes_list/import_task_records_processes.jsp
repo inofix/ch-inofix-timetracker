@@ -2,8 +2,8 @@
     import_task_records_processes.jsp: list of import processes
     
     Created:    2017-06-08 00:21 by Christian Berndt
-    Modified:   2017-06-08 00:21 by Christian Berndt
-    Version:    1.0.0
+    Modified:   2017-06-13 22:30 by Christian Berndt
+    Version:    1.0.1
 --%>
 
 <%@ include file="/init.jsp" %>
@@ -45,7 +45,7 @@
     <aui:input name="deleteBackgroundTaskIds" type="hidden" />
 
     <liferay-ui:search-container
-        emptyResultsMessage="no-export-processes-were-found"
+        emptyResultsMessage="no-import-processes-were-found"
         id="<%= searchContainerId %>"
         iteratorURL="<%= portletURL %>"
         orderByCol="<%= orderByCol %>"

@@ -2,8 +2,8 @@
     toolbar.jsp: The toolbar of the timetracker portlet
     
     Created:    2016-03-20 16:58 by Christian Berndt
-    Modified:   2017-06-10 23:26 by Christian Berndt
-    Version:    1.1.9
+    Modified:   2017-06-13 23:58 by Christian Berndt
+    Version:    1.2.0
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -53,3 +53,17 @@
         <liferay-frontend:management-bar-button href='<%= "javascript:" + renderResponse.getNamespace() + "deleteEntries();" %>' icon='<%= TrashUtil.isTrashEnabled(scopeGroupId) ? "trash" : "times" %>' label='<%= TrashUtil.isTrashEnabled(scopeGroupId) ? "recycle-bin" : "delete" %>' />
     </liferay-frontend:management-bar-action-buttons>
 </liferay-frontend:management-bar>
+
+<aui:script>
+    function <portlet:namespace />deleteEntries() {
+        if (confirm('<%= UnicodeLanguageUtil.get(request, "are-you-sure-you-want-to-delete-the-selected-entries") %>')) {
+            var form = AUI.$(document.<portlet:namespace />fm);
+
+            form.attr('method', 'post');
+            form.fm('<%= Constants.CMD %>').val('<%= Constants.DELETE %>');
+            form.fm('deleteTaskRecordIds').val(Liferay.Util.listCheckedExcept(form, '<portlet:namespace />allRowIds'));
+
+            submitForm(form);
+        }
+    }
+</aui:script>

@@ -2,8 +2,8 @@
     export_import_toolbar.jsp: the export-import toolbar.
     
     Created:    2017-05-16 17:30 by Christian Berndt
-    Modified:   2017-06-07 00:52 by Christian Berndt
-    Version:    1.0.3
+    Modified:   2017-06-13 22:23 by Christian Berndt
+    Version:    1.0.4
 --%>
 
 <%@ include file="/init.jsp" %>
@@ -15,7 +15,6 @@
     String orderByType = ParamUtil.getString(request, "orderByType");
     String navigation = ParamUtil.getString(request, "navigation", "all");
     String searchContainerId = ParamUtil.getString(request, "searchContainerId");
-    String section = ParamUtil.getString(request, "section");
     
     PortletURL portletURL = renderResponse.createRenderURL();
 
@@ -26,7 +25,8 @@
     portletURL.setParameter("orderByCol", orderByCol);
     portletURL.setParameter("orderByType", orderByType);
     portletURL.setParameter("searchContainerId", String.valueOf(searchContainerId));
-    portletURL.setParameter("section", section);
+    portletURL.setParameter("tabs1", tabs1);
+    portletURL.setParameter("tabs2", tabs2);
 %>
 
 <liferay-frontend:management-bar
@@ -68,7 +68,7 @@
             var form = AUI.$(document.<portlet:namespace />fm);
 
             form.attr('method', 'post');
-            form.fm('<%= Constants.CMD %>').val('<%= Constants.DELETE %>');
+            form.fm('<%= Constants.CMD %>').val('deleteBackgroundTasks');
             form.fm('deleteBackgroundTaskIds').val(Liferay.Util.listCheckedExcept(form, '<portlet:namespace />allRowIds'));
 
             submitForm(form);
