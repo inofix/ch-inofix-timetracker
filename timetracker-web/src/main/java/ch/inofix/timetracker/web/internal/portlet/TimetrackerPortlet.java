@@ -104,8 +104,8 @@ import ch.inofix.timetracker.web.internal.portlet.util.PortletUtil;
  * @author Christian Berndt
  * @author Stefan Luebbers
  * @created 2013-10-07 10:47
- * @modified 2017-06-13 22:29
- * @version 1.7.1
+ * @modified 2017-06-13 23:56
+ * @version 1.7.2
  */
 @Component(immediate = true, property = { "com.liferay.portlet.css-class-wrapper=portlet-timetracker",
         "com.liferay.portlet.display-category=category.inofix",
@@ -169,7 +169,7 @@ public class TimetrackerPortlet extends MVCPortlet {
 
             } else if (cmd.equals(Constants.DELETE)) {
 
-                deleteTaskRecord(actionRequest, actionResponse);
+                deleteTaskRecords(actionRequest, actionResponse);
                 addSuccessMessage(actionRequest, actionResponse);
 
             } else if (cmd.equals("deleteBackgroundTasks")) {
@@ -455,11 +455,22 @@ public class TimetrackerPortlet extends MVCPortlet {
      * @param actionResponse
      * @throws Exception
      */
-    protected void deleteTaskRecord(ActionRequest actionRequest, ActionResponse actionResponse) throws Exception {
+    protected void deleteTaskRecords(ActionRequest actionRequest, ActionResponse actionResponse) throws Exception {
+
+        _log.info("deleteTaskRecords");
 
         long taskRecordId = ParamUtil.getLong(actionRequest, "taskRecordId");
 
-        _taskRecordService.deleteTaskRecord(taskRecordId);
+        long[] taskRecordIds = ParamUtil.getLongValues(actionRequest, "deleteTaskRecordIds");
+
+        if (taskRecordId > 0) {
+            taskRecordIds = new long[] { taskRecordId };
+        }
+
+        for (long id : taskRecordIds) {
+            _taskRecordService.deleteTaskRecord(id);
+        }
+
     }
 
     protected void deleteTempFileEntry(ActionRequest actionRequest, ActionResponse actionResponse, String folderName)
