@@ -104,8 +104,8 @@ import ch.inofix.timetracker.web.internal.portlet.util.PortletUtil;
  * @author Christian Berndt
  * @author Stefan Luebbers
  * @created 2013-10-07 10:47
- * @modified 2017-06-13 20:10
- * @version 1.7.0
+ * @modified 2017-06-13 22:29
+ * @version 1.7.1
  */
 @Component(immediate = true, property = { "com.liferay.portlet.css-class-wrapper=portlet-timetracker",
         "com.liferay.portlet.display-category=category.inofix",
@@ -136,19 +136,6 @@ public class TimetrackerPortlet extends MVCPortlet {
         actionResponse.setRenderParameter("tabs1", tabs1);
     }
 
-    /**
-     *
-     * @param actionRequest
-     * @param actionResponse
-     * @throws Exception
-     */
-    public void deleteTaskRecord(ActionRequest actionRequest, ActionResponse actionResponse) throws Exception {
-
-        long taskRecordId = ParamUtil.getLong(actionRequest, "taskRecordId");
-
-        _taskRecordService.deleteTaskRecord(taskRecordId);
-    }
-
     @Override
     public void doView(RenderRequest renderRequest, RenderResponse renderResponse)
             throws IOException, PortletException {
@@ -170,6 +157,9 @@ public class TimetrackerPortlet extends MVCPortlet {
 
         String cmd = ParamUtil.getString(actionRequest, Constants.CMD);
 
+        _log.info("processAction");
+        _log.info("cmd = " + cmd);
+
         try {
             if (cmd.equals(Constants.ADD_TEMP)) {
                 addTempFileEntry(actionRequest, ExportImportHelper.TEMP_FOLDER_NAME);
@@ -180,6 +170,11 @@ public class TimetrackerPortlet extends MVCPortlet {
             } else if (cmd.equals(Constants.DELETE)) {
 
                 deleteTaskRecord(actionRequest, actionResponse);
+                addSuccessMessage(actionRequest, actionResponse);
+
+            } else if (cmd.equals("deleteBackgroundTasks")) {
+
+                deleteBackgroundTasks(actionRequest, actionResponse);
                 addSuccessMessage(actionRequest, actionResponse);
 
             } else if (cmd.equals(Constants.DELETE_TEMP)) {
@@ -433,6 +428,9 @@ public class TimetrackerPortlet extends MVCPortlet {
     }
 
     protected void deleteBackgroundTasks(ActionRequest actionRequest, ActionResponse actionResponse) throws Exception {
+
+        _log.info("deleteBackgroundTasks");
+
         try {
             long[] backgroundTaskIds = ParamUtil.getLongValues(actionRequest, "deleteBackgroundTaskIds");
 
@@ -449,6 +447,19 @@ public class TimetrackerPortlet extends MVCPortlet {
                 throw e;
             }
         }
+    }
+
+    /**
+     *
+     * @param actionRequest
+     * @param actionResponse
+     * @throws Exception
+     */
+    protected void deleteTaskRecord(ActionRequest actionRequest, ActionResponse actionResponse) throws Exception {
+
+        long taskRecordId = ParamUtil.getLong(actionRequest, "taskRecordId");
+
+        _taskRecordService.deleteTaskRecord(taskRecordId);
     }
 
     protected void deleteTempFileEntry(ActionRequest actionRequest, ActionResponse actionResponse, String folderName)

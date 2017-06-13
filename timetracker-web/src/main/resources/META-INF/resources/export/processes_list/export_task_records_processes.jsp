@@ -2,8 +2,8 @@
     export_task_records_processes.jsp: list of export processes
     
     Created:    2017-06-06 23:36 by Christian Berndt
-    Modified:   2017-06-11 12:39 by Christian Berndt
-    Version:    1.0.1
+    Modified:   2017-06-13 20:21 by Christian Berndt
+    Version:    1.0.2
 --%>
 
 <%@ include file="/init.jsp" %>
@@ -17,7 +17,6 @@
 
 <%
     long groupId = ParamUtil.getLong(request, "groupId");
-//     boolean privateLayout = ParamUtil.getBoolean(request, "privateLayout");
     String displayStyle = ParamUtil.getString(request, "displayStyle");
     String navigation = ParamUtil.getString(request, "navigation");
     String orderByCol = ParamUtil.getString(request, "orderByCol");
@@ -26,9 +25,7 @@
     
     PortletURL portletURL = liferayPortletResponse.createRenderURL();
     
-//     portletURL.setParameter("mvcRenderCommandName", "exportLayoutsView");
     portletURL.setParameter("groupId", String.valueOf(groupId));
-//     portletURL.setParameter("privateLayout", String.valueOf(privateLayout));
     portletURL.setParameter("displayStyle", displayStyle);
     portletURL.setParameter("navigation", navigation);
     portletURL.setParameter("orderByCol", orderByCol);
@@ -38,12 +35,12 @@
     OrderByComparator<BackgroundTask> orderByComparator = BackgroundTaskComparatorFactoryUtil.getBackgroundTaskOrderByComparator(orderByCol, orderByType);
 %>
 
-<portlet:actionURL name="deleteBackgroundTasks" var="deleteBackgroundTasksURL">
-    <portlet:param name="redirect" value="<%= currentURL.toString() %>" />
+<portlet:actionURL var="deleteBackgroundTasksURL">
+<%--     <portlet:param name="redirect" value="<%= currentURL.toString() %>" /> --%>
 </portlet:actionURL>
 
 <aui:form action="<%= deleteBackgroundTasksURL %>" method="get" name="fm">
-    <aui:input name="<%= Constants.CMD %>" type="hidden" />
+    <aui:input name="<%= Constants.CMD %>" value="deleteBackgroundTasks" type="hidden" />
     <aui:input name="redirect" type="hidden" value="<%= currentURL.toString() %>" />
     <aui:input name="deleteBackgroundTaskIds" type="hidden" />
 
