@@ -2,27 +2,25 @@
     navigation.jsp: Default navigation of Inofix' timetracker.
     
     Created:     2017-06-05 12:39 by Christian Berndt
-    Modified:    2017-06-08 23:20 by Christian Berndt
-    Version:     1.0.2
+    Modified:    2017-06-13 20:15 by Christian Berndt
+    Version:     1.0.3
 --%>
 
 <%@ include file="/init.jsp" %>
 
 <%
     PortletURL portletURL = renderResponse.createRenderURL();
-    portletURL.setParameter("section", "timetracker");
+    portletURL.setParameter("tabs1", "timetracker");
     
     PortletURL exportImportURL = renderResponse.createRenderURL();
-    exportImportURL.setParameter("section", "export-import"); 
-
-    String section = ParamUtil.getString(request, "section", "timetracker");
+    exportImportURL.setParameter("tabs1", "export-import"); 
 %>
 
 <aui:nav-bar cssClass="collapse-basic-search" markupView="<%= markupView %>">
 
     <aui:nav cssClass="navbar-nav">
-        <aui:nav-item href="<%= portletURL.toString() %>" label="timetracker" selected="<%= "timetracker".equals(section) %>" />
-        <aui:nav-item href="<%= exportImportURL.toString()  %>" label="export-import" selected="<%= "export-import".equals(section) %>" />
+        <aui:nav-item href="<%= portletURL.toString() %>" label="timetracker" selected="<%= "timetracker".equals(tabs1) %>" />
+        <aui:nav-item href="<%= exportImportURL.toString()  %>" label="export-import" selected="<%= "export-import".equals(tabs1) %>" />
     </aui:nav>
 
     <aui:nav-bar-search>

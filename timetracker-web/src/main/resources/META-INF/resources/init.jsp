@@ -2,8 +2,8 @@
     init.jsp: Common setup code for the timetracker portlet.
 
     Created:     2014-02-01 15:31 by Christian Berndt
-    Modified:    2017-06-10 15:41 by Christian Berndt
-    Version:     1.1.3
+    Modified:    2017-06-13 19:36 by Christian Berndt
+    Version:     1.1.4
 --%>
 
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
@@ -104,7 +104,7 @@
     // TODO: read markupView from configuration
     String markupView = "lexicon";
 
-    String tabs1 = ParamUtil.getString(request, "tabs1", "browse");
+    String tabs1 = ParamUtil.getString(request, "tabs1", "timetracker");
     String tabs2 = ParamUtil.getString(request, "tabs2", "export");
    
     TimetrackerConfiguration timetrackerConfiguration = (TimetrackerConfiguration) request
