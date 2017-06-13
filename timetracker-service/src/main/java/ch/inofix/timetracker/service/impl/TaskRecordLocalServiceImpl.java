@@ -82,8 +82,8 @@ import ch.inofix.timetracker.service.base.TaskRecordLocalServiceBaseImpl;
  *
  * @author Christian Berndt
  * @created 2013-10-06 21:24
- * @modified 2017-06-10 22:34
- * @version 1.6.0
+ * @modified 2017-06-13 10:11
+ * @version 1.6.1
  * @see TaskRecordLocalServiceBaseImpl
  * @see ch.inofix.timetracker.service.TaskRecordLocalServiceUtil
  */
@@ -546,6 +546,9 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
         if (Validator.isNotNull(description)) {
             searchContext.setAttribute("description", description);
         }
+
+        searchContext.setAttribute("fromDate", fromDate);
+        searchContext.setAttribute("untilDate", untilDate);
 
         if (Validator.isNotNull(workPackage)) {
             searchContext.setAttribute("workPackage", workPackage);
