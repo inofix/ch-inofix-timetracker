@@ -2,8 +2,8 @@
  * main.scss: css specific to the timetracker-portlet.
  *
  * Created:     2013-10-09 22:44 by Christian Berndt
- * Modified:    2017-06-10 22:40 by Christian Berndt
- * Version:     1.2.0
+ * Modified:    2017-06-14 21:19 by Christian Berndt
+ * Version:     1.2.1
  * 
  */
 @import "bourbon";
@@ -53,18 +53,42 @@
         }    
     }
     
-    .import {
-        
-        .button-holder {
-            display: inline-block; 
-        }
-    }
+/*     .import { */   
+/*         .button-holder { */
+/*             display: inline-block;  */
+/*         } */
+/*     } */
     
     .lfr-description-column {
         min-width: 0;
     }
     
     .task-record-search {
+    
+        .basic-search {
+            margin-right: 30px;
+        }
+    
+        .btn-xs {
+        
+            position: absolute; 
+            right: 0; 
+            top: 16px;
+        
+            .icon-monospaced {
+            
+                height: 16px;
+                line-height: 16px;
+                width: 16px;
+                
+                .lexicon-icon {
+                    height: 16px;
+                    line-height: 16px;
+                    width: 16px;
+                    padding: 4px;                
+                }
+            }
+        }
     
         fieldset {
             display: inline;

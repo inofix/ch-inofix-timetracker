@@ -11,8 +11,8 @@ import com.liferay.portal.kernel.util.Validator;
  *
  * @author Christian Berndt
  * @created 2013-10-06 17:34
- * @modified 2017-06-09 17:53
- * @version 1.0.2
+ * @modified 2017-06-14 21:58
+ * @version 1.0.3
  *
  */
 public class TaskRecordDisplayTerms extends DisplayTerms {
@@ -22,12 +22,12 @@ public class TaskRecordDisplayTerms extends DisplayTerms {
     public static final String DURATION = "duration";
     public static final String FROM_DATE = "fromDate";
     public static final String GROUP_ID = "groupId";
+    public static final String OWNER_USER_ID = "ownerUserId";
     public static final String MODIFIED_DATE = "modifiedDate";
     public static final String STATUS = "status";
     public static final String TASKRECORDID = "taskRecordId";
     public static final String TICKET_URL = "ticketURL";
     public static final String UNTIL_DATE = "untilDate";
-    public static final String USER_ID = "userId";
     public static final String USER_NAME = "userName";
     public static final String WORK_PACKAGE = "workPackage";
 
@@ -40,6 +40,7 @@ public class TaskRecordDisplayTerms extends DisplayTerms {
         duration = ParamUtil.getLong(portletRequest, DURATION);
         fromDate = ParamUtil.getString(portletRequest, FROM_DATE);
         groupId = ParamUtil.getLong(portletRequest, GROUP_ID);
+        ownerUserId = ParamUtil.getLong(portletRequest, OWNER_USER_ID);
         modifiedDate = ParamUtil.getString(portletRequest, MODIFIED_DATE);
         String statusString = ParamUtil.getString(portletRequest, STATUS);
 
@@ -49,7 +50,6 @@ public class TaskRecordDisplayTerms extends DisplayTerms {
         ticketURL = ParamUtil.getString(portletRequest, TICKET_URL);
         taskRecordId = ParamUtil.getLong(portletRequest, TASKRECORDID);
         untilDate = ParamUtil.getString(portletRequest, UNTIL_DATE);
-        userId = ParamUtil.getLong(portletRequest, USER_ID);
         userName = ParamUtil.getString(portletRequest, USER_NAME);
         workPackage = ParamUtil.getString(portletRequest, WORK_PACKAGE);
     }
@@ -102,6 +102,14 @@ public class TaskRecordDisplayTerms extends DisplayTerms {
         this.modifiedDate = modifiedDate;
     }
 
+    public long getOwnerUserId() {
+        return ownerUserId;
+    }
+
+    public void setOwnerUserId(long ownerUserId) {
+        this.ownerUserId = ownerUserId;
+    }
+
     public int getStatus() {
         return status;
     }
@@ -124,14 +132,6 @@ public class TaskRecordDisplayTerms extends DisplayTerms {
 
     public void setTicketURL(String ticketURL) {
         this.ticketURL = ticketURL;
-    }
-
-    public long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(long userId) {
-        this.userId = userId;
     }
 
     public String getWorkPackage() {
@@ -164,10 +164,10 @@ public class TaskRecordDisplayTerms extends DisplayTerms {
     protected String fromDate;
     protected long groupId;
     protected String modifiedDate;
+    protected long ownerUserId;
     protected int status;
     protected long taskRecordId;
     protected String ticketURL;
-    protected long userId;
     protected String workPackage;
     protected String untilDate;
     protected String userName;

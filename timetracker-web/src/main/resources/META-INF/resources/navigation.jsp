@@ -2,8 +2,8 @@
     navigation.jsp: Default navigation of Inofix' timetracker.
     
     Created:     2017-06-05 12:39 by Christian Berndt
-    Modified:    2017-06-13 20:15 by Christian Berndt
-    Version:     1.0.3
+    Modified:    2017-06-14 23:02 by Christian Berndt
+    Version:     1.0.4
 --%>
 
 <%@ include file="/init.jsp" %>
@@ -29,10 +29,13 @@
         </liferay-portlet:renderURL>
 
         <aui:form action="<%= searchURL.toString() %>" cssClass="task-record-search" name="searchFm">
-            <liferay-ui:search-form
+            <liferay-frontend:management-bar-button cssClass="btn-xs" href='<%= portletURL.toString() %>' icon='times' label='clear' />
+        
+            <liferay-ui:search-form            
                 page="/search_bar.jsp"
                 servletContext="<%= application %>"/>
-        </aui:form>        
+                
+        </aui:form>
 
     </aui:nav-bar-search>
 </aui:nav-bar>

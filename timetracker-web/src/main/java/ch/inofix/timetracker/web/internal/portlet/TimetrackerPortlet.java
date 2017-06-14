@@ -104,8 +104,8 @@ import ch.inofix.timetracker.web.internal.portlet.util.PortletUtil;
  * @author Christian Berndt
  * @author Stefan Luebbers
  * @created 2013-10-07 10:47
- * @modified 2017-06-13 23:56
- * @version 1.7.2
+ * @modified 2017-06-14 21:50
+ * @version 1.7.3
  */
 @Component(immediate = true, property = { "com.liferay.portlet.css-class-wrapper=portlet-timetracker",
         "com.liferay.portlet.display-category=category.inofix",
@@ -457,8 +457,6 @@ public class TimetrackerPortlet extends MVCPortlet {
      */
     protected void deleteTaskRecords(ActionRequest actionRequest, ActionResponse actionResponse) throws Exception {
 
-        _log.info("deleteTaskRecords");
-
         long taskRecordId = ParamUtil.getLong(actionRequest, "taskRecordId");
 
         long[] taskRecordIds = ParamUtil.getLongValues(actionRequest, "deleteTaskRecordIds");
@@ -718,6 +716,7 @@ public class TimetrackerPortlet extends MVCPortlet {
         int status = ParamUtil.getInteger(request, Field.STATUS);
         // TODO:
         Date untilDate = null;
+        long ownerUserId = ParamUtil.getLong(request, "ownerUserId");
         String workPackage = ParamUtil.getString(request, "workPackage");
 
         boolean reverse = "desc".equals(orderByType);
@@ -727,11 +726,11 @@ public class TimetrackerPortlet extends MVCPortlet {
         Hits hits = null;
 
         if (advancedSearch) {
-            hits = TaskRecordServiceUtil.search(themeDisplay.getUserId(), themeDisplay.getScopeGroupId(), workPackage,
-                    description, status, fromDate, untilDate, null, andOperator, start, end, sort);
+            hits = TaskRecordServiceUtil.search(themeDisplay.getUserId(), themeDisplay.getScopeGroupId(), ownerUserId,
+                    workPackage, description, status, fromDate, untilDate, null, andOperator, start, end, sort);
         } else {
-            hits = TaskRecordServiceUtil.search(themeDisplay.getUserId(), themeDisplay.getScopeGroupId(), keywords,
-                    start, end, sort);
+            hits = TaskRecordServiceUtil.search(themeDisplay.getUserId(), themeDisplay.getScopeGroupId(), ownerUserId,
+                    keywords, start, end, sort);
         }
 
         List<TaskRecord> taskRecords = TaskRecordUtil.getTaskRecords(hits);

@@ -2,8 +2,8 @@
     view.jsp: Default view of Inofix' timetracker.
     
     Created:     2013-10-06 16:52 by Christian Berndt
-    Modified:    2017-06-13 23:59 by Christian Berndt
-    Version:     1.6.9
+    Modified:    2017-06-14 23:03 by Christian Berndt
+    Version:     1.7.0
 --%>
 
 <%@ include file="/init.jsp" %>
@@ -22,13 +22,14 @@
     
     String backURL = ParamUtil.getString(request, "backURL");
     String keywords = ParamUtil.getString(request, "keywords");
-    int status = ParamUtil.getInteger(request, "status"); 
  
     PortletURL portletURL = renderResponse.createRenderURL();
     portletURL.setParameter("tabs1", tabs1); 
     
-    String section = ParamUtil.getString(request, "section", "timetracker");
-    
+    long ownerUserId = ParamUtil.getLong(request, "ownerUserId", -1); 
+
+    int status = ParamUtil.getInteger(request, "status"); 
+        
     TaskRecordSearch searchContainer = new TaskRecordSearch(renderRequest, "cur", portletURL);
     
     boolean reverse = false; 
@@ -50,18 +51,19 @@
     int untilDateMonth = ParamUtil.getInteger(request, "untilDateMonth"); 
     int untilDateYear = ParamUtil.getInteger(request, "untilDateYear"); 
     
-    Date untilDate = PortalUtil.getDate(untilDateMonth, untilDateDay, untilDateYear); 
+    Date untilDate = PortalUtil.getDate(untilDateMonth, untilDateDay, untilDateYear);
+    
     
     Hits hits = null;
 
     if (searchTerms.isAdvancedSearch()) {
                 
-        hits = TaskRecordServiceUtil.search(themeDisplay.getUserId(), scopeGroupId,
+        hits = TaskRecordServiceUtil.search(themeDisplay.getUserId(), scopeGroupId, ownerUserId,
                 searchTerms.getWorkPackage(), searchTerms.getDescription(), status, fromDate,
                 untilDate, null, searchTerms.isAndOperator(), searchContainer.getStart(),
                 searchContainer.getEnd(), sort);
     } else {
-        hits = TaskRecordServiceUtil.search(themeDisplay.getUserId(), scopeGroupId, keywords,
+        hits = TaskRecordServiceUtil.search(themeDisplay.getUserId(), scopeGroupId, ownerUserId, keywords,
                 searchContainer.getStart(), searchContainer.getEnd(), sort);
     }
 

@@ -82,8 +82,8 @@ import ch.inofix.timetracker.service.base.TaskRecordLocalServiceBaseImpl;
  *
  * @author Christian Berndt
  * @created 2013-10-06 21:24
- * @modified 2017-06-13 10:11
- * @version 1.6.1
+ * @modified 2017-06-14 21:45
+ * @version 1.6.2
  * @see TaskRecordLocalServiceBaseImpl
  * @see ch.inofix.timetracker.service.TaskRecordLocalServiceUtil
  */
@@ -402,7 +402,7 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
     }
 
     @Override
-    public Hits search(long userId, long groupId, String keywords, int start, int end, Sort sort)
+    public Hits search(long userId, long groupId, long ownerUserId, String keywords, int start, int end, Sort sort)
             throws PortalException {
 
         if (sort == null) {
@@ -422,13 +422,13 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
             andOperator = true;
         }
 
-        return search(userId, groupId, workPackage, description, WorkflowConstants.STATUS_ANY, null, null, null,
+        return search(userId, groupId, ownerUserId, workPackage, description, WorkflowConstants.STATUS_ANY, null, null, null,
                 andOperator, start, end, sort);
 
     }
 
     @Override
-    public Hits search(long userId, long groupId, String workPackage, String description, int status, Date fromDate,
+    public Hits search(long userId, long groupId, long ownerUserId, String workPackage, String description, int status, Date fromDate,
             Date untilDate, LinkedHashMap<String, Object> params, boolean andSearch, int start, int end, Sort sort)
             throws PortalException {
 
@@ -438,7 +438,7 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
 
         Indexer<TaskRecord> indexer = IndexerRegistryUtil.getIndexer(TaskRecord.class.getName());
 
-        SearchContext searchContext = buildSearchContext(userId, groupId, workPackage, description, status, fromDate,
+        SearchContext searchContext = buildSearchContext(userId, groupId, ownerUserId, workPackage, description, status, fromDate,
                 untilDate, params, andSearch, start, end, sort);
 
         return indexer.search(searchContext);
@@ -535,7 +535,7 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
                 TaskRecord.class.getName(), taskRecord.getTaskRecordId(), groupPermissions, guestPermissions);
     }
 
-    protected SearchContext buildSearchContext(long userId, long groupId, String workPackage, String description,
+    protected SearchContext buildSearchContext(long userId, long groupId, long ownerUserId, String workPackage, String description,
             int status, Date fromDate, Date untilDate, LinkedHashMap<String, Object> params, boolean andSearch,
             int start, int end, Sort sort) throws PortalException {
 
@@ -559,6 +559,7 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
         Group group = GroupLocalServiceUtil.getGroup(groupId);
 
         searchContext.setCompanyId(group.getCompanyId());
+        searchContext.setOwnerUserId(ownerUserId);
 
         searchContext.setEnd(end);
         if (groupId > 0) {
