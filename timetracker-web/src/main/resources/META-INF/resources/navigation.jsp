@@ -29,12 +29,12 @@
         </liferay-portlet:renderURL>
 
         <aui:form action="<%= searchURL.toString() %>" cssClass="task-record-search" name="searchFm">
+        
             <liferay-frontend:management-bar-button cssClass="btn-xs" href='<%= portletURL.toString() %>' icon='times' label='clear' />
         
             <liferay-ui:search-form            
                 page="/search_bar.jsp"
                 servletContext="<%= application %>"/>
-                
         </aui:form>
 
     </aui:nav-bar-search>

@@ -2,8 +2,8 @@
     toolbar.jsp: The toolbar of the timetracker portlet
     
     Created:    2016-03-20 16:58 by Christian Berndt
-    Modified:   2017-06-13 23:58 by Christian Berndt
-    Version:    1.2.0
+    Modified:   2017-06-15 00:59 by Christian Berndt
+    Version:    1.2.1
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -22,6 +22,7 @@
     int total = GetterUtil.getInteger(request.getAttribute("view.jsp-total"));
     
     PortletURL portletURL = renderResponse.createRenderURL();
+    portletURL.setParameters(renderRequest.getParameterMap());
 %>
 
 <liferay-frontend:management-bar
@@ -50,7 +51,8 @@
             label="info"
         />
         --%>
-        <liferay-frontend:management-bar-button href='<%= "javascript:" + renderResponse.getNamespace() + "deleteEntries();" %>' icon='<%= TrashUtil.isTrashEnabled(scopeGroupId) ? "trash" : "times" %>' label='<%= TrashUtil.isTrashEnabled(scopeGroupId) ? "recycle-bin" : "delete" %>' />
+        <liferay-frontend:management-bar-button href='<%= "javascript:" + renderResponse.getNamespace() + "deleteEntries();" %>' icon='<%= "times" %>' label='<%= "delete" %>' />
+<%--         <liferay-frontend:management-bar-button href='<%= "javascript:" + renderResponse.getNamespace() + "deleteEntries();" %>' icon='<%= TrashUtil.isTrashEnabled(scopeGroupId) ? "trash" : "times" %>' label='<%= TrashUtil.isTrashEnabled(scopeGroupId) ? "recycle-bin" : "delete" %>' /> --%>
     </liferay-frontend:management-bar-action-buttons>
 </liferay-frontend:management-bar>
 

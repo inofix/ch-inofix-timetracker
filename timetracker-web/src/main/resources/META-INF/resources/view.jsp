@@ -53,7 +53,6 @@
     
     Date untilDate = PortalUtil.getDate(untilDateMonth, untilDateDay, untilDateYear);
     
-    
     Hits hits = null;
 
     if (searchTerms.isAdvancedSearch()) {
@@ -63,6 +62,7 @@
                 untilDate, null, searchTerms.isAndOperator(), searchContainer.getStart(),
                 searchContainer.getEnd(), sort);
     } else {
+        
         hits = TaskRecordServiceUtil.search(themeDisplay.getUserId(), scopeGroupId, ownerUserId, keywords,
                 searchContainer.getStart(), searchContainer.getEnd(), sort);
     }
