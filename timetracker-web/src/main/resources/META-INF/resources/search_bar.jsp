@@ -2,11 +2,16 @@
     search.jsp: The extended search of the timetracker portlet.
 
     Created:     2017-06-05 22:04 by Christian Berndt
-    Modified:    2017-06-13 00:55 by Christian Berndt
-    Version:     1.0.2
+    Modified:    2017-06-14 20:46 by Christian Berndt
+    Version:     1.0.3
 --%>
 
 <%@ include file="/init.jsp" %>
+
+<%@page import="java.util.Collections"%>
+
+<%@page import="com.liferay.portal.kernel.service.UserServiceUtil"%>
+<%@page import="com.liferay.portal.kernel.util.comparator.UserLastNameComparator"%>
 
 <%
     TaskRecordDisplayTerms displayTerms = new TaskRecordDisplayTerms(renderRequest);
@@ -23,6 +28,9 @@
     int untilDateYear = ParamUtil.getInteger(request, "untilDateYear"); 
     Date untilDate = PortalUtil.getDate(untilDateMonth, untilDateDay, untilDateYear);
     boolean ignoreUntilDate = untilDate == null; 
+    
+    List<User> users = UserServiceUtil.getGroupUsers(scopeGroupId); 
+    Collections.sort(users, new UserLastNameComparator(false)); 
 %>
 
 <liferay-ui:search-toggle
@@ -50,10 +58,13 @@
             disabled="<%=ignoreUntilDate%>" formName="searchFm"           
             name="untilDate" model="<%= TaskRecord.class %>"
             inlineField="<%= true %>" />
-            
-        <aui:input inlineField="<%=true%>"
-            name="<%=TaskRecordDisplayTerms.USER_ID%>" size="20"
-            value="<%=displayTerms.getDescription()%>" />
+        
+        <aui:select name="<%=TaskRecordDisplayTerms.OWNER_USER_ID%>" inlineField="<%= true %>">
+            <aui:option value="" label="any-user"/>
+            <% for (User selectUser : users) { %>
+                <aui:option value="<%= selectUser.getUserId() %>" label="<%= selectUser.getFullName() %>"/>
+            <% } %>
+        </aui:select>
             
         <aui:select name="status" inlineField="<%= true %>"
             last="true">
