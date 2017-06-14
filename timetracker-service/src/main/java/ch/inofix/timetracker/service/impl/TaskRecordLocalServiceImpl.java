@@ -559,7 +559,10 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
         Group group = GroupLocalServiceUtil.getGroup(groupId);
 
         searchContext.setCompanyId(group.getCompanyId());
-        searchContext.setOwnerUserId(ownerUserId);
+
+        if (ownerUserId > 0) {
+            searchContext.setOwnerUserId(ownerUserId);
+        }
 
         searchContext.setEnd(end);
         if (groupId > 0) {

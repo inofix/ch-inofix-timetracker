@@ -35,7 +35,7 @@
 
 <liferay-ui:search-container id="taskRecords"
     searchContainer="<%=searchContainer%>"
-    var="taskRecordearchContainer">
+    var="taskRecordSearchContainer">
     
     <liferay-ui:search-paginator searchContainer="<%= searchContainer %>"/>
 
@@ -96,7 +96,6 @@
         %>
 
         <%@ include file="/search_columns.jspf"%>
-
 
         <liferay-ui:search-container-column-jsp cssClass="entry-action"
             path="/task_record_action.jsp" valign="top" />
