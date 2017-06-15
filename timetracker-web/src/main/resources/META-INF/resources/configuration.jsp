@@ -2,8 +2,8 @@
     configuration.jsp: configuration of the timetracker portlet.
     
     Created:    2017-03-09 14:20 by Stefan Lübbers
-    Modified:   2017-06-05 17:13 by Christian Berndt
-    Version:    1.0.4
+    Modified:   2017-06-15 16:27 by Christian Berndt
+    Version:    1.0.5
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -95,11 +95,10 @@
             
                 <aui:input name="max-length" value="<%=maxLength%>"
                     helpMessage="max-length-help" />
-                    
+                   
             </liferay-ui:panel>
         
-        </div>
-        
+        </div>     
     
         <aui:button-row>
             <aui:button type="submit"/>

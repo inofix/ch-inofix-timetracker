@@ -2,8 +2,8 @@
     task_record_action.jsp: The action menu of the timetrackers's default view.
     
     Created:    2017-03-25 11:57 by Christian Berndt
-    Modified:   2017-06-05 12:19 by Christian Berndt
-    Version:    1.0.1
+    Modified:   2017-06-15 16:18 by Christian Berndt
+    Version:    1.0.2
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -20,14 +20,7 @@
     
     editURL = HttpUtil.setParameter(editURL, renderResponse.getNamespace() + "taskRecordId", taskRecord.getTaskRecordId()); 
     viewURL = HttpUtil.setParameter(viewURL, renderResponse.getNamespace() + "taskRecordId", taskRecord.getTaskRecordId()); 
-%>
 
-<%
-    String taglibEditURL = "javascript:Liferay.Util.openWindow({id: '" + renderResponse.getNamespace() + "editTaskRecord', title: '" + HtmlUtil.escapeJS(LanguageUtil.format(request, "edit-x", taskRecord.getTaskRecordId())) + "', uri:'" + HtmlUtil.escapeJS(editURL) + "'});";            
-    String taglibViewURL = "javascript:Liferay.Util.openWindow({id: '" + renderResponse.getNamespace() + "viewTaskRecord', title: '" + HtmlUtil.escapeJS(LanguageUtil.format(request, "view-x", taskRecord.getTaskRecordId())) + "', uri:'" + HtmlUtil.escapeJS(viewURL) + "'});";
-%>
-
-<%
     boolean hasUpdatePermission = TaskRecordPermission.contains(permissionChecker, taskRecord,
             TaskRecordActionKeys.UPDATE);
     boolean hasViewPermission = TaskRecordPermission.contains(permissionChecker, taskRecord,
@@ -43,20 +36,20 @@
     <c:if test="<%=hasViewPermission%>">
 
         <liferay-ui:icon iconCssClass="icon-eye-open" message="view" 
-            url="<%=taglibViewURL%>" />
+            url="<%= editURL %>" />
 
     </c:if>
 
     <c:if test="<%=hasUpdatePermission%>">
 
         <liferay-ui:icon iconCssClass="icon-edit" message="edit" 
-            url="<%=taglibViewURL%>" />
+            url="<%= viewURL %>" />
 
     </c:if>
 
     <c:if test="<%=hasDeletePermission%>">
 
-        <portlet:actionURL var="deleteURL" name="deleteTaskRecord">
+        <portlet:actionURL var="deleteURL">
             <portlet:param name="cmd" value="<%= Constants.DELETE %>"/>
             <portlet:param name="redirect" value="<%=currentURL%>" />
             <portlet:param name="taskRecordId"

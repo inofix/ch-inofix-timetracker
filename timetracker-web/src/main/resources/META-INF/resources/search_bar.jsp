@@ -2,8 +2,8 @@
     search.jsp: The extended search of the timetracker portlet.
 
     Created:     2017-06-05 22:04 by Christian Berndt
-    Modified:    2017-06-14 20:46 by Christian Berndt
-    Version:     1.0.3
+    Modified:    2017-06-15 16:03 by Christian Berndt
+    Version:     1.0.4
 --%>
 
 <%@ include file="/init.jsp" %>
@@ -29,8 +29,11 @@
     Date untilDate = PortalUtil.getDate(untilDateMonth, untilDateDay, untilDateYear);
     boolean ignoreUntilDate = untilDate == null; 
     
-    List<User> users = UserServiceUtil.getGroupUsers(scopeGroupId); 
-    Collections.sort(users, new UserLastNameComparator(false)); 
+    List<User> users = Collections.emptyList(); 
+    if (themeDisplay.isSignedIn()) {
+        UserServiceUtil.getGroupUsers(scopeGroupId); 
+        Collections.sort(users, new UserLastNameComparator(false));
+    }
 %>
 
 <liferay-ui:search-toggle

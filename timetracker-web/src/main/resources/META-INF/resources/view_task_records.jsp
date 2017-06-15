@@ -2,8 +2,8 @@
     view_task_records.jsp: search-container of Inofix' timetracker.
     
     Created:     2017-06-05 13:22 by Christian Berndt
-    Modified:    2017-06-11 12:38 by Christian Berndt
-    Version:     1.0.3
+    Modified:    2017-06-15 17:14 by Christian Berndt
+    Version:     1.0.5
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -37,8 +37,6 @@
     searchContainer="<%=searchContainer%>"
     var="taskRecordSearchContainer">
     
-    <liferay-ui:search-paginator searchContainer="<%= searchContainer %>"/>
-
     <liferay-ui:search-container-row
         className="ch.inofix.timetracker.model.TaskRecord"
         modelVar="taskRecord" keyProperty="taskRecordId">
@@ -60,15 +58,6 @@
         </portlet:renderURL>
 
         <%
-            String taglibEditURL = "javascript:Liferay.Util.openWindow({id: '" + renderResponse.getNamespace()
-					+ "editTaskRecord', title: '"
-					+ HtmlUtil.escapeJS(LanguageUtil.format(request, "edit-x", taskRecord.getTaskRecordId()))
-					+ "', uri:'" + HtmlUtil.escapeJS(editURL) + "'});";
-			String taglibViewURL = "javascript:Liferay.Util.openWindow({id: '" + renderResponse.getNamespace()
-					+ "viewTaskRecord', title: '"
-					+ HtmlUtil.escapeJS(LanguageUtil.format(request, "view-x", taskRecord.getTaskRecordId()))
-					+ "', uri:'" + HtmlUtil.escapeJS(viewURL) + "'});";
-
 			request.setAttribute("editURL", editURL.toString());
 			request.setAttribute("viewURL", viewURL.toString());
 
@@ -79,19 +68,16 @@
 
 			String detailURL = null;
 
-			// TODO: read url behaviour from configuration.
 			if (hasUpdatePermission) {
 
 				if (!viewByDefault) {
 					detailURL = editURL.toString();
-					//                     detailURL = taglibEditURL;
 				} else {
 					detailURL = viewURL.toString();
-					//                     detailURL = taglibViewURL;
 				}
 
 			} else if (hasViewPermission) {
-				detailURL = taglibViewURL;
+				detailURL = viewURL.toString();
 			}
         %>
 
