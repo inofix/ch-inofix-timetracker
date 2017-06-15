@@ -104,8 +104,8 @@ import ch.inofix.timetracker.web.internal.portlet.util.PortletUtil;
  * @author Christian Berndt
  * @author Stefan Luebbers
  * @created 2013-10-07 10:47
- * @modified 2017-06-15 17:12
- * @version 1.7.4
+ * @modified 2017-06-15 19:07
+ * @version 1.7.5
  */
 @Component(immediate = true, property = { "com.liferay.portlet.css-class-wrapper=portlet-timetracker",
         "com.liferay.portlet.display-category=category.inofix",
@@ -449,7 +449,12 @@ public class TimetrackerPortlet extends MVCPortlet {
                 PortletUtil.translate("successfully-deleted-x-task-records", taskRecords.size()));
 
         String mvcPath = ParamUtil.getString(actionRequest, "mvcPath");
+        String tabs1 = ParamUtil.getString(actionRequest, "tabs1");
+        String tabs2 = ParamUtil.getString(actionRequest, "tabs2");
+
         actionResponse.setRenderParameter("mvcPath", mvcPath);
+        actionResponse.setRenderParameter("tabs1", tabs1);
+        actionResponse.setRenderParameter("tabs2", tabs2);
 
     }
 
