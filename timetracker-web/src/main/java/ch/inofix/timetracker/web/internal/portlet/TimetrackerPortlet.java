@@ -104,8 +104,8 @@ import ch.inofix.timetracker.web.internal.portlet.util.PortletUtil;
  * @author Christian Berndt
  * @author Stefan Luebbers
  * @created 2013-10-07 10:47
- * @modified 2017-06-14 21:50
- * @version 1.7.3
+ * @modified 2017-06-15 17:12
+ * @version 1.7.4
  */
 @Component(immediate = true, property = { "com.liferay.portlet.css-class-wrapper=portlet-timetracker",
         "com.liferay.portlet.display-category=category.inofix",
@@ -115,26 +115,6 @@ import ch.inofix.timetracker.web.internal.portlet.util.PortletUtil;
         "javax.portlet.init-param.view-template=/view.jsp", "javax.portlet.resource-bundle=content.Language",
         "javax.portlet.security-role-ref=power-user,user" }, service = Portlet.class)
 public class TimetrackerPortlet extends MVCPortlet {
-
-    /**
-     * @param actionRequest
-     * @param actionResponse
-     * @since 1.0.8
-     * @throws Exception
-     */
-    public void deleteGroupTaskRecords(ActionRequest actionRequest, ActionResponse actionResponse) throws Exception {
-
-        String tabs1 = ParamUtil.getString(actionRequest, "tabs1");
-
-        ServiceContext serviceContext = ServiceContextFactory.getInstance(TaskRecord.class.getName(), actionRequest);
-
-        List<TaskRecord> taskRecords = _taskRecordService.deleteGroupTaskRecords(serviceContext.getScopeGroupId());
-
-        SessionMessages.add(actionRequest, REQUEST_PROCESSED,
-                PortletUtil.translate("successfully-deleted-x-task-records", taskRecords.size()));
-
-        actionResponse.setRenderParameter("tabs1", tabs1);
-    }
 
     @Override
     public void doView(RenderRequest renderRequest, RenderResponse renderResponse)
@@ -176,6 +156,10 @@ public class TimetrackerPortlet extends MVCPortlet {
 
                 deleteBackgroundTasks(actionRequest, actionResponse);
                 addSuccessMessage(actionRequest, actionResponse);
+
+            } else if (cmd.equals("deleteGroupTaskRecords")) {
+
+                deleteGroupTaskRecords(actionRequest, actionResponse);
 
             } else if (cmd.equals(Constants.DELETE_TEMP)) {
 
@@ -447,6 +431,26 @@ public class TimetrackerPortlet extends MVCPortlet {
                 throw e;
             }
         }
+    }
+
+    /**
+     * @param actionRequest
+     * @param actionResponse
+     * @since 1.0.8
+     * @throws Exception
+     */
+    protected void deleteGroupTaskRecords(ActionRequest actionRequest, ActionResponse actionResponse) throws Exception {
+
+        ServiceContext serviceContext = ServiceContextFactory.getInstance(TaskRecord.class.getName(), actionRequest);
+
+        List<TaskRecord> taskRecords = _taskRecordService.deleteGroupTaskRecords(serviceContext.getScopeGroupId());
+
+        SessionMessages.add(actionRequest, REQUEST_PROCESSED,
+                PortletUtil.translate("successfully-deleted-x-task-records", taskRecords.size()));
+
+        String mvcPath = ParamUtil.getString(actionRequest, "mvcPath");
+        actionResponse.setRenderParameter("mvcPath", mvcPath);
+
     }
 
     /**

@@ -2,22 +2,22 @@
     export_import.jsp: Import taskRecords from an uploaded file. 
     
     Created:    2016-03-21 21:51 by Christian Berndt
-    Modified:   2017-06-13 20:15 by Christian Berndt
-    Version:    1.0.9
+    Modified:   2017-06-15 17:12 by Christian Berndt
+    Version:    1.1.0
 --%>
 
 <%@ include file="/init.jsp"%>
 
 <%
-String redirect = ParamUtil.getString(request, "redirect");
+    String redirect = ParamUtil.getString(request, "redirect");
 
-PortletURL portletURL = renderResponse.createRenderURL();
+    PortletURL portletURL = renderResponse.createRenderURL();
 
-portletURL.setParameter("mvcPath", "/view.jsp");
-portletURL.setParameter("redirect", redirect);
-portletURL.setParameter("tabs1", "export-import");
+    portletURL.setParameter("mvcPath", "/view.jsp");
+    portletURL.setParameter("redirect", redirect);
+    portletURL.setParameter("tabs1", "export-import");
 
-// TODO: check export-import permissions
+    // TODO: check export-import permissions
 %>
 
 <c:choose>
@@ -50,6 +50,16 @@ portletURL.setParameter("tabs1", "export-import");
                     label="import"
                     selected='<%= tabs2.equals("import") %>'
                 />
+                
+                <%
+                    portletURL.setParameter("tabs2", "delete");
+                %>
+
+                <aui:nav-item
+                    href="<%= portletURL.toString() %>"
+                    label="delete"
+                    selected='<%= tabs2.equals("delete") %>'
+                />
             </aui:nav>
         </aui:nav-bar>
 
@@ -64,6 +74,23 @@ portletURL.setParameter("tabs1", "export-import");
                 <c:when test='<%= tabs2.equals("import") %>'>
                     <liferay-util:include page="/import/view.jsp" servletContext="<%= application %>" />
                 </c:when>
+                <c:when test='<%= tabs2.equals("delete") %>'>
+                
+                    <portlet:actionURL var="deleteGroupRecordsURL">
+                        <portlet:param name="<%= Constants.CMD %>" value="deleteGroupTaskRecords"/>
+                        <portlet:param name="groupId" value="<%= String.valueOf(scopeGroupId) %>"/>
+                        <portlet:param name="mvcPath" value="/view.jsp"/>
+                        <portlet:param name="tabs1" value="export-import"/>
+                        <portlet:param name="tabs2" value="delete"/>
+                    </portlet:actionURL>
+                    
+                    <aui:button-row>
+                        <liferay-ui:icon-menu>
+                            <liferay-ui:icon-delete cssClass="btn btn-danger"  message="delete-group-task-records" url="<%= deleteGroupRecordsURL %>" />
+                        </liferay-ui:icon-menu>
+                    </aui:button-row>
+
+                </c:when>                
             </c:choose>
         </div>
     </c:otherwise>
