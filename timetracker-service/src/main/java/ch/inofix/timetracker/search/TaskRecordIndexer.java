@@ -153,6 +153,7 @@ public class TaskRecordIndexer extends BaseIndexer<TaskRecord> {
 
     @Override
     protected void doReindex(String className, long classPK) throws Exception {
+
         TaskRecord taskRecord = _taskRecordLocalService.getTaskRecord(classPK);
 
         doReindex(taskRecord);
@@ -160,11 +161,9 @@ public class TaskRecordIndexer extends BaseIndexer<TaskRecord> {
 
     @Override
     protected void doReindex(String[] ids) throws Exception {
-        long companyId = GetterUtil.getLong(ids[0]);
-        // TODO: what about the group?
-        reindexTaskRecords(companyId);
-        // reindexTaskRecords(companyId, groupId);
 
+        long companyId = GetterUtil.getLong(ids[0]);
+        reindexTaskRecords(companyId);
     }
 
     @Override

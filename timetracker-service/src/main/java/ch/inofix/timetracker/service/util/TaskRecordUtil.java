@@ -12,14 +12,14 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 
 import ch.inofix.timetracker.model.TaskRecord;
-import ch.inofix.timetracker.service.TaskRecordServiceUtil;
+import ch.inofix.timetracker.service.TaskRecordLocalServiceUtil;
 
 /**
  *
  * @author Christian Berndt
  * @created 2017-06-10 18:38
- * @modified 2017-06-10 18:38
- * @version 1.0.0
+ * @modified 2017-06-15 18:49
+ * @version 1.0.1
  *
  */
 public class TaskRecordUtil {
@@ -34,8 +34,9 @@ public class TaskRecordUtil {
             try {
                 long taskRecordId = GetterUtil.getLong(document.get(Field.ENTRY_CLASS_PK));
 
-                TaskRecord taskRecord = TaskRecordServiceUtil.getTaskRecord(taskRecordId);
+                TaskRecord taskRecord = TaskRecordLocalServiceUtil.getTaskRecord(taskRecordId);
                 taskRecords.add(taskRecord);
+
             } catch (Exception e) {
 
                 if (_log.isErrorEnabled()) {

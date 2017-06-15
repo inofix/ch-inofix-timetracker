@@ -2,8 +2,8 @@
     export_import.jsp: Import taskRecords from an uploaded file. 
     
     Created:    2016-03-21 21:51 by Christian Berndt
-    Modified:   2017-06-15 17:12 by Christian Berndt
-    Version:    1.1.0
+    Modified:   2017-06-15 19:33 by Christian Berndt
+    Version:    1.1.2
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -89,6 +89,8 @@
                             <liferay-ui:icon-delete cssClass="btn btn-danger"  message="delete-group-task-records" url="<%= deleteGroupRecordsURL %>" />
                         </liferay-ui:icon-menu>
                     </aui:button-row>
+                    
+                    <div>Afterwards run "Reindex all search indexes" from the Server Configuration</div>
 
                 </c:when>                
             </c:choose>
