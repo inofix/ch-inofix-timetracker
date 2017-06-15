@@ -104,8 +104,8 @@ import ch.inofix.timetracker.web.internal.portlet.util.PortletUtil;
  * @author Christian Berndt
  * @author Stefan Luebbers
  * @created 2013-10-07 10:47
- * @modified 2017-06-15 19:07
- * @version 1.7.5
+ * @modified 2017-06-15 22:31
+ * @version 1.7.6
  */
 @Component(immediate = true, property = { "com.liferay.portlet.css-class-wrapper=portlet-timetracker",
         "com.liferay.portlet.display-category=category.inofix",
@@ -713,19 +713,26 @@ public class TimetrackerPortlet extends MVCPortlet {
 
         String description = ParamUtil.getString(request, "description");
         boolean advancedSearch = ParamUtil.getBoolean(request, "advancedSearch", false);
-        // TODO: check parameter name
         boolean andOperator = ParamUtil.getBoolean(request, "andOperator", true);
-        // TODO:
         int end = ParamUtil.getInteger(request, "end");
-        Date fromDate = null;
+
+        int fromDateDay = ParamUtil.getInteger(request, "fromDateDay");
+        int fromDateMonth = ParamUtil.getInteger(request, "fromDateMonth");
+        int fromDateYear = ParamUtil.getInteger(request, "fromDateYear");
+        Date fromDate = PortalUtil.getDate(fromDateMonth, fromDateDay, fromDateYear);
+
         String keywords = ParamUtil.getString(request, "keywords");
         String orderByCol = ParamUtil.getString(request, "orderByCol", "modifiedDate");
         String orderByType = ParamUtil.getString(request, "orderByType", "desc");
+        long ownerUserId = ParamUtil.getLong(request, "ownerUserId");
         int start = ParamUtil.getInteger(request, "start");
         int status = ParamUtil.getInteger(request, Field.STATUS);
-        // TODO:
-        Date untilDate = null;
-        long ownerUserId = ParamUtil.getLong(request, "ownerUserId");
+
+        int untilDateDay = ParamUtil.getInteger(request, "untilDateDay");
+        int untilDateMonth = ParamUtil.getInteger(request, "untilDateMonth");
+        int untilDateYear = ParamUtil.getInteger(request, "untilDateYear");
+        Date untilDate = PortalUtil.getDate(untilDateMonth, untilDateDay, untilDateYear);
+
         String workPackage = ParamUtil.getString(request, "workPackage");
 
         boolean reverse = "desc".equals(orderByType);
