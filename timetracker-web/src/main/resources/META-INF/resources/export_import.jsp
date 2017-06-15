@@ -2,8 +2,8 @@
     export_import.jsp: Import taskRecords from an uploaded file. 
     
     Created:    2016-03-21 21:51 by Christian Berndt
-    Modified:   2017-06-15 19:08 by Christian Berndt
-    Version:    1.1.1
+    Modified:   2017-06-15 19:33 by Christian Berndt
+    Version:    1.1.2
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -79,7 +79,7 @@
                     <portlet:actionURL var="deleteGroupRecordsURL">
                         <portlet:param name="<%= Constants.CMD %>" value="deleteGroupTaskRecords"/>
                         <portlet:param name="groupId" value="<%= String.valueOf(scopeGroupId) %>"/>
-                        <portlet:param name="mvcPath" value="/confirmation.jsp"/>
+                        <portlet:param name="mvcPath" value="/view.jsp"/>
                         <portlet:param name="tabs1" value="export-import"/>
                         <portlet:param name="tabs2" value="delete"/>
                     </portlet:actionURL>
