@@ -97,6 +97,7 @@ import ch.inofix.timetracker.web.configuration.ExportImportConfigurationConstant
 import ch.inofix.timetracker.web.configuration.TimetrackerConfiguration;
 import ch.inofix.timetracker.web.internal.constants.TimetrackerWebKeys;
 import ch.inofix.timetracker.web.internal.portlet.util.PortletUtil;
+import ch.inofix.timetracker.web.internal.portlet.util.TemplateUtil;
 
 /**
  * View Controller of Inofix' timetracker.
@@ -245,7 +246,9 @@ public class TimetrackerPortlet extends MVCPortlet {
         try {
             String resourceID = resourceRequest.getResourceID();
 
-            if (resourceID.equals("getSum")) {
+            if (resourceID.equals("download")) {
+                download(resourceRequest, resourceResponse);
+            } else if (resourceID.equals("getSum")) {
                 getSum(resourceRequest, resourceResponse);
             } else if (resourceID.equals("importTaskRecords")) {
                 importTaskRecords(resourceRequest, resourceResponse);
@@ -527,6 +530,26 @@ public class TimetrackerPortlet extends MVCPortlet {
         } else {
             super.doDispatch(renderRequest, renderResponse);
         }
+    }
+
+    protected void download(ResourceRequest resourceRequest, ResourceResponse resourceResponse) throws Exception {
+
+        HttpServletRequest request = PortalUtil.getHttpServletRequest(resourceRequest);
+
+        List<TaskRecord> taskRecords = getTaskRecords(request);
+
+        Map<String, Object> contextObjects = new HashMap<>();
+
+        contextObjects.put("taskRecords", taskRecords);
+
+        String script = "<#list taskRecords as taskRecord><h3>${taskRecord.workPackage}</h3>\n</#list>";
+
+        String outStr = TemplateUtil.transform(contextObjects, script, "ftl");
+
+        String outFileName = "out.tex";
+
+        PortletResponseUtil.sendFile(resourceRequest, resourceResponse, outFileName, outStr.getBytes());
+
     }
 
     protected void exportTaskRecords(ActionRequest actionRequest, ActionResponse actionResponse) throws Exception {
