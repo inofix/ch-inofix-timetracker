@@ -2,8 +2,8 @@
     view_task_records.jsp: search-container of Inofix' timetracker.
     
     Created:     2017-06-05 13:22 by Christian Berndt
-    Modified:    2017-06-15 17:14 by Christian Berndt
-    Version:     1.0.5
+    Modified:    2017-06-16 22:04 by Christian Berndt
+    Version:     1.0.6
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -20,18 +20,7 @@
 	String displayStyle = GetterUtil.getString((String) request.getAttribute("view.jsp-displayStyle"));
 
 	String searchContainerId = ParamUtil.getString(request, "searchContainerId");
-
-	// TODO: read from configuration
-	boolean viewByDefault = false;
 %>
-<%
-    // TODO: make search speed display configurable
-%>
-<%--
-<div class="search-results">
-    <liferay-ui:search-speed hits="<%= hits %>" searchContainer="<%= taskRecordSearch %>" />
-</div>
---%>
 
 <liferay-ui:search-container id="taskRecords"
     searchContainer="<%=searchContainer%>"
@@ -46,7 +35,6 @@
             <portlet:param name="taskRecordId"
                 value="<%=String.valueOf(taskRecord.getTaskRecordId())%>" />
             <portlet:param name="mvcPath" value="/edit_task_record.jsp" />
-            <portlet:param name="windowId" value="editTaskRecord" />
         </portlet:renderURL>
 
         <portlet:renderURL var="viewURL">
@@ -54,7 +42,6 @@
             <portlet:param name="taskRecordId"
                 value="<%=String.valueOf(taskRecord.getTaskRecordId())%>" />
             <portlet:param name="mvcPath" value="/edit_task_record.jsp" />
-            <portlet:param name="windowId" value="viewTaskRecord" />
         </portlet:renderURL>
 
         <%
@@ -69,13 +56,7 @@
 			String detailURL = null;
 
 			if (hasUpdatePermission) {
-
-				if (!viewByDefault) {
-					detailURL = editURL.toString();
-				} else {
-					detailURL = viewURL.toString();
-				}
-
+				detailURL = editURL.toString();
 			} else if (hasViewPermission) {
 				detailURL = viewURL.toString();
 			}

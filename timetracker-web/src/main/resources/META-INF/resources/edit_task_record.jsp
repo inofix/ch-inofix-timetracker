@@ -2,8 +2,8 @@
     edit_task_record.jsp: edit a single task-record.
 
     Created:     2013-10-07 10:41 by Christian Berndt
-    Modified:    2017-06-09 18:44 by Christian Berndt
-    Version:     1.6.2
+    Modified:    2017-06-16 21:26 by Christian Berndt
+    Version:     1.6.3
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -16,27 +16,9 @@
     String redirect = ParamUtil.getString(request, "redirect");
 
     String backURL = ParamUtil.getString(request, "backURL", redirect);
-
-    String windowId = "";
-    windowId = ParamUtil.getString(request, "windowId");
-
-    // Close the popup, if we are in popup mode, a redirect was provided
-    // and the windowId is "editTaskRecord" (which means, viewByDefault 
-    // is false.
-
-    if (Validator.isNotNull(redirect) && themeDisplay.isStatePopUp() &&
-        "editTaskRecord".equals(windowId)) {
-
-        PortletURL closeURL = renderResponse.createRenderURL();
-        closeURL.setParameter("mvcPath", "/close_popup.jsp");
-        closeURL.setParameter("redirect", redirect);
-        closeURL.setParameter("windowId", windowId);
-        backURL = closeURL.toString();
-    }
-
-    String historyKey = ParamUtil.getString(request, "historyKey");
-
-    String mvcPath = ParamUtil.getString(request, "mvcPath");
+    
+    portletDisplay.setShowBackIcon(true);
+    portletDisplay.setURLBack(redirect);
 
     // Retrieve the display settings.
     // TODO: retrieve preferences like in configuration.jsp
@@ -76,7 +58,7 @@
 
         durationInMinutes =
             String.valueOf(taskRecord.getDurationInMinutes());
-
+        
         Date fromDate = taskRecord.getFromDate();
         Date untilDate = taskRecord.getUntilDate();
         
@@ -98,10 +80,15 @@
             untilDateHour = cal.get(Calendar.HOUR_OF_DAY); 
             untilDateMinute = cal.get(Calendar.MINUTE); 
         }
+        
+        renderResponse.setTitle(String.valueOf(taskRecord.getTaskRecordId()));
+        
     } else {
         
         // create an empty task record
         taskRecord = TaskRecordServiceUtil.createTaskRecord();
+        renderResponse.setTitle(LanguageUtil.get(request, "new-task-record"));
+
     }
     
     boolean hasUpdatePermission = TaskRecordPermission.contains(permissionChecker, taskRecord,
@@ -113,13 +100,6 @@
     boolean hasPermissionsPermission = TaskRecordPermission.contains(permissionChecker, taskRecord, 
             TaskRecordActionKeys.PERMISSIONS);
 %>
-
-
-
-<%-- 
-<liferay-ui:header title="timetracker" backURL="<%=backURL%>"
-    showBackURL="<%=true%>" />
---%>
 
 <div class="container-fluid-1280">
 

@@ -106,8 +106,8 @@ import ch.inofix.timetracker.web.internal.portlet.util.TemplateUtil;
  * @author Christian Berndt
  * @author Stefan Luebbers
  * @created 2013-10-07 10:47
- * @modified 2017-06-16 16:16
- * @version 1.7.7
+ * @modified 2017-06-16 21:24
+ * @version 1.7.8
  */
 @Component(immediate = true, property = { "com.liferay.portlet.css-class-wrapper=portlet-timetracker",
         "com.liferay.portlet.display-category=category.inofix",
@@ -316,6 +316,11 @@ public class TimetrackerPortlet extends MVCPortlet {
 
         long fromTime = fromDate.getTime();
         long untilTime = untilDate.getTime();
+
+        if (fromTime > untilTime) {
+            untilDate = new Date(untilTime + 1000 * 60 * 60 * 24);
+            untilTime = untilDate.getTime();
+        }
 
         if (duration == 0) {
             duration = untilTime - fromTime;
