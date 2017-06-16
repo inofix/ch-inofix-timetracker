@@ -14,6 +14,7 @@ import javax.portlet.Portlet;
 import javax.portlet.PortletConfig;
 import javax.portlet.PortletContext;
 import javax.portlet.PortletException;
+import javax.portlet.PortletPreferences;
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletRequestDispatcher;
 import javax.portlet.RenderRequest;
@@ -105,8 +106,8 @@ import ch.inofix.timetracker.web.internal.portlet.util.TemplateUtil;
  * @author Christian Berndt
  * @author Stefan Luebbers
  * @created 2013-10-07 10:47
- * @modified 2017-06-15 22:31
- * @version 1.7.6
+ * @modified 2017-06-16 16:16
+ * @version 1.7.7
  */
 @Component(immediate = true, property = { "com.liferay.portlet.css-class-wrapper=portlet-timetracker",
         "com.liferay.portlet.display-category=category.inofix",
@@ -536,19 +537,27 @@ public class TimetrackerPortlet extends MVCPortlet {
 
         HttpServletRequest request = PortalUtil.getHttpServletRequest(resourceRequest);
 
+        PortletPreferences portletPreferences = resourceRequest.getPreferences();
+
         List<TaskRecord> taskRecords = getTaskRecords(request);
 
         Map<String, Object> contextObjects = new HashMap<>();
 
         contextObjects.put("taskRecords", taskRecords);
 
-        String script = "<#list taskRecords as taskRecord><h3>${taskRecord.workPackage}</h3>\n</#list>";
+        String exportFileName = portletPreferences.getValue("export-file-name", _timetrackerConfiguration.exportFileName());
+        String exportName = portletPreferences.getValue("export-name", _timetrackerConfiguration.exportName());
+        String exportScript = portletPreferences.getValue("export-script", _timetrackerConfiguration.exportScript());
 
-        String outStr = TemplateUtil.transform(contextObjects, script, "ftl");
+        String exportStr = null;
 
-        String outFileName = "out.tex";
+        try {
+            exportStr = TemplateUtil.transform(contextObjects, exportScript, exportName, "ftl");
+        } catch (Exception e) {
+            exportStr = e.getCause().getMessage();
+        }
 
-        PortletResponseUtil.sendFile(resourceRequest, resourceResponse, outFileName, outStr.getBytes());
+        PortletResponseUtil.sendFile(resourceRequest, resourceResponse, exportFileName, exportStr.getBytes());
 
     }
 
