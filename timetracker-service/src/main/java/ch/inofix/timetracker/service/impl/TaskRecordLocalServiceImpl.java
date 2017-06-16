@@ -196,7 +196,6 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
 
         for (TaskRecord taskRecord : taskRecords) {
 
-            // TODO differ exception types
             try {
                 deleteTaskRecord(taskRecord);
             } catch (Exception e) {
