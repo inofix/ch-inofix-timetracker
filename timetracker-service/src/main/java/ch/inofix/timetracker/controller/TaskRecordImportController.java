@@ -20,13 +20,18 @@ import com.liferay.exportimport.kernel.lifecycle.ExportImportLifecycleManager;
 import com.liferay.exportimport.kernel.model.ExportImportConfiguration;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.xml.Document;
 import com.liferay.portal.kernel.xml.Node;
 import com.liferay.portal.kernel.xml.SAXReaderUtil;
 
+import ch.inofix.timetracker.exception.NoSuchTaskRecordException;
 import ch.inofix.timetracker.internal.exportimport.util.ExportImportThreadLocal;
 import ch.inofix.timetracker.model.TaskRecord;
 import ch.inofix.timetracker.service.TaskRecordLocalService;
@@ -35,8 +40,8 @@ import ch.inofix.timetracker.service.TaskRecordLocalService;
  *
  * @author Christian Berndt
  * @created 2017-06-04 18:07
- * @modified 2017-06-16 16:35
- * @version 1.0.3
+ * @modified 2017-06-16 19:29
+ * @version 1.0.4
  *
  */
 @Component(immediate = true, property = { "model.class.name=ch.inofix.timetracker.model.TaskRecord" }, service = {
@@ -92,6 +97,8 @@ public class TaskRecordImportController extends BaseExportImportController imple
         stopWatch.start();
 
         int numAdded = 0;
+        int numIgnored = 0;
+        int numImported = 0;
 
         Document document = SAXReaderUtil.read(file);
 
@@ -119,22 +126,11 @@ public class TaskRecordImportController extends BaseExportImportController imple
 
             ServiceContext serviceContext = new ServiceContext();
 
-            Group group = null;
-            try {
-                group = GroupLocalServiceUtil.getGroup(importTaskRecord.getGroupId());
-            } catch (Exception e) {
-                _log.warn(e.getMessage());
-            }
-
-            if (group != null) {
-                groupId = importTaskRecord.getGroupId();
-            }
-
-            serviceContext.setScopeGroupId(groupId);
-
             if (taskRecordId == 0) {
 
                 // no taskRecordId: insert as new of the importing user
+
+                serviceContext.setScopeGroupId(groupId);
 
                 description = importTaskRecord.getDescription();
                 duration = importTaskRecord.getDuration();
@@ -149,12 +145,61 @@ public class TaskRecordImportController extends BaseExportImportController imple
 
                 numAdded++;
 
+            } else {
+
+                // check whether a taskRecord with this id already exists in
+                // this instance
+                TaskRecord taskRecord = null;
+
+                try {
+                    taskRecord = _taskRecordLocalService.getTaskRecord(taskRecordId);
+                } catch (NoSuchTaskRecordException nstre) {
+                    _log.error(nstre.getMessage());
+                }
+
+                if (taskRecord == null) {
+
+                    // import
+
+                    // Check whether company-, user- and groupId are available
+                    // in this instance
+                    Company company = null;
+                    Group group = null;
+                    User user = null;
+
+                    try {
+                        company = CompanyLocalServiceUtil.getCompany(importTaskRecord.getCompanyId());
+                        group = GroupLocalServiceUtil.getGroup(importTaskRecord.getGroupId());
+                        user = UserLocalServiceUtil.getUser(importTaskRecord.getUserId());
+                    } catch (Exception e) {
+                        _log.error(e);
+                    }
+
+                    if (company != null && group != null && user != null) {
+
+                        // Add taskRecord with its original name
+                        _taskRecordLocalService.addTaskRecord(importTaskRecord);
+                        _taskRecordLocalService.addTaskRecordResources(importTaskRecord, true, false);
+
+                        numImported++;
+
+                    }
+
+                } else {
+
+                    // ignore
+                    numIgnored++;
+
+                }
+
             }
         }
 
         if (_log.isInfoEnabled()) {
             _log.info("Importing taskRecords takes " + stopWatch.getTime() + " ms.");
             _log.info("Added " + numAdded + " taskRecords as new, since they did not have a taskRecordId.");
+            _log.info("Ignored " + numIgnored + " taskRecords since they already exist in this instance.");
+            _log.info("Imported " + numImported + " taskRecords since they did not exist in this instance.");
         }
 
     }
