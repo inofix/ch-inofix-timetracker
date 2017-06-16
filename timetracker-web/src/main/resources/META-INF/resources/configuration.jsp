@@ -2,18 +2,25 @@
     configuration.jsp: configuration of the timetracker portlet.
     
     Created:    2017-03-09 14:20 by Stefan Lübbers
-    Modified:   2017-06-15 16:27 by Christian Berndt
-    Version:    1.0.5
+    Modified:   2017-06-16 13:48 by Christian Berndt
+    Version:    1.0.6
 --%>
 
 <%@ include file="/init.jsp"%>
 
 <%
     String[] columns = new String[0];
+    String exportFileName = "export.txt"; 
+    String exportName = "latex"; 
+    String exportScript = "Enter your freemarker template code."; 
     String maxLength = "";
     String timeFormat = "";
+    
     if (Validator.isNotNull(timetrackerConfiguration)) {
         columns = portletPreferences.getValues("columns", timetrackerConfiguration.columns());
+        exportFileName = portletPreferences.getValue("export-file-name", timetrackerConfiguration.exportFileName()); 
+        exportName = portletPreferences.getValue("export-name", timetrackerConfiguration.exportName()); 
+        exportScript = portletPreferences.getValue("export-script", timetrackerConfiguration.exportScript()); 
         maxLength = portletPreferences.getValue("max-length", timetrackerConfiguration.maxLength());
         timeFormat = portletPreferences.getValue("time-format", timetrackerConfiguration.timeFormat());
     }
@@ -74,8 +81,24 @@
                     
             </liferay-ui:panel>
             
+            <liferay-ui:panel id="timetrackerExportPanel"
+                title="export" extended="true">
+
+                <aui:fieldset>
+                    <aui:input helpMessage="export-file-name-help"
+                        name="export-file-name"
+                        value="<%=exportFileName%>" />
+                    <aui:input helpMessage="export-name-help"
+                        name="export-name" value="<%=exportName%>" />
+                    <aui:input helpMessage="export-script-help"
+                        name="export-script" type="textarea"
+                        value="<%= exportScript %>" />
+                </aui:fieldset>
+
+            </liferay-ui:panel>
+            
             <liferay-ui:panel id="timetrackerMiscellaneousPanel"
-                title="miscellaneous" extended="true">
+                title="miscellaneous" extended="false">
                 
                 <aui:fieldset>
                     <aui:field-wrapper label="time-display"

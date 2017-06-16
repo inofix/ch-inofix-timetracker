@@ -10,7 +10,6 @@ import com.liferay.portal.kernel.template.Template;
 import com.liferay.portal.kernel.template.TemplateManagerUtil;
 import com.liferay.portal.kernel.template.TemplateResource;
 import com.liferay.portal.kernel.templateparser.TransformException;
-import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 /**
@@ -18,8 +17,8 @@ import com.liferay.portal.kernel.util.Validator;
  *
  * @author Christian Berndt
  * @created 2016-10-06 11:28
- * @modified 2017-06-16 13:04
- * @version 1.0.2
+ * @modified 2017-06-16 16:17
+ * @version 1.0.3
  */
 public class TemplateUtil {
 
@@ -32,15 +31,12 @@ public class TemplateUtil {
      * @return
      * @throws Exception
      */
-    public static String transform(Map<String, Object> contextObjects, String script, String langType)
+    public static String transform(Map<String, Object> contextObjects, String script, String templateId, String langType)
             throws Exception {
 
         if (Validator.isNull(langType)) {
             return null;
         }
-
-        // TODO
-        String templateId = StringUtil.randomId();
 
         Template template = getTemplate(templateId, script, langType);
 
@@ -57,6 +53,7 @@ public class TemplateUtil {
             mergeTemplate(template, unsyncStringWriter, true);
 
         } catch (Exception e) {
+            _log.error(e);
             throw new TransformException("Unhandled exception", e);
         }
 
