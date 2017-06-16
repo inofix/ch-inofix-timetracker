@@ -2,8 +2,8 @@
  * main.scss: css specific to the timetracker-portlet.
  *
  * Created:     2013-10-09 22:44 by Christian Berndt
- * Modified:    2017-06-14 21:19 by Christian Berndt
- * Version:     1.2.1
+ * Modified:    2017-06-16 13:06 by Christian Berndt
+ * Version:     1.2.2
  * 
  */
 @import "bourbon";
@@ -52,12 +52,6 @@
             width: 50%; 
         }    
     }
-    
-/*     .import { */   
-/*         .button-holder { */
-/*             display: inline-block;  */
-/*         } */
-/*     } */
     
     .lfr-description-column {
         min-width: 0;
