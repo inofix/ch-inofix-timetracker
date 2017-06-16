@@ -21,10 +21,8 @@ import com.liferay.exportimport.kernel.model.ExportImportConfiguration;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
-import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.xml.Document;
 import com.liferay.portal.kernel.xml.Node;
 import com.liferay.portal.kernel.xml.SAXReaderUtil;
@@ -37,8 +35,8 @@ import ch.inofix.timetracker.service.TaskRecordLocalService;
  *
  * @author Christian Berndt
  * @created 2017-06-04 18:07
- * @modified 2017-06-10 12:34
- * @version 1.0.2
+ * @modified 2017-06-16 16:35
+ * @version 1.0.3
  *
  */
 @Component(immediate = true, property = { "model.class.name=ch.inofix.timetracker.model.TaskRecord" }, service = {
@@ -93,9 +91,9 @@ public class TaskRecordImportController extends BaseExportImportController imple
 
         stopWatch.start();
 
-        Document document = SAXReaderUtil.read(file);
+        int numAdded = 0;
 
-        // _log.info(document.asXML());
+        Document document = SAXReaderUtil.read(file);
 
         List<Node> nodes = document.selectNodes("TaskRecords/ch.inofix.timetracker.model.impl.TaskRecordImpl");
 
@@ -110,18 +108,14 @@ public class TaskRecordImportController extends BaseExportImportController imple
             // TODO: process import configuration - have a look at
             // PortletDataContextImpl
 
-            TaskRecord taskRecord = null;
-
-            // taskRecord =
-            // _taskRecordLocalService.fetchTaskRecord(importTaskRecord.getTaskRecordId());
-
-            String workPackage = null;
             String description = null;
-            String ticketURL = null;
-            Date fromDate = null;
-            Date untilDate = null;
-            int status = -1;
             long duration = 0;
+            Date fromDate = null;
+            int status = -1;
+            long taskRecordId = importTaskRecord.getTaskRecordId();
+            String ticketURL = null;
+            Date untilDate = null;
+            String workPackage = null;
 
             ServiceContext serviceContext = new ServiceContext();
 
@@ -138,38 +132,29 @@ public class TaskRecordImportController extends BaseExportImportController imple
 
             serviceContext.setScopeGroupId(groupId);
 
-            if (taskRecord == null) {
+            if (taskRecordId == 0) {
 
-                // insert as new
+                // no taskRecordId: insert as new of the importing user
 
-                User user = null;
-                try {
-                    user = UserLocalServiceUtil.getUser(importTaskRecord.getUserId());
-                } catch (Exception e) {
-                    _log.warn(e.getMessage());
-                }
-
-                if (user != null) {
-                    userId = importTaskRecord.getUserId();
-                }
-
-                workPackage = importTaskRecord.getWorkPackage();
                 description = importTaskRecord.getDescription();
-                ticketURL = importTaskRecord.getTicketURL();
-                fromDate = importTaskRecord.getFromDate();
-                untilDate = importTaskRecord.getUntilDate();
-                status = importTaskRecord.getStatus();
                 duration = importTaskRecord.getDuration();
+                fromDate = importTaskRecord.getFromDate();
+                status = importTaskRecord.getStatus();
+                ticketURL = importTaskRecord.getTicketURL();
+                untilDate = importTaskRecord.getUntilDate();
+                workPackage = importTaskRecord.getWorkPackage();
 
-                taskRecord = _taskRecordLocalService.addTaskRecord(userId, workPackage, description, ticketURL,
-                        untilDate, fromDate, status, duration, serviceContext);
+                _taskRecordLocalService.addTaskRecord(userId, workPackage, description, ticketURL, untilDate, fromDate,
+                        status, duration, serviceContext);
+
+                numAdded++;
 
             }
-
         }
 
         if (_log.isInfoEnabled()) {
-            _log.info("Importing taskRecords takes " + stopWatch.getTime() + " ms");
+            _log.info("Importing taskRecords takes " + stopWatch.getTime() + " ms.");
+            _log.info("Added " + numAdded + " taskRecords as new, since they did not have a taskRecordId.");
         }
 
     }
