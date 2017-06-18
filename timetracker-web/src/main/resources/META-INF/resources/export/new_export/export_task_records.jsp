@@ -2,8 +2,8 @@
     export_task_records.jsp: Configure a task_records export.
     
     Created:    2017-05-16 17:30 by Christian Berndt
-    Modified:   2017-06-04 23:34 by Christian Berndt
-    Version:    1.0.2
+    Modified:   2017-06-18 15:39 by Christian Berndt
+    Version:    1.0.3
 --%>
 
 <%@ include file="/init.jsp" %>
@@ -45,7 +45,7 @@
         <liferay-ui:error exception="<%= LARFileNameException.class %>" message="please-enter-a-file-with-a-valid-file-name" />
 
         <div class="export-dialog-tree">
-            <aui:fieldset-group markupView="lexicon">
+            <aui:fieldset-group markupView="<%= markupView %>">
                 <aui:fieldset>
                     <c:choose>
                         <c:when test="<%= exportImportConfiguration == null %>">

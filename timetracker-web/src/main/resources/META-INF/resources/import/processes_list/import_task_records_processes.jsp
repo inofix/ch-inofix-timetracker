@@ -2,8 +2,8 @@
     import_task_records_processes.jsp: list of import processes
     
     Created:    2017-06-08 00:21 by Christian Berndt
-    Modified:   2017-06-13 22:30 by Christian Berndt
-    Version:    1.0.1
+    Modified:   2017-06-18 15:44 by Christian Berndt
+    Version:    1.0.2
 --%>
 
 <%@ include file="/init.jsp" %>
@@ -132,7 +132,7 @@
 
                                 <liferay-ui:icon
                                     icon="download"
-                                    markupView="lexicon"
+                                    markupView="<%= markupView %>"
                                     method="get"
                                     url="<%= PortletFileRepositoryUtil.getDownloadPortletFileEntryURL(themeDisplay, fileEntry, StringPool.BLANK) %>"
                                 />
@@ -266,7 +266,7 @@
                             <liferay-ui:icon
                                 iconCssClass="download"
                                 label="<%= true %>"
-                                markupView="lexicon"
+                                markupView="<%= markupView %>"
                                 message="<%= sb.toString() %>"
                                 method="get"
                                 url="<%= PortletFileRepositoryUtil.getDownloadPortletFileEntryURL(themeDisplay, fileEntry, StringPool.BLANK) %>"
@@ -290,7 +290,7 @@
                             <portlet:param name="backgroundTaskId" value="<%= String.valueOf(backgroundTask.getBackgroundTaskId()) %>" />
                         </portlet:actionURL>
 
-                        <liferay-ui:icon icon="reload" markupView="lexicon" message="relaunch" url="<%= relaunchURL %>" />
+                        <liferay-ui:icon icon="reload" markupView="<%= markupView %>" message="relaunch" url="<%= relaunchURL %>" />
 
                         <portlet:actionURL name="deleteBackgroundTasks" var="deleteBackgroundTaskURL">
                             <portlet:param name="redirect" value="<%= portletURL.toString() %>" />

@@ -2,8 +2,8 @@
     configuration.jsp: configuration of the timetracker portlet.
     
     Created:    2017-03-09 14:20 by Stefan Lübbers
-    Modified:   2017-06-16 13:48 by Christian Berndt
-    Version:    1.0.6
+    Modified:   2017-06-18 15:28 by Christian Berndt
+    Version:    1.0.7
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -21,6 +21,7 @@
         exportFileName = portletPreferences.getValue("export-file-name", timetrackerConfiguration.exportFileName()); 
         exportName = portletPreferences.getValue("export-name", timetrackerConfiguration.exportName()); 
         exportScript = portletPreferences.getValue("export-script", timetrackerConfiguration.exportScript()); 
+        markupView = portletPreferences.getValue("markup-view", timetrackerConfiguration.markupView());
         maxLength = portletPreferences.getValue("max-length", timetrackerConfiguration.maxLength());
         timeFormat = portletPreferences.getValue("time-format", timetrackerConfiguration.timeFormat());
     }
@@ -99,7 +100,11 @@
             
             <liferay-ui:panel id="timetrackerMiscellaneousPanel"
                 title="miscellaneous" extended="false">
-                
+
+                <aui:input checked="<%="lexicon".equals(markupView)%>"
+                    helpMessage="markup-view-help" label="use-lexicon"
+                    name="markup-view" type="checkbox" value="lexicon" />
+
                 <aui:fieldset>
                     <aui:field-wrapper label="time-display"
                         helpMessage="time-format-help" inlineField="false">
