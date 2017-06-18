@@ -2,8 +2,8 @@
     export_import_toolbar.jsp: the export-import toolbar.
     
     Created:    2017-05-16 17:30 by Christian Berndt
-    Modified:   2017-06-13 22:23 by Christian Berndt
-    Version:    1.0.4
+    Modified:   2017-06-18 19:39 by Christian Berndt
+    Version:    1.0.5
 --%>
 
 <%@ include file="/init.jsp" %>
@@ -27,9 +27,29 @@
     portletURL.setParameter("searchContainerId", String.valueOf(searchContainerId));
     portletURL.setParameter("tabs1", tabs1);
     portletURL.setParameter("tabs2", tabs2);
+    
+    int backgroundTasksCount = 0;
+    String taskExecutorName = TaskRecordExportBackgroundTaskExecutor.class.getName(); 
+    
+    if ("import".equals(tabs2)) {
+        taskExecutorName = TaskRecordImportBackgroundTaskExecutor.class.getName();         
+    }
+
+    if (navigation.equals("all")) {
+        backgroundTasksCount = BackgroundTaskManagerUtil.getBackgroundTasksCount(groupId, taskExecutorName);
+    }
+    else {
+        boolean completed = false;
+
+        if (navigation.equals("completed")) {
+            completed = true;
+        }
+        backgroundTasksCount = BackgroundTaskManagerUtil.getBackgroundTasksCount(groupId, taskExecutorName, completed);
+    }
 %>
 
 <liferay-frontend:management-bar
+    disabled="<%= backgroundTasksCount == 0 %>"
     includeCheckBox="<%= true %>"
     searchContainerId="<%= searchContainerId %>">
            
