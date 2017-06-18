@@ -3,8 +3,8 @@
     for the main view of the timetracker portlet.
 
     Created:     2013-10-07 14:41 by Christian Berndt
-    Modified:    2017-06-10 23:25 by Christian Berndt
-    Version:     1.1.9
+    Modified:    2017-06-18 16:10 by Christian Berndt
+    Version:     1.2.0
 --%>
 
 <%
@@ -17,8 +17,8 @@
     Date fromDate = taskRecord.getFromDate();
     Date untilDate = taskRecord.getUntilDate();
     
-    String fromDateString = "not available";
-    String untilDateString = "not available";
+    String fromDateString = LanguageUtil.get(request, "not-available"); 
+    String untilDateString = LanguageUtil.get(request, "not-available");
 
     if (fromDate != null) {
         fromDateString =
@@ -59,58 +59,51 @@
 
 <c:if test='<%="create-date".equals(column)%>'>
     <liferay-ui:search-container-column-date property="createDate"
-        name="create-date" orderable="true" href="<%=detailURL%>"
-        orderableProperty="createDate_Number_sortable" />
+        name="create-date" orderable="true" href="<%=detailURL%>" />
 </c:if>
 <c:if test='<%="description".equals(column)%>'>
     <liferay-ui:search-container-column-text property="description"
-        name="description" orderable="true" href="<%=detailURL%>"
-        orderableProperty="description_sortable" />
-</c:if>                         
+        name="description" orderable="true" href="<%=detailURL%>" />
+</c:if>
 <c:if test='<%="duration".equals(column)%>'>
-    <liferay-ui:search-container-column-text value="<%= durationInMinutes %>"
-        name="duration" orderable="true" href="<%=detailURL%>"
-        orderableProperty="duration_Number_sortable" />
+    <liferay-ui:search-container-column-text
+        value="<%= durationInMinutes %>" name="duration"
+        orderable="true" href="<%=detailURL%>" />
 </c:if>
 <c:if test='<%="from-date".equals(column)%>'>
-    <liferay-ui:search-container-column-text value="<%= fromDateString %>"
-        name="from-date" orderable="true" href="<%=detailURL%>"
-        orderableProperty="fromDate_Number_sortable" />
+    <liferay-ui:search-container-column-text
+        value="<%= fromDateString %>" name="from-date" orderable="true"
+        href="<%=detailURL%>" />
 </c:if>
 <c:if test='<%="modified-date".equals(column)%>'>
     <liferay-ui:search-container-column-date property="modifiedDate"
-        name="modified-date" orderable="true" href="<%=detailURL%>"
-        orderableProperty="modifiedDate_Number_sortable"  />
+        name="modified-date" orderable="true" href="<%=detailURL%>" />
 </c:if>
 <c:if test='<%="status".equals(column)%>'>
     <liferay-ui:search-container-column-status property="status"
-        orderable="true" orderableProperty="status_Number_sortable" />
+        orderable="true" />
 </c:if>
 <c:if test='<%="task-record-id".equals(column)%>'>
     <liferay-ui:search-container-column-text property="taskRecordId"
-        name="task-record-id" orderable="true" href="<%=detailURL%>"
-        orderableProperty="taskRecordId_Number_sortable" />
+        name="task-record-id" orderable="true" href="<%=detailURL%>" />
 </c:if>
 <c:if test='<%="ticket-url".equals(column)%>'>
     <liferay-ui:search-container-column-text property="ticketURL"
-        name="ticket-url" orderable="true" href="<%=detailURL%>"
-        orderableProperty="ticketURL_sortable" />
+        name="ticket-url" orderable="true" href="<%=detailURL%>" />
 </c:if>
 <c:if test='<%="until-date".equals(column)%>'>
-    <liferay-ui:search-container-column-text property="untilDate" 
-        value="<%= untilDateString %>"
-        name="until-date" orderable="true" href="<%=detailURL%>"
-        orderableProperty="untilDate_Number_sortable" />
+    <liferay-ui:search-container-column-text property="untilDate"
+        value="<%= untilDateString %>" name="until-date"
+        orderable="true" href="<%=detailURL%>" />
 </c:if>
 <c:if test='<%="user-name".equals(column)%>'>
     <liferay-ui:search-container-column-text property="userName"
-        name="user-name" orderable="true" href="<%=detailURL%>"
-        orderableProperty="userName_sortable" />
+        name="user-name" orderable="true" href="<%=detailURL%>" />
 </c:if>
 <c:if test='<%="work-package".equals(column)%>'>
-    <liferay-ui:search-container-column-text 
-        name="work-package" orderable="true" href="<%=detailURL%>"
-        orderableProperty="workPackage_sortable" value="<%= workPackageString %>"/>
+    <liferay-ui:search-container-column-text name="work-package"
+        orderable="true" href="<%=detailURL%>"
+        value="<%= workPackageString %>" />
 </c:if>
 <%
     }
