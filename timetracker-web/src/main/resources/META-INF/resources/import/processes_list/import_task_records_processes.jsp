@@ -2,13 +2,11 @@
     import_task_records_processes.jsp: list of import processes
     
     Created:    2017-06-08 00:21 by Christian Berndt
-    Modified:   2017-06-18 15:44 by Christian Berndt
-    Version:    1.0.2
+    Modified:   2017-06-18 19:36 by Christian Berndt
+    Version:    1.0.3
 --%>
 
 <%@ include file="/init.jsp" %>
-
-<%@page import="ch.inofix.timetracker.background.task.TaskRecordImportBackgroundTaskExecutor"%>
 
 <%@page import="com.liferay.background.task.kernel.util.comparator.BackgroundTaskComparatorFactoryUtil"%>
 <%@page import="com.liferay.portal.kernel.portletfilerepository.PortletFileRepositoryUtil"%>

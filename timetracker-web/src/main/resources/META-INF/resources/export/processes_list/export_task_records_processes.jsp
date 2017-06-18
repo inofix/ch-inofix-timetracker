@@ -2,13 +2,11 @@
     export_task_records_processes.jsp: list of export processes
     
     Created:    2017-06-06 23:36 by Christian Berndt
-    Modified:   2017-06-18 15:40 by Christian Berndt
-    Version:    1.0.3
+    Modified:   2017-06-18 19:42 by Christian Berndt
+    Version:    1.0.4
 --%>
 
 <%@ include file="/init.jsp" %>
-
-<%@page import="ch.inofix.timetracker.background.task.TaskRecordExportBackgroundTaskExecutor"%>
 
 <%@page import="com.liferay.background.task.kernel.util.comparator.BackgroundTaskComparatorFactoryUtil"%>
 <%@page import="com.liferay.portal.kernel.portletfilerepository.PortletFileRepositoryUtil"%>

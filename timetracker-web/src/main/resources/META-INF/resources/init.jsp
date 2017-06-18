@@ -2,8 +2,8 @@
     init.jsp: Common setup code for the timetracker portlet.
 
     Created:     2014-02-01 15:31 by Christian Berndt
-    Modified:    2017-06-18 15:26 by Christian Berndt
-    Version:     1.1.5
+    Modified:    2017-06-18 19:43 by Christian Berndt
+    Version:     1.1.6
 --%>
 
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
@@ -16,6 +16,8 @@
 <%@taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui"%>
 <%@taglib uri="http://liferay.com/tld/util" prefix="liferay-util"%>
 
+<%@page import="ch.inofix.timetracker.background.task.TaskRecordExportBackgroundTaskExecutor"%>
+<%@page import="ch.inofix.timetracker.background.task.TaskRecordImportBackgroundTaskExecutor"%>
 <%@page import="ch.inofix.timetracker.constants.PortletKeys"%>
 <%@page import="ch.inofix.timetracker.constants.TaskRecordActionKeys"%>
 <%@page import="ch.inofix.timetracker.exception.NoSuchTaskRecordException"%>
