@@ -2,8 +2,8 @@
     add_button.jsp: add a task-record 
     
     Created:    2017-06-05 14:21 by Christian Berndt
-    Modified:   2017-06-13 19:08 by Christian Berndt
-    Version:    1.0.2
+    Modified:   2017-06-19 18:49 by Christian Berndt
+    Version:    1.0.3
 --%>
 
 <%@ include file="/init.jsp" %>
@@ -16,7 +16,7 @@
         <portlet:renderURL var="addTaskRecordURL">
             <portlet:param name="redirect" value="<%=currentURL%>" />
             <portlet:param name="mvcPath" value="/edit_task_record.jsp" />
-            <portlet:param name="windowId" value="editTaskRecord" />
+<%--             <portlet:param name="windowId" value="editTaskRecord" /> --%>
         </portlet:renderURL>
 
         <liferay-frontend:add-menu-item
