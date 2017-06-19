@@ -2,8 +2,8 @@
     view.jsp: Default view of Inofix' timetracker.
     
     Created:     2013-10-06 16:52 by Christian Berndt
-    Modified:    2017-06-14 23:03 by Christian Berndt
-    Version:     1.7.0
+    Modified:    2017-06-19 18:50 by Christian Berndt
+    Version:     1.7.1
 --%>
 
 <%@ include file="/init.jsp" %>
@@ -102,8 +102,7 @@
                 <liferay-ui:error exception="<%= PrincipalException.class %>"
                     message="you-dont-have-the-required-permissions" />
                     
-                <portlet:actionURL name="editSet" var="editSetURL">
-                </portlet:actionURL>          
+                <portlet:actionURL var="editSetURL"/>
                 
                 <aui:form action="<%= editSetURL %>" name="fm" 
                     onSubmit='<%= "event.preventDefault(); " + renderResponse.getNamespace() + "editSet();" %>'>
