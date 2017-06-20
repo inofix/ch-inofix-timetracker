@@ -2,8 +2,8 @@
     import_task_records.jsp: configure the task records import.
     
     Created:    2017-06-01 21:27 by Christian Berndt
-    Modified:   2017-06-20 17:59 by Christian Berndt
-    Version:    1.0.1
+    Modified:   2017-06-20 18:27 by Christian Berndt
+    Version:    1.0.2
 --%>
 
 <%@ include file="/init.jsp" %>
@@ -11,14 +11,12 @@
 <%@page import="javax.portlet.PortletRequest"%>
 
 <%@page import="com.liferay.exportimport.kernel.lar.ExportImportHelper"%>
-<%@page import="com.liferay.portal.kernel.backgroundtask.BackgroundTaskManagerUtil"%>
-<%@page import="com.liferay.portal.kernel.service.LayoutServiceUtil"%>
 
 <%
     long groupId = ParamUtil.getLong(request, "groupId");
     boolean validate = ParamUtil.getBoolean(request, "validate", true);
 
-    String[] tempFileNames = LayoutServiceUtil.getTempFileNames(groupId, ExportImportHelper.TEMP_FOLDER_NAME);
+    String[] tempFileNames = TaskRecordServiceUtil.getTempFileNames(groupId, ExportImportHelper.TEMP_FOLDER_NAME);
 
     portletDisplay.setShowBackIcon(true);
 
