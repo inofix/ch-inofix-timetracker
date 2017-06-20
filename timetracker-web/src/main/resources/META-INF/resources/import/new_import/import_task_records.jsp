@@ -2,16 +2,13 @@
     import_task_records.jsp: configure the task records import.
     
     Created:    2017-06-01 21:27 by Christian Berndt
-    Modified:   2017-06-01 21:27 by Christian Berndt
-    Version:    1.0.0
+    Modified:   2017-06-20 17:59 by Christian Berndt
+    Version:    1.0.1
 --%>
 
 <%@ include file="/init.jsp" %>
 
 <%@page import="javax.portlet.PortletRequest"%>
-
-<%@page import="ch.inofix.timetracker.background.task.TaskRecordImportBackgroundTaskExecutor"%>
-<%@page import="ch.inofix.timetracker.constants.PortletKeys"%>
 
 <%@page import="com.liferay.exportimport.kernel.lar.ExportImportHelper"%>
 <%@page import="com.liferay.portal.kernel.backgroundtask.BackgroundTaskManagerUtil"%>
