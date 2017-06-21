@@ -106,8 +106,8 @@ import ch.inofix.timetracker.web.internal.portlet.util.TemplateUtil;
  * @author Christian Berndt
  * @author Stefan Luebbers
  * @created 2013-10-07 10:47
- * @modified 2017-06-16 21:24
- * @version 1.7.8
+ * @modified 2017-06-21 17:42
+ * @version 1.7.9
  */
 @Component(immediate = true, property = { "com.liferay.portlet.css-class-wrapper=portlet-timetracker",
         "com.liferay.portlet.display-category=category.inofix",
@@ -550,7 +550,8 @@ public class TimetrackerPortlet extends MVCPortlet {
 
         contextObjects.put("taskRecords", taskRecords);
 
-        String exportFileName = portletPreferences.getValue("export-file-name", _timetrackerConfiguration.exportFileName());
+        String exportFileName = portletPreferences.getValue("export-file-name",
+                _timetrackerConfiguration.exportFileName());
         String exportName = portletPreferences.getValue("export-name", _timetrackerConfiguration.exportName());
         String exportScript = portletPreferences.getValue("export-script", _timetrackerConfiguration.exportScript());
 
@@ -674,6 +675,7 @@ public class TimetrackerPortlet extends MVCPortlet {
      * @return
      */
     protected PortletConfig getPortletConfig(ResourceRequest resourceRequest) {
+
         String portletId = PortalUtil.getPortletId(resourceRequest);
 
         return PortletConfigFactoryUtil.get(portletId);
@@ -854,18 +856,13 @@ public class TimetrackerPortlet extends MVCPortlet {
 
         String cmd = ParamUtil.getString(resourceRequest, Constants.CMD);
 
-        _log.info("importTaskRecords");
-
         PortletRequestDispatcher portletRequestDispatcher = null;
 
         if (cmd.equals(Constants.IMPORT)) {
 
-            _log.info("cmd = " + cmd);
-
             portletRequestDispatcher = getPortletRequestDispatcher(resourceRequest, "/import/processes_list/view.jsp");
-        } else {
 
-            _log.info("cmd = " + cmd);
+        } else {
 
             portletRequestDispatcher = getPortletRequestDispatcher(resourceRequest,
                     "/import/new_import/import_task_records_resources.jsp");

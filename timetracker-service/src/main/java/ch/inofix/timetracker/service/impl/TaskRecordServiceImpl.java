@@ -23,8 +23,6 @@ import java.util.Map;
 
 import com.liferay.exportimport.kernel.model.ExportImportConfiguration;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.Sort;
@@ -58,8 +56,8 @@ import ch.inofix.timetracker.service.permission.TimetrackerPortletPermission;
  * @author Christian Berndt
  * @author Stefan Luebbers
  * @created 2015-05-07 23:50
- * @modified 2017-06-20 18:20
- * @version 1.1.5
+ * @modified 2017-06-21 17:42
+ * @version 1.1.6
  * @see TaskRecordServiceBaseImpl
  * @see ch.inofix.timetracker.service.TaskRecordServiceUtil
  */
@@ -88,27 +86,7 @@ public class TaskRecordServiceImpl extends TaskRecordServiceBaseImpl {
     public FileEntry addTempFileEntry(long groupId, String folderName, String fileName, InputStream inputStream,
             String mimeType) throws PortalException {
 
-        _log.info("addTempFileEntry()");
-
-        // TODO
-        // GroupPermissionUtil.check(getPermissionChecker(), groupId,
-        // TaskRecordActionKeys.IMPORT_TASK_RECORDS);
-
-        // try {
-        //
-        // FileEntry fileEntry = TempFileEntryUtil.addTempFileEntry(groupId,
-        // getUserId(),
-        // ExportImportHelper.TEMP_FOLDER_NAME, fileName, inputStream,
-        // mimeType);
-        //
-        // _log.info("fileEntry = " + fileEntry);
-        //
-        // return fileEntry;
-        //
-        // } catch (Exception e) {
-        // _log.error(e);
-        // throw new PortalException(e);
-        // }
+        TimetrackerPortletPermission.check(getPermissionChecker(), groupId, TaskRecordActionKeys.IMPORT_TASK_RECORDS);
 
         return TempFileEntryUtil.addTempFileEntry(groupId, getUserId(),
                 DigesterUtil.digestHex(Digester.SHA_256, folderName), fileName, inputStream, mimeType);
@@ -154,10 +132,8 @@ public class TaskRecordServiceImpl extends TaskRecordServiceBaseImpl {
     public long exportTaskRecordsAsFileInBackground(long userId, ExportImportConfiguration exportImportConfiguration)
             throws PortalException {
 
-        // TODO: enable permission check
-        // TimetrackerPortletPermission.check(getPermissionChecker(),
-        // exportImportConfiguration.getGroupId(),
-        // TaskRecordActionKeys.EXPORT_TASK_RECORDS);
+        TimetrackerPortletPermission.check(getPermissionChecker(), exportImportConfiguration.getGroupId(),
+                TaskRecordActionKeys.EXPORT_TASK_RECORDS);
 
         return taskRecordLocalService.exportTaskRecordsAsFileInBackground(userId, exportImportConfiguration);
 
@@ -199,13 +175,9 @@ public class TaskRecordServiceImpl extends TaskRecordServiceBaseImpl {
     public long importTaskRecordsInBackground(ExportImportConfiguration exportImportConfiguration,
             InputStream inputStream) throws PortalException {
 
-        _log.info("importTaskRecordsInBackground()");
-
         Map<String, Serializable> settingsMap = exportImportConfiguration.getSettingsMap();
 
         long targetGroupId = MapUtil.getLong(settingsMap, "targetGroupId");
-
-        _log.info("targetGroupId = " + targetGroupId);
 
         TimetrackerPortletPermission.check(getPermissionChecker(), targetGroupId,
                 TaskRecordActionKeys.IMPORT_TASK_RECORDS);
@@ -243,5 +215,5 @@ public class TaskRecordServiceImpl extends TaskRecordServiceBaseImpl {
 
     }
 
-    private static final Log _log = LogFactoryUtil.getLog(TaskRecordServiceImpl.class.getName());
+//    private static final Log _log = LogFactoryUtil.getLog(TaskRecordServiceImpl.class.getName());
 }
