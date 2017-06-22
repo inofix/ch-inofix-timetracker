@@ -106,8 +106,8 @@ import ch.inofix.timetracker.web.internal.portlet.util.TemplateUtil;
  * @author Christian Berndt
  * @author Stefan Luebbers
  * @created 2013-10-07 10:47
- * @modified 2017-06-21 17:42
- * @version 1.7.9
+ * @modified 2017-06-22 18:38
+ * @version 1.8.0
  */
 @Component(immediate = true, property = { "com.liferay.portlet.css-class-wrapper=portlet-timetracker",
         "com.liferay.portlet.display-category=category.inofix",
@@ -259,95 +259,6 @@ public class TimetrackerPortlet extends MVCPortlet {
         } catch (Exception e) {
             throw new PortletException(e);
         }
-    }
-
-    /**
-     *
-     * @param actionRequest
-     * @param actionResponse
-     * @throws Exception
-     */
-    public void updateTaskRecord(ActionRequest actionRequest, ActionResponse actionResponse) throws Exception {
-
-        long taskRecordId = ParamUtil.getLong(actionRequest, "taskRecordId");
-
-        ServiceContext serviceContext = ServiceContextFactory.getInstance(TaskRecord.class.getName(), actionRequest);
-
-        String workPackage = ParamUtil.getString(actionRequest, "workPackage");
-        String description = ParamUtil.getString(actionRequest, "description");
-        String ticketURL = ParamUtil.getString(actionRequest, "ticketURL");
-        int durationInMinutes = ParamUtil.getInteger(actionRequest, "duration");
-        long duration = durationInMinutes * 60 * 1000;
-        int status = ParamUtil.getInteger(actionRequest, "status");
-
-        int fromDateDay = ParamUtil.getInteger(actionRequest, "fromDateDay");
-        int fromDateMonth = ParamUtil.getInteger(actionRequest, "fromDateMonth");
-        int fromDateYear = ParamUtil.getInteger(actionRequest, "fromDateYear");
-        int fromDateHour = ParamUtil.getInteger(actionRequest, "fromDateHour");
-        int fromDateMinute = ParamUtil.getInteger(actionRequest, "fromDateMinute");
-
-        // TODO: clean this up!
-        // Create the untilDate with the date values of
-        // the fromDate, because we want the user to
-        // have to select only one date.
-        int untilDateDay = ParamUtil.getInteger(actionRequest, "fromDateDay");
-        int untilDateMonth = ParamUtil.getInteger(actionRequest, "fromDateMonth");
-        int untilDateYear = ParamUtil.getInteger(actionRequest, "fromDateYear");
-        int untilDateHour = ParamUtil.getInteger(actionRequest, "untilDateHour");
-        int untilDateMinute = ParamUtil.getInteger(actionRequest, "untilDateMinute");
-
-        Date fromDate = null;
-
-        try {
-            fromDate = PortalUtil.getDate(fromDateMonth, fromDateDay, fromDateYear, fromDateHour, fromDateMinute,
-                    TaskRecordUntilDateException.class);
-        } catch (Exception e) {
-            _log.error(e);
-        }
-
-        Date untilDate = null;
-
-        try {
-            untilDate = PortalUtil.getDate(untilDateMonth, untilDateDay, untilDateYear, untilDateHour, untilDateMinute,
-                    TaskRecordFromDateException.class);
-        } catch (Exception e) {
-            _log.error(e);
-        }
-
-        long fromTime = fromDate.getTime();
-        long untilTime = untilDate.getTime();
-
-        if (fromTime > untilTime) {
-            untilDate = new Date(untilTime + 1000 * 60 * 60 * 24);
-            untilTime = untilDate.getTime();
-        }
-
-        if (duration == 0) {
-            duration = untilTime - fromTime;
-        }
-
-        TaskRecord taskRecord = null;
-
-        if (taskRecordId <= 0) {
-
-            // Add taskRecord
-
-            taskRecord = _taskRecordService.addTaskRecord(workPackage, description, ticketURL, untilDate, fromDate,
-                    status, duration, serviceContext);
-
-        } else {
-
-            // Update taskRecord
-
-            taskRecord = _taskRecordService.updateTaskRecord(taskRecordId, workPackage, description, ticketURL,
-                    untilDate, fromDate, status, duration, serviceContext);
-        }
-
-        String redirect = getEditTaskRecordURL(actionRequest, actionResponse, taskRecord);
-
-        actionRequest.setAttribute(WebKeys.REDIRECT, redirect);
-
-        actionRequest.setAttribute(TimetrackerWebKeys.TASK_RECORD, taskRecord);
     }
 
     @Activate
@@ -895,6 +806,96 @@ public class TimetrackerPortlet extends MVCPortlet {
     @Reference(unbind = "-")
     protected void setTaskRecordService(TaskRecordService taskRecordService) {
         this._taskRecordService = taskRecordService;
+    }
+
+
+    /**
+     *
+     * @param actionRequest
+     * @param actionResponse
+     * @throws Exception
+     */
+    protected void updateTaskRecord(ActionRequest actionRequest, ActionResponse actionResponse) throws Exception {
+
+        long taskRecordId = ParamUtil.getLong(actionRequest, "taskRecordId");
+
+        ServiceContext serviceContext = ServiceContextFactory.getInstance(TaskRecord.class.getName(), actionRequest);
+
+        String workPackage = ParamUtil.getString(actionRequest, "workPackage");
+        String description = ParamUtil.getString(actionRequest, "description");
+        String ticketURL = ParamUtil.getString(actionRequest, "ticketURL");
+        int durationInMinutes = ParamUtil.getInteger(actionRequest, "duration");
+        long duration = durationInMinutes * 60 * 1000;
+        int status = ParamUtil.getInteger(actionRequest, "status");
+
+        int fromDateDay = ParamUtil.getInteger(actionRequest, "fromDateDay");
+        int fromDateMonth = ParamUtil.getInteger(actionRequest, "fromDateMonth");
+        int fromDateYear = ParamUtil.getInteger(actionRequest, "fromDateYear");
+        int fromDateHour = ParamUtil.getInteger(actionRequest, "fromDateHour");
+        int fromDateMinute = ParamUtil.getInteger(actionRequest, "fromDateMinute");
+
+        // TODO: clean this up!
+        // Create the untilDate with the date values of
+        // the fromDate, because we want the user to
+        // have to select only one date.
+        int untilDateDay = ParamUtil.getInteger(actionRequest, "fromDateDay");
+        int untilDateMonth = ParamUtil.getInteger(actionRequest, "fromDateMonth");
+        int untilDateYear = ParamUtil.getInteger(actionRequest, "fromDateYear");
+        int untilDateHour = ParamUtil.getInteger(actionRequest, "untilDateHour");
+        int untilDateMinute = ParamUtil.getInteger(actionRequest, "untilDateMinute");
+
+        Date fromDate = null;
+
+        try {
+            fromDate = PortalUtil.getDate(fromDateMonth, fromDateDay, fromDateYear, fromDateHour, fromDateMinute,
+                    TaskRecordUntilDateException.class);
+        } catch (Exception e) {
+            _log.error(e);
+        }
+
+        Date untilDate = null;
+
+        try {
+            untilDate = PortalUtil.getDate(untilDateMonth, untilDateDay, untilDateYear, untilDateHour, untilDateMinute,
+                    TaskRecordFromDateException.class);
+        } catch (Exception e) {
+            _log.error(e);
+        }
+
+        long fromTime = fromDate.getTime();
+        long untilTime = untilDate.getTime();
+
+        if (fromTime > untilTime) {
+            untilDate = new Date(untilTime + 1000 * 60 * 60 * 24);
+            untilTime = untilDate.getTime();
+        }
+
+        if (duration == 0) {
+            duration = untilTime - fromTime;
+        }
+
+        TaskRecord taskRecord = null;
+
+        if (taskRecordId <= 0) {
+
+            // Add taskRecord
+
+            taskRecord = _taskRecordService.addTaskRecord(workPackage, description, ticketURL, untilDate, fromDate,
+                    status, duration, serviceContext);
+
+        } else {
+
+            // Update taskRecord
+
+            taskRecord = _taskRecordService.updateTaskRecord(taskRecordId, workPackage, description, ticketURL,
+                    untilDate, fromDate, status, duration, serviceContext);
+        }
+
+        String redirect = getEditTaskRecordURL(actionRequest, actionResponse, taskRecord);
+
+        actionRequest.setAttribute(WebKeys.REDIRECT, redirect);
+
+        actionRequest.setAttribute(TimetrackerWebKeys.TASK_RECORD, taskRecord);
     }
 
     protected void validateFile(ActionRequest actionRequest, ActionResponse actionResponse, String folderName)
