@@ -117,7 +117,6 @@ public class TaskRecordIndexer extends BaseIndexer<TaskRecord> {
 
     @Override
     protected void doDelete(TaskRecord taskRecord) throws Exception {
-
         deleteDocument(taskRecord.getCompanyId(), taskRecord.getTaskRecordId());
     }
 

@@ -27,7 +27,7 @@ import ch.inofix.timetracker.model.TaskRecord;
 /**
  *
  * @author Christian Berndt
- * @Stefan Luebbers
+ * @author Stefan Luebbers
  * @created 2013-10-06 18:26
  * @modified 2017-06-18 15:20
  * @version 1.0.5
@@ -67,7 +67,6 @@ public class TaskRecordSearch extends SearchContainer<TaskRecord> {
     }
 
     public TaskRecordSearch(PortletRequest portletRequest, PortletURL iteratorURL) {
-
         this(portletRequest, DEFAULT_CUR_PARAM, iteratorURL);
     }
 
@@ -116,12 +115,14 @@ public class TaskRecordSearch extends SearchContainer<TaskRecord> {
             }
 
             setOrderableHeaders(orderableHeaders);
+
             if (Validator.isNotNull(orderableHeaders.get(orderByCol))) {
                 setOrderByCol(orderableHeaders.get(orderByCol));
             } else {
                 _log.error(orderByCol + " is not an orderable header.");
                 setOrderByCol(orderByCol);
             }
+
             setOrderByType(orderByType);
 
         } catch (Exception e) {
