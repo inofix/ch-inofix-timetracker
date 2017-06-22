@@ -106,8 +106,8 @@ import ch.inofix.timetracker.web.internal.portlet.util.TemplateUtil;
  * @author Christian Berndt
  * @author Stefan Luebbers
  * @created 2013-10-07 10:47
- * @modified 2017-06-22 18:38
- * @version 1.8.0
+ * @modified 2017-06-22 21:12
+ * @version 1.8.1
  */
 @Component(immediate = true, property = { "com.liferay.portlet.css-class-wrapper=portlet-timetracker",
         "com.liferay.portlet.display-category=category.inofix",
@@ -351,6 +351,12 @@ public class TimetrackerPortlet extends MVCPortlet {
                 throw e;
             }
         }
+
+        String tabs1 = ParamUtil.getString(actionRequest, "tabs1");
+        String tabs2 = ParamUtil.getString(actionRequest, "tabs2");
+
+        actionResponse.setRenderParameter("tabs1", tabs1);
+        actionResponse.setRenderParameter("tabs2", tabs2);
     }
 
     /**
