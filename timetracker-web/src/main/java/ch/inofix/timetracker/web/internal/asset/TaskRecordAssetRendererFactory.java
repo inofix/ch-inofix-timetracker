@@ -46,14 +46,18 @@ public class TaskRecordAssetRendererFactory extends BaseAssetRendererFactory<Tas
     public static final String TYPE = "task_record";
 
     public TaskRecordAssetRendererFactory() {
+
         setClassName(TaskRecord.class.getName());
         setLinkable(true);
         setPortletId(PortletKeys.TIMETRACKER);
         setSearchable(true);
+
     }
 
     @Override
     public AssetRenderer<TaskRecord> getAssetRenderer(long classPK, int type) throws PortalException {
+
+        _log.info("getAssetRenderer");
 
         TaskRecord taskRecord = _taskRecordLocalService.getTaskRecord(classPK);
 
