@@ -2,8 +2,8 @@
     init.jsp: Common setup code for the timetracker portlet.
 
     Created:     2014-02-01 15:31 by Christian Berndt
-    Modified:    2017-06-18 19:43 by Christian Berndt
-    Version:     1.1.6
+    Modified:    2017-06-23 12:53 by Christian Berndt
+    Version:     1.1.7
 --%>
 
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
@@ -61,6 +61,7 @@
 <%@page import="com.liferay.portal.kernel.service.UserLocalServiceUtil"%>
 <%@page import="com.liferay.portal.kernel.util.Constants"%>
 <%@page import="com.liferay.portal.kernel.util.DateUtil"%>
+<%@page import="com.liferay.portal.kernel.util.FastDateFormatFactoryUtil"%>
 <%@page import="com.liferay.portal.kernel.util.GetterUtil"%>
 <%@page import="com.liferay.portal.kernel.util.HtmlUtil"%>
 <%@page import="com.liferay.portal.kernel.util.HttpUtil"%>
@@ -80,6 +81,7 @@
 <%@page import="com.liferay.portal.kernel.workflow.WorkflowConstants"%>
 
 <%@page import="java.text.DateFormat"%>
+<%@page import="java.text.Format"%>
 <%@page import="java.text.ParseException"%>
 <%@page import="java.text.SimpleDateFormat"%>
 <%@page import="java.util.ArrayList"%>
@@ -102,6 +104,9 @@
 
 <%
     PortalPreferences portalPreferences = PortletPreferencesFactoryUtil.getPortalPreferences(request);
+
+    Format dateFormatDate = FastDateFormatFactoryUtil.getDate(locale, timeZone);
+    Format dateFormatDateTime = FastDateFormatFactoryUtil.getDateTime(locale, timeZone);
 
     String markupView = "lexicon";
 
