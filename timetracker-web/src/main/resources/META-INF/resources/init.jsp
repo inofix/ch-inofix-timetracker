@@ -2,8 +2,8 @@
     init.jsp: Common setup code for the timetracker portlet.
 
     Created:     2014-02-01 15:31 by Christian Berndt
-    Modified:    2017-06-23 12:53 by Christian Berndt
-    Version:     1.1.7
+    Modified:    2017-06-23 15:11 by Christian Berndt
+    Version:     1.1.8
 --%>
 
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
@@ -46,6 +46,7 @@
 <%@page import="com.liferay.portal.kernel.log.Log"%>
 <%@page import="com.liferay.portal.kernel.log.LogFactoryUtil"%>
 <%@page import="com.liferay.portal.kernel.model.Group"%>
+<%@page import="com.liferay.portal.kernel.model.Portlet"%>
 <%@page import="com.liferay.portal.kernel.model.User"%>
 <%@page import="com.liferay.portal.kernel.portlet.PortalPreferences"%>
 <%@page import="com.liferay.portal.kernel.portlet.PortletURLUtil"%>
@@ -59,6 +60,7 @@
 <%@page import="com.liferay.portal.kernel.security.auth.PrincipalException"%>
 <%@page import="com.liferay.portal.kernel.security.permission.ResourceActionsUtil"%>
 <%@page import="com.liferay.portal.kernel.service.UserLocalServiceUtil"%>
+<%@page import="com.liferay.portal.kernel.service.PortletLocalServiceUtil"%>
 <%@page import="com.liferay.portal.kernel.util.Constants"%>
 <%@page import="com.liferay.portal.kernel.util.DateUtil"%>
 <%@page import="com.liferay.portal.kernel.util.FastDateFormatFactoryUtil"%>

@@ -1,15 +1,12 @@
 <%--
-    full_content.jsp: full-content asset-renderer template
+    full_content.jsp: full-content task-record asset-renderer template
 
     Created:     2017-06-23 12:42 by Christian Berndt
-    Modified:    2017-06-23 12:42 by Christian Berndt
-    Version:     1.0.0
+    Modified:    2017-06-23 14:53 by Christian Berndt
+    Version:     1.0.1
 --%>
 
 <%@ include file="/init.jsp" %>
-
-<%@page import="com.liferay.portal.kernel.service.PortletLocalServiceUtil"%>
-<%@page import="com.liferay.portal.kernel.model.Portlet"%>
 
 <%
     TaskRecord taskRecord = (TaskRecord) request.getAttribute(TimetrackerWebKeys.TASK_RECORD);
