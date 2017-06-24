@@ -263,6 +263,3 @@
         
     </aui:form>
 </div>
-<%-- 
-<ifx-util:build-info />
---%>
