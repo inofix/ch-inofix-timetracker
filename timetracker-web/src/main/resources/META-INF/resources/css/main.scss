@@ -2,12 +2,18 @@
  * main.scss: css specific to the timetracker-portlet.
  *
  * Created:     2013-10-09 22:44 by Christian Berndt
- * Modified:    2017-06-16 13:06 by Christian Berndt
- * Version:     1.2.2
+ * Modified:    2017-06-24 18:17 by Christian Berndt
+ * Version:     1.2.3
  * 
  */
 @import "bourbon";
 @import "mixins";
+
+
+.dialog-with-footer .button-holder.dialog-footer {
+    position: fixed !important;
+    bottom: 0 !important;
+}
     
 .item-remove {
     .taglib-text-icon {    
