@@ -88,26 +88,49 @@
         .basic-search {
             margin-right: 30px;
         }
-    
-        .btn-xs {
         
-            position: absolute; 
-            right: 0; 
-            top: 16px;
+        .clear-message {
         
-            .icon-monospaced {
+            display: inline-block;
+            padding-bottom: 13px;
+            padding-top: 13px;
             
-                height: 16px;
-                line-height: 16px;
-                width: 16px;
+            a {
+                color: #777;
                 
-                .lexicon-icon {
-                    height: 16px;
-                    line-height: 16px;
-                    width: 16px;
-                    padding: 4px;                
+                &:hover {
+                    color: #333;
+                    text-decoration: none; 
                 }
             }
+        
+            .btn {
+                border: 0;
+                background-color: transparent;
+                margin-top: -2px;
+                padding: 0;
+            } 
+            
+            .icon-monospaced {
+                height: 18px;
+                line-height: 18px;
+                width: 18px;
+            }  
+            
+            .lexicon-icon {
+                width: 16px;
+                height: 16px;
+                padding: 3px;
+                margin-right: 3px;
+                color: #fff;
+                text-align: center;
+                background-color: #777;
+                border-radius: 3px;  
+                
+                &:hover {
+                    background-color: #333;
+                }          
+            }     
         }
     
         fieldset {
