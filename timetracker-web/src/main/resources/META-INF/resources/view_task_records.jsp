@@ -2,8 +2,8 @@
     view_task_records.jsp: search-container of Inofix' timetracker.
     
     Created:     2017-06-05 13:22 by Christian Berndt
-    Modified:    2017-06-16 22:04 by Christian Berndt
-    Version:     1.0.6
+    Modified:    2017-06-25 13:27 by Christian Berndt
+    Version:     1.0.7
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -64,8 +64,9 @@
 
         <%@ include file="/search_columns.jspf"%>
 
-        <liferay-ui:search-container-column-jsp cssClass="entry-action"
-            path="/task_record_action.jsp" valign="top" />
+        <liferay-ui:search-container-column-jsp align="right"
+            cssClass="entry-action" path="/task_record_action.jsp"
+            valign="top" />
 
     </liferay-ui:search-container-row>
 
