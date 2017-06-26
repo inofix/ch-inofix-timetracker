@@ -2,8 +2,8 @@
     view_task_records.jsp: search-container of Inofix' timetracker.
     
     Created:     2017-06-05 13:22 by Christian Berndt
-    Modified:    2017-06-25 13:27 by Christian Berndt
-    Version:     1.0.7
+    Modified:    2017-06-25 16:00 by Christian Berndt
+    Version:     1.0.8
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -22,7 +22,8 @@
 	String searchContainerId = ParamUtil.getString(request, "searchContainerId");
 %>
 
-<liferay-ui:search-container id="taskRecords"
+<liferay-ui:search-container
+    id="taskRecords"
     searchContainer="<%=searchContainer%>"
     var="taskRecordSearchContainer">
     

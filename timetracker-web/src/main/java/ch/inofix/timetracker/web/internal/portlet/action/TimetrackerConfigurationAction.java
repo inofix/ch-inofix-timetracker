@@ -27,8 +27,8 @@ import ch.inofix.timetracker.web.configuration.TimetrackerConfiguration;
  * @author Christian Berndt
  * @author Stefan Luebbers
  * @created 2017-03-09 14:20
- * @modified 2017-06-18 15:31
- * @version 1.0.3
+ * @modified 2017-06-24 17:53
+ * @version 1.0.4
  */
 
 @Component(configurationPid = "ch.inofix.timetracker.web.configuration.TimetrackerConfiguration", configurationPolicy = ConfigurationPolicy.OPTIONAL, immediate = true, property = {
@@ -51,6 +51,7 @@ public class TimetrackerConfigurationAction extends DefaultConfigurationAction {
         String exportScript = ParamUtil.getString(actionRequest, "export-script");
         String markupView = ParamUtil.getString(actionRequest, "markup-view");
         String maxLength = ParamUtil.getString(actionRequest, "max-length");
+        String showSearchSpeed = ParamUtil.getString(actionRequest, "show-search-speed");
         String timeFormat = ParamUtil.getString(actionRequest, "time-format", "from-until");
 
         setPreference(actionRequest, "columns", columns.split(","));
@@ -59,6 +60,7 @@ public class TimetrackerConfigurationAction extends DefaultConfigurationAction {
         setPreference(actionRequest, "export-script", exportScript);
         setPreference(actionRequest, "markup-view", markupView);
         setPreference(actionRequest, "max-length", maxLength);
+        setPreference(actionRequest, "show-search-speed", showSearchSpeed);
         setPreference(actionRequest, "time-format", timeFormat);
 
         super.processAction(portletConfig, actionRequest, actionResponse);

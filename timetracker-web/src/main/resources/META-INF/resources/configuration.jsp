@@ -2,8 +2,8 @@
     configuration.jsp: configuration of the timetracker portlet.
     
     Created:    2017-03-09 14:20 by Stefan Lübbers
-    Modified:   2017-06-18 15:28 by Christian Berndt
-    Version:    1.0.7
+    Modified:   2017-06-24 17:55 by Christian Berndt
+    Version:    1.0.8
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -47,7 +47,7 @@
         
             <liferay-ui:panel id="timetrackerColumnsPanel" title="columns"
                 extended="true">
-            
+                
                 <aui:input name="<%=Constants.CMD%>" type="hidden"
                     value="<%=Constants.UPDATE%>" />
             
@@ -101,13 +101,32 @@
             <liferay-ui:panel id="timetrackerMiscellaneousPanel"
                 title="miscellaneous" extended="false">
 
-                <aui:input checked="<%="lexicon".equals(markupView)%>"
-                    helpMessage="markup-view-help" label="use-lexicon"
-                    name="markup-view" type="checkbox" value="lexicon" />
+                <aui:fieldset cssClass="col-md-6">
 
-                <aui:fieldset>
-                    <aui:field-wrapper label="time-display"
+                    <aui:input
+                        checked="<%="lexicon".equals(markupView)%>"
+                        helpMessage="markup-view-help"
+                        label="use-lexicon" name="markup-view"
+                        type="checkbox" value="lexicon" />
+
+                    <aui:input helpMessage="show-search-speed-help"
+                        label="show-search-speed"
+                        name="show-search-speed" type="checkbox"
+                        value="<%=showSearchSpeed%>" />
+                        
+                </aui:fieldset>
+
+
+                <aui:fieldset cssClass="col-md-6">
+        
+                    <aui:input name="max-length" value="<%=maxLength%>"
+                        helpMessage="max-length-help" />
+                
+                    <aui:field-wrapper label="time-format"
                         helpMessage="time-format-help" inlineField="false">
+                        
+                        <br/>
+                        
                         <aui:input name="time-format" type="radio"
                             value="time-format"
                             checked="<%=Validator.equals(timeFormat, "time-format")%>"
@@ -120,9 +139,6 @@
             
                     </aui:field-wrapper>
                 </aui:fieldset>
-            
-                <aui:input name="max-length" value="<%=maxLength%>"
-                    helpMessage="max-length-help" />
                    
             </liferay-ui:panel>
         

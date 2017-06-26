@@ -2,8 +2,8 @@
     view.jsp: Default view of Inofix' timetracker.
     
     Created:     2013-10-06 16:52 by Christian Berndt
-    Modified:    2017-06-19 18:50 by Christian Berndt
-    Version:     1.7.1
+    Modified:    2017-06-26 13:35 by Christian Berndt
+    Version:     1.7.2
 --%>
 
 <%@ include file="/init.jsp" %>
@@ -101,6 +101,12 @@
             
                 <liferay-ui:error exception="<%= PrincipalException.class %>"
                     message="you-dont-have-the-required-permissions" />
+                 
+                <c:if test="<%= showSearchSpeed %>">  
+                    <div class="alert alert-info">
+                        <liferay-ui:search-speed hits="<%= hits %>" searchContainer="<%= searchContainer %>"/>
+                    </div>
+                </c:if> 
                     
                 <portlet:actionURL var="editSetURL"/>
                 

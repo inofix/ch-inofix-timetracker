@@ -2,8 +2,8 @@
     init.jsp: Common setup code for the timetracker portlet.
 
     Created:     2014-02-01 15:31 by Christian Berndt
-    Modified:    2017-06-23 15:11 by Christian Berndt
-    Version:     1.1.8
+    Modified:    2017-06-25 15:59 by Christian Berndt
+    Version:     1.1.9
 --%>
 
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
@@ -111,6 +111,7 @@
     Format dateFormatDateTime = FastDateFormatFactoryUtil.getDateTime(locale, timeZone);
 
     String markupView = "lexicon";
+    boolean showSearchSpeed = false; 
 
     String tabs1 = ParamUtil.getString(request, "tabs1", "timetracker");
     String tabs2 = ParamUtil.getString(request, "tabs2", "export");
@@ -121,6 +122,7 @@
     if (Validator.isNotNull(timetrackerConfiguration)) {
         
         markupView = portletPreferences.getValue("markup-view", timetrackerConfiguration.markupView());
+        showSearchSpeed = GetterUtil.getBoolean(portletPreferences.getValue("show-search-speed", String.valueOf(timetrackerConfiguration.showSearchSpeeed())));
         
         // because of current checkbox configuration
         if ("false".equals(markupView)) {
