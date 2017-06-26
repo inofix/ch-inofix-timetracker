@@ -7,8 +7,8 @@ import aQute.bnd.annotation.metatype.Meta;
  * @author Christian Berndt
  * @author Stefan Luebbers
  * @created 2017-03-09 13:43
- * @modified 2017-06-18 15:25
- * @version 1.0.4
+ * @modified 2017-06-24 17:51
+ * @version 1.0.5
  *
  */
 @Meta.OCD(id = "ch.inofix.timetracker.web.configuration.TimetrackerConfiguration", localization = "content/Language", name = "timetracker.configuration.name")
@@ -32,6 +32,9 @@ public interface TimetrackerConfiguration {
 
     @Meta.AD(deflt = "35", required = false)
     public String maxLength();
+
+    @Meta.AD(deflt = "false", required = false)
+    public boolean showSearchSpeeed();
 
     @Meta.AD(deflt = "from-until", required = false)
     public String timeFormat();
