@@ -2,8 +2,8 @@
     toolbar.jsp: The toolbar of the timetracker portlet
     
     Created:    2016-03-20 16:58 by Christian Berndt
-    Modified:   2017-06-18 19:20 by Christian Berndt
-    Version:    1.2.3
+    Modified:   2017-06-30 00:45 by Christian Berndt
+    Version:    1.2.4
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -61,14 +61,21 @@
     </liferay-frontend:management-bar-buttons>
 
     <liferay-frontend:management-bar-action-buttons>
+    
+        <liferay-ui:icon-menu cssClass="pull-left">
+<%--             <liferay-ui:icon iconCssClass="icon-ok" message="approve" url="<%= portletURL.toString() %>" /> --%>
+<%--             <liferay-ui:icon iconCssClass="icon-download" message="download" url="<%= portletURL.toString() %>" /> --%>
+<%--             <liferay-ui:icon iconCssClass="icon-ban-circle" message="reject" url="<%= portletURL.toString() %>" /> --%>
+            <liferay-ui:icon iconCssClass="icon-remove" message="delete" url="<%= "javascript:" + renderResponse.getNamespace() + "deleteEntries();" %>" />
+        </liferay-ui:icon-menu>
+
+    
         <%--    
         <liferay-frontend:management-bar-sidenav-toggler-button
             icon="info-circle"
             label="info"
         />
         --%>
-        <liferay-frontend:management-bar-button href='<%= "javascript:" + renderResponse.getNamespace() + "deleteEntries();" %>' icon='<%= "times" %>' label='<%= "delete" %>' />
-<%--         <liferay-frontend:management-bar-button href='<%= "javascript:" + renderResponse.getNamespace() + "deleteEntries();" %>' icon='<%= TrashUtil.isTrashEnabled(scopeGroupId) ? "trash" : "times" %>' label='<%= TrashUtil.isTrashEnabled(scopeGroupId) ? "recycle-bin" : "delete" %>' /> --%>
     </liferay-frontend:management-bar-action-buttons>
 </liferay-frontend:management-bar>
 
