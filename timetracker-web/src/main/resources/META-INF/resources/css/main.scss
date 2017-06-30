@@ -2,8 +2,8 @@
  * main.scss: css specific to the timetracker-portlet.
  *
  * Created:     2013-10-09 22:44 by Christian Berndt
- * Modified:    2017-06-25 13:29 by Christian Berndt
- * Version:     1.2.3
+ * Modified:    2017-06-30 00:45 by Christian Berndt
+ * Version:     1.2.4
  * 
  */
 @import "bourbon";
@@ -81,6 +81,13 @@
     
     .lfr-description-column {
         min-width: 0;
+    }
+    
+    .management-bar-header-right {
+        .lfr-icon-menu {
+            margin: 7px 0 7px 15px;
+            padding: 0;
+        }
     }
     
     .task-record-search {
