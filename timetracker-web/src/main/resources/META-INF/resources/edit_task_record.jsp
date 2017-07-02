@@ -2,8 +2,8 @@
     edit_task_record.jsp: edit a single task-record.
 
     Created:     2013-10-07 10:41 by Christian Berndt
-    Modified:    2017-06-16 21:26 by Christian Berndt
-    Version:     1.6.3
+    Modified:    2017-07-02 16:27 by Christian Berndt
+    Version:     1.6.4
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -17,9 +17,6 @@
 
     String backURL = ParamUtil.getString(request, "backURL", redirect);
     
-    portletDisplay.setShowBackIcon(true);
-    portletDisplay.setURLBack(redirect);
-
     // Retrieve the display settings.
     // TODO: retrieve preferences like in configuration.jsp
     PortletPreferences preferences = renderRequest.getPreferences();
@@ -53,6 +50,8 @@
 
     int untilDateHour = fromDateHour; 
     int untilDateMinute = 15;
+    
+    String title = LanguageUtil.get(request, "new-task-record");
 
     if (taskRecord != null) {
 
@@ -81,16 +80,21 @@
             untilDateMinute = cal.get(Calendar.MINUTE); 
         }
         
-        renderResponse.setTitle(String.valueOf(taskRecord.getTaskRecordId()));
+        title = LanguageUtil.format(request, "edit-task-record-x", String.valueOf(taskRecord.getTaskRecordId()));
         
     } else {
         
         // create an empty task record
         taskRecord = TaskRecordServiceUtil.createTaskRecord();
-        renderResponse.setTitle(LanguageUtil.get(request, "new-task-record"));
 
     }
     
+    portletDisplay.setShowBackIcon(true);
+    portletDisplay.setURLBack(redirect);
+    
+    renderResponse.setTitle(title);    
+    request.setAttribute("showTitle", "true");  // used by the inofix-theme
+            
     boolean hasUpdatePermission = TaskRecordPermission.contains(permissionChecker, taskRecord,
             TaskRecordActionKeys.UPDATE);
     boolean hasViewPermission = TaskRecordPermission.contains(permissionChecker, taskRecord,
