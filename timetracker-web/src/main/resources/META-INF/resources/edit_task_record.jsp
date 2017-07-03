@@ -2,8 +2,8 @@
     edit_task_record.jsp: edit a single task-record.
 
     Created:     2013-10-07 10:41 by Christian Berndt
-    Modified:    2017-07-02 16:27 by Christian Berndt
-    Version:     1.6.4
+    Modified:    2017-07-03 16:42 by Christian Berndt
+    Version:     1.6.5
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -13,96 +13,87 @@
 <%
     String timeFormat = portletPreferences.getValue("time-format", "from-until");
 
-    String redirect = ParamUtil.getString(request, "redirect");
-
-    String backURL = ParamUtil.getString(request, "backURL", redirect);
-    
-    // Retrieve the display settings.
-    // TODO: retrieve preferences like in configuration.jsp
-    PortletPreferences preferences = renderRequest.getPreferences();
-
-    String portletResource =
-        ParamUtil.getString(request, "portletResource");
-
-    if (Validator.isNotNull(portletResource)) {
-
-        preferences =
-            PortletPreferencesFactoryUtil.getPortletSetup(
-                request, portletResource);
-    }
-
-    TaskRecord taskRecord =
-        (TaskRecord) request.getAttribute(TimetrackerWebKeys.TASK_RECORD);
+    TaskRecord taskRecord = (TaskRecord) request.getAttribute(TimetrackerWebKeys.TASK_RECORD);
 
     String durationInMinutes = null;
 
     String namespace = portletDisplay.getNamespace();
-    
-    Calendar cal = Calendar.getInstance(); 
-    Date now = new Date(); 
-    cal.setTime(now); 
 
-    int fromDateDay = cal.get(Calendar.DAY_OF_MONTH);  
-    int fromDateMonth = cal.get(Calendar.MONTH); 
-    int fromDateYear = cal.get(Calendar.YEAR);  
+    Calendar cal = Calendar.getInstance();
+    Date now = new Date();
+    cal.setTime(now);
+
+    int fromDateDay = cal.get(Calendar.DAY_OF_MONTH);
+    int fromDateMonth = cal.get(Calendar.MONTH);
+    int fromDateYear = cal.get(Calendar.YEAR);
     int fromDateHour = cal.get(Calendar.HOUR_OF_DAY);
     int fromDateMinute = 0;
 
-    int untilDateHour = fromDateHour; 
+    int untilDateHour = fromDateHour;
     int untilDateMinute = 15;
-    
+
     String title = LanguageUtil.get(request, "new-task-record");
+
+    boolean hasUpdatePermission = false;
+    boolean hasViewPermission = false;
+    boolean hasDeletePermission = false;
+    boolean hasPermissionsPermission = false;
 
     if (taskRecord != null) {
 
-        durationInMinutes =
-            String.valueOf(taskRecord.getDurationInMinutes());
-        
+        durationInMinutes = String.valueOf(taskRecord.getDurationInMinutes());
+
         Date fromDate = taskRecord.getFromDate();
         Date untilDate = taskRecord.getUntilDate();
-        
+
         if (fromDate != null) {
-            
-            cal.setTime(fromDate); 
+
+            cal.setTime(fromDate);
 
             fromDateDay = cal.get(Calendar.DAY_OF_MONTH);
-            fromDateMonth = cal.get(Calendar.MONTH); 
-            fromDateYear = cal.get(Calendar.YEAR); 
-            fromDateHour = cal.get(Calendar.HOUR_OF_DAY); 
-            fromDateMinute = cal.get(Calendar.MINUTE); 
+            fromDateMonth = cal.get(Calendar.MONTH);
+            fromDateYear = cal.get(Calendar.YEAR);
+            fromDateHour = cal.get(Calendar.HOUR_OF_DAY);
+            fromDateMinute = cal.get(Calendar.MINUTE);
         }
 
         if (untilDate != null) {
-            
-            cal.setTime(untilDate); 
-            
-            untilDateHour = cal.get(Calendar.HOUR_OF_DAY); 
-            untilDateMinute = cal.get(Calendar.MINUTE); 
+
+            cal.setTime(untilDate);
+
+            untilDateHour = cal.get(Calendar.HOUR_OF_DAY);
+            untilDateMinute = cal.get(Calendar.MINUTE);
         }
-        
-        title = LanguageUtil.format(request, "edit-task-record-x", String.valueOf(taskRecord.getTaskRecordId()));
-        
+
+        title = LanguageUtil.format(request, "edit-task-record-x",
+                String.valueOf(taskRecord.getTaskRecordId()));
+
+        hasUpdatePermission = TaskRecordPermission.contains(permissionChecker, taskRecord,
+                TaskRecordActionKeys.UPDATE);
+        hasViewPermission = TaskRecordPermission.contains(permissionChecker, taskRecord,
+                TaskRecordActionKeys.VIEW);
+        hasDeletePermission = TaskRecordPermission.contains(permissionChecker, taskRecord,
+                TaskRecordActionKeys.DELETE);
+        hasPermissionsPermission = TaskRecordPermission.contains(permissionChecker, taskRecord,
+                TaskRecordActionKeys.PERMISSIONS);
+
     } else {
-        
-        // create an empty task record
+
         taskRecord = TaskRecordServiceUtil.createTaskRecord();
+        hasUpdatePermission = true;
 
     }
-    
+
+    String redirect = ParamUtil.getString(request, "redirect");
+
+    String backURL = ParamUtil.getString(request, "backURL", redirect);
+
     portletDisplay.setShowBackIcon(true);
     portletDisplay.setURLBack(redirect);
-    
-    renderResponse.setTitle(title);    
-    request.setAttribute("showTitle", "true");  // used by the inofix-theme
-            
-    boolean hasUpdatePermission = TaskRecordPermission.contains(permissionChecker, taskRecord,
-            TaskRecordActionKeys.UPDATE);
-    boolean hasViewPermission = TaskRecordPermission.contains(permissionChecker, taskRecord,
-            TaskRecordActionKeys.VIEW);
-    boolean hasDeletePermission = TaskRecordPermission.contains(permissionChecker, taskRecord,
-            TaskRecordActionKeys.DELETE);
-    boolean hasPermissionsPermission = TaskRecordPermission.contains(permissionChecker, taskRecord, 
-            TaskRecordActionKeys.PERMISSIONS);
+
+    renderResponse.setTitle(title);
+
+    request.setAttribute("showTitle", "true"); // used by inofix-theme
 %>
 
 <div class="container-fluid-1280">
