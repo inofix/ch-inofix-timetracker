@@ -82,8 +82,8 @@ import ch.inofix.timetracker.service.base.TaskRecordLocalServiceBaseImpl;
  *
  * @author Christian Berndt
  * @created 2013-10-06 21:24
- * @modified 2017-06-14 21:45
- * @version 1.6.3
+ * @modified 2017-07-04 17:17
+ * @version 1.6.4
  * @see TaskRecordLocalServiceBaseImpl
  * @see ch.inofix.timetracker.service.TaskRecordLocalServiceUtil
  */
@@ -470,19 +470,13 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
 
         // TaskRecord
 
-        User user = userPersistence.findByPrimaryKey(userId);
+        long groupId = serviceContext.getScopeGroupId();
 
         TaskRecord taskRecord = taskRecordPersistence.findByPrimaryKey(taskRecordId);
 
-        long groupId = serviceContext.getScopeGroupId();
-
         // TODO: validate taskRecord
 
-        taskRecord.setUuid(serviceContext.getUuid());
         taskRecord.setGroupId(groupId);
-        taskRecord.setCompanyId(user.getCompanyId());
-        taskRecord.setUserId(user.getUserId());
-        taskRecord.setUserName(user.getFullName());
         taskRecord.setExpandoBridgeAttributes(serviceContext);
 
         taskRecord.setWorkPackage(workPackage);
@@ -494,10 +488,6 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
         taskRecord.setDuration(duration);
 
         taskRecordPersistence.update(taskRecord);
-
-        // Resources
-
-        resourceLocalService.addModelResources(taskRecord, serviceContext);
 
         // Asset
 

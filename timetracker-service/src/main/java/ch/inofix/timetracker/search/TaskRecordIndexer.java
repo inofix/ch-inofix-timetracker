@@ -27,6 +27,7 @@ import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.Summary;
 import com.liferay.portal.kernel.search.filter.BooleanFilter;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -34,14 +35,15 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import ch.inofix.timetracker.model.TaskRecord;
 import ch.inofix.timetracker.service.TaskRecordLocalService;
+import ch.inofix.timetracker.service.permission.TaskRecordPermission;
 
 /**
  *
  * @author Christian Berndt
  * @author Stefan Luebbers
  * @created 2016-11-26 15:04
- * @modified 2017-06-13 10:07
- * @version 1.0.4
+ * @modified 2017-07-03 16:53
+ * @version 1.0.5
  *
  */
 @Component(immediate = true, service = Indexer.class)
@@ -65,9 +67,7 @@ public class TaskRecordIndexer extends BaseIndexer<TaskRecord> {
     @Override
     public boolean hasPermission(PermissionChecker permissionChecker, String entryClassName, long entryClassPK,
             String actionId) throws Exception {
-        // TODO: reactivate permission check
-        return true;// TaskRecordPermission.contains(permissionChecker,
-                    // entryClassPK, ActionKeys.VIEW);
+        return TaskRecordPermission.contains(permissionChecker, entryClassPK, ActionKeys.VIEW);
     }
 
     @Override
