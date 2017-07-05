@@ -2,8 +2,8 @@
     export_task_records.jsp: Configure a task_records export.
     
     Created:    2017-05-16 17:30 by Christian Berndt
-    Modified:   2017-06-18 15:39 by Christian Berndt
-    Version:    1.0.3
+    Modified:   2017-07-05 11:26 by Christian Berndt
+    Version:    1.0.4
 --%>
 
 <%@ include file="/init.jsp" %>
@@ -17,15 +17,20 @@
     long exportImportConfigurationId = 0;
 
     ExportImportConfiguration exportImportConfiguration = null;
-  
+
     boolean configuredExport = (exportImportConfiguration == null) ? false : true;
+
+    boolean hasExportPermission = TimetrackerPortletPermission.contains(permissionChecker, scopeGroupId,
+            TaskRecordActionKeys.EXPORT_TASK_RECORDS);
 
     PortletURL portletURL = renderResponse.createRenderURL();
 
     portletDisplay.setShowBackIcon(true);
     portletDisplay.setURLBack(portletURL.toString());
 
-    renderResponse.setTitle(!configuredExport ? LanguageUtil.get(request, "new-custom-export") : LanguageUtil.format(request, "new-export-based-on-x", exportImportConfiguration.getName(), false));
+    renderResponse.setTitle(!configuredExport ? LanguageUtil.get(request, "new-custom-export")
+            : LanguageUtil.format(request, "new-export-based-on-x", exportImportConfiguration.getName(),
+                    false));
 %>
 
 <div class="container-fluid-1280">
@@ -60,7 +65,7 @@
         </div>
         
         <aui:button-row>
-            <aui:button cssClass="btn-lg" type="submit" value="export" />
+            <aui:button cssClass="btn-lg" disabled="<%= !hasExportPermission %>" type="submit" value="export" />
 
             <aui:button cssClass="btn-lg" href="<%= portletURL.toString() %>" type="cancel" />
         </aui:button-row>
