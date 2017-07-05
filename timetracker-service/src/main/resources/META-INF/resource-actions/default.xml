@@ -5,8 +5,8 @@
     default.xml: The timetracker portlet's permission configuration.
     
     Created:    2016-03-20 17:26 by Christian Berndt
-    Modified:   2017-06-20 18:24 by Christian Berndt
-    Version:    1.0.4
+    Modified:   2017-07-05 12:34 by Christian Berndt
+    Version:    1.0.5
 -->
 <resource-action-mapping>
     <model-resource>
@@ -30,9 +30,7 @@
                 <action-key>ADD_TASK_RECORD</action-key>
                 <action-key>VIEW</action-key>
             </site-member-defaults>
-            <guest-defaults>
-                <action-key>VIEW</action-key>
-            </guest-defaults>
+            <guest-defaults/>
             <guest-unsupported>
                 <action-key>ADD_TASK_RECORD</action-key>
                 <action-key>DELETE_GROUP_TASK_RECORDS</action-key>
@@ -59,9 +57,7 @@
             <site-member-defaults>
                 <action-key>VIEW</action-key>
             </site-member-defaults>
-            <guest-defaults>
-                <action-key>VIEW</action-key>
-            </guest-defaults>
+            <guest-defaults/>
             <guest-unsupported>
                 <action-key>DELETE</action-key>
                 <action-key>PERMISSIONS</action-key>
