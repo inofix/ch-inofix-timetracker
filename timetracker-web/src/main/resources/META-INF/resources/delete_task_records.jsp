@@ -2,8 +2,8 @@
     delete-task_records.jspf: Delete all task-records of this group
     
     Created:    2016-03-22 12:12 by Christian Berndt
-    Modified:   2017-03-24 23:21 by Christian Berndt
-    Version:    1.0.4
+    Modified:   2017-07-05 11:47 by Christian Berndt
+    Version:    1.0.5
 --%>
 
 <%@ include file="/init.jsp" %>
@@ -13,23 +13,23 @@
             TaskRecordActionKeys.DELETE_GROUP_TASK_RECORDS);
 %>
 
-<portlet:actionURL name="deleteGroupTaskRecords" var="deleteGroupTaskRecordsURL"> 
-    <%-- We have to open the import-export tab        --%>
-    <%-- since while deleting the records             --%>
-    <%-- they are still found via the index, which    --%>
-    <%-- results in npe-issues in the searchcontainer --%>
-    <portlet:param name="tabs1" value="import-export"/>
+<portlet:actionURL var="deleteGroupRecordsURL">
+    <portlet:param name="<%= Constants.CMD %>" value="deleteGroupTaskRecords"/>
+    <portlet:param name="groupId" value="<%= String.valueOf(scopeGroupId) %>"/>
+    <portlet:param name="mvcPath" value="/view.jsp"/>
+    <portlet:param name="tabs1" value="export-import"/>
+    <portlet:param name="tabs2" value="delete"/>
 </portlet:actionURL>
 
-<aui:fieldset label="delete" cssClass="delete-section">
-    <aui:button-row>
-        <c:if test="<%= hasDeletePermission %>">
-        <liferay-ui:icon-delete cssClass="btn btn-danger"       
-            message="delete-group-task-records" label="true"
-            url="<%=deleteGroupTaskRecordsURL.toString()%>" />
-        </c:if>
-        <c:if test="<%= !hasDeletePermission %>">
-            <aui:button cssClass="btn btn-danger" disabled="<%= true %>" value="delete-group-task-records" />
-        </c:if>
-    </aui:button-row>
-</aui:fieldset>
+<aui:button-row>
+    <c:if test="<%= hasDeletePermission %>">
+        <liferay-ui:icon-menu>
+            <liferay-ui:icon-delete cssClass="btn btn-danger"  message="delete-group-task-records" url="<%= deleteGroupRecordsURL %>" />
+        </liferay-ui:icon-menu>
+    </c:if>
+    <c:if test="<%= !hasDeletePermission %>">
+        <aui:button cssClass="btn-danger" disabled="<%= true %>" value="delete-group-task-records"/>
+    </c:if>
+</aui:button-row>
+
+<div>Afterwards run "Reindex all search indexes" from the Server Configuration</div>

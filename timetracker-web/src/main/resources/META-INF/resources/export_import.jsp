@@ -2,8 +2,8 @@
     export_import.jsp: Import taskRecords from an uploaded file. 
     
     Created:    2016-03-21 21:51 by Christian Berndt
-    Modified:   2017-06-15 19:33 by Christian Berndt
-    Version:    1.1.2
+    Modified:   2017-07-05 12:18 by Christian Berndt
+    Version:    1.1.3
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -76,21 +76,7 @@
                 </c:when>
                 <c:when test='<%= tabs2.equals("delete") %>'>
                 
-                    <portlet:actionURL var="deleteGroupRecordsURL">
-                        <portlet:param name="<%= Constants.CMD %>" value="deleteGroupTaskRecords"/>
-                        <portlet:param name="groupId" value="<%= String.valueOf(scopeGroupId) %>"/>
-                        <portlet:param name="mvcPath" value="/view.jsp"/>
-                        <portlet:param name="tabs1" value="export-import"/>
-                        <portlet:param name="tabs2" value="delete"/>
-                    </portlet:actionURL>
-                    
-                    <aui:button-row>
-                        <liferay-ui:icon-menu>
-                            <liferay-ui:icon-delete cssClass="btn btn-danger"  message="delete-group-task-records" url="<%= deleteGroupRecordsURL %>" />
-                        </liferay-ui:icon-menu>
-                    </aui:button-row>
-                    
-                    <div>Afterwards run "Reindex all search indexes" from the Server Configuration</div>
+                    <liferay-util:include page="/delete_task_records.jsp" servletContext="<%= application %>"/>
 
                 </c:when>                
             </c:choose>
