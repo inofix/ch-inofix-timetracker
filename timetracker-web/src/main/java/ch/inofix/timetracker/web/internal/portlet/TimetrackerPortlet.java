@@ -814,7 +814,6 @@ public class TimetrackerPortlet extends MVCPortlet {
         this._taskRecordService = taskRecordService;
     }
 
-
     /**
      *
      * @param actionRequest
