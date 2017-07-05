@@ -23,6 +23,8 @@ import java.util.Map;
 
 import com.liferay.exportimport.kernel.model.ExportImportConfiguration;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.Sort;
@@ -56,8 +58,8 @@ import ch.inofix.timetracker.service.permission.TimetrackerPortletPermission;
  * @author Christian Berndt
  * @author Stefan Luebbers
  * @created 2015-05-07 23:50
- * @modified 2017-06-21 17:42
- * @version 1.1.6
+ * @modified 2017-07-05 23:01
+ * @version 1.1.7
  * @see TaskRecordServiceBaseImpl
  * @see ch.inofix.timetracker.service.TaskRecordServiceUtil
  */
@@ -111,9 +113,8 @@ public class TaskRecordServiceImpl extends TaskRecordServiceBaseImpl {
     @Override
     public void deleteTempFileEntry(long groupId, String folderName, String fileName) throws PortalException {
 
-        // TODO
-        // GroupPermissionUtil.check(getPermissionChecker(), groupId,
-        // TaskRecordActionKeys.IMPORT_TASK_RECORDS);
+        TimetrackerPortletPermission.check(getPermissionChecker(), groupId,
+                TaskRecordActionKeys.EXPORT_IMPORT_TASK_RECORDS);
 
         TempFileEntryUtil.deleteTempFileEntry(groupId, getUserId(),
                 DigesterUtil.digestHex(Digester.SHA_256, folderName), fileName);
@@ -137,21 +138,6 @@ public class TaskRecordServiceImpl extends TaskRecordServiceBaseImpl {
 
         return taskRecordLocalService.exportTaskRecordsAsFileInBackground(userId, exportImportConfiguration);
 
-    }
-
-    /**
-     * looks deprecated - do we use it anywhere?
-     */
-    @Override
-    @Deprecated
-    public List<TaskRecord> getGroupTaskRecords(long groupId) throws PortalException {
-
-        List<TaskRecord> taskRecordList = taskRecordLocalService.getGroupTaskRecords(groupId);
-        for (TaskRecord taskRecord : taskRecordList) {
-            TaskRecordPermission.check(getPermissionChecker(), taskRecord.getTaskRecordId(), TaskRecordActionKeys.VIEW);
-        }
-
-        return taskRecordList;
     }
 
     @Override
@@ -178,6 +164,9 @@ public class TaskRecordServiceImpl extends TaskRecordServiceBaseImpl {
         Map<String, Serializable> settingsMap = exportImportConfiguration.getSettingsMap();
 
         long targetGroupId = MapUtil.getLong(settingsMap, "targetGroupId");
+
+        // TODO: fix targetGroupId
+        _log.info("targetGroupId = " + targetGroupId);
 
         TimetrackerPortletPermission.check(getPermissionChecker(), targetGroupId,
                 TaskRecordActionKeys.IMPORT_TASK_RECORDS);
@@ -215,5 +204,5 @@ public class TaskRecordServiceImpl extends TaskRecordServiceBaseImpl {
 
     }
 
-//    private static final Log _log = LogFactoryUtil.getLog(TaskRecordServiceImpl.class.getName());
+    private static final Log _log = LogFactoryUtil.getLog(TaskRecordServiceImpl.class.getName());
 }
