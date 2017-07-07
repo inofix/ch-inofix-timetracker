@@ -23,8 +23,6 @@ import java.util.Map;
 
 import com.liferay.exportimport.kernel.model.ExportImportConfiguration;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.Sort;
@@ -165,9 +163,6 @@ public class TaskRecordServiceImpl extends TaskRecordServiceBaseImpl {
 
         long targetGroupId = MapUtil.getLong(settingsMap, "targetGroupId");
 
-        // TODO: fix targetGroupId
-        _log.info("targetGroupId = " + targetGroupId);
-
         TimetrackerPortletPermission.check(getPermissionChecker(), targetGroupId,
                 TaskRecordActionKeys.IMPORT_TASK_RECORDS);
 
@@ -204,5 +199,5 @@ public class TaskRecordServiceImpl extends TaskRecordServiceBaseImpl {
 
     }
 
-    private static final Log _log = LogFactoryUtil.getLog(TaskRecordServiceImpl.class.getName());
+//    private static final Log _log = LogFactoryUtil.getLog(TaskRecordServiceImpl.class.getName());
 }
