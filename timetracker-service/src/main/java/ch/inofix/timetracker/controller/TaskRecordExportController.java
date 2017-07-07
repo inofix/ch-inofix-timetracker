@@ -42,8 +42,8 @@ import ch.inofix.timetracker.service.TaskRecordLocalService;
 /**
  * @author Christian Berndt
  * @created 2017-04-21 19:23
- * @modified 2017-05-30 18:40
- * @version 1.0.1
+ * @modified 2017-07-07 23:26
+ * @version 1.0.2
  */
 @Component(immediate = true, property = { "model.class.name=ch.inofix.timetracker.model.TaskRecord" }, service = {
         ExportImportController.class, TaskRecordExportController.class })
@@ -102,6 +102,8 @@ public class TaskRecordExportController extends BaseExportImportController imple
         sb.append(StringPool.NEW_LINE);
 
         ActionableDynamicQuery actionableDynamicQuery = _taskRecordLocalService.getActionableDynamicQuery();
+
+        actionableDynamicQuery.setGroupId(portletDataContext.getGroupId());
 
         // TODO: process date-range of portletDataContext
 
