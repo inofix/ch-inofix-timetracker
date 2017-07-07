@@ -106,8 +106,8 @@ import ch.inofix.timetracker.web.internal.portlet.util.TemplateUtil;
  * @author Christian Berndt
  * @author Stefan Luebbers
  * @created 2013-10-07 10:47
- * @modified 2017-06-22 21:12
- * @version 1.8.1
+ * @modified 2017-07-07 23:16
+ * @version 1.8.2
  */
 @Component(immediate = true, property = { "com.liferay.portlet.css-class-wrapper=portlet-timetracker",
         "com.liferay.portlet.display-category=category.inofix",
@@ -763,6 +763,13 @@ public class TimetrackerPortlet extends MVCPortlet {
 
         exportImportConfiguration.setName("TaskRecords");
         exportImportConfiguration.setGroupId(groupId);
+
+        Map<String, Serializable> settingsMap = new HashMap<>();
+        settingsMap.put("targetGroupId", groupId);
+
+        String settings = JSONFactoryUtil.serialize(settingsMap);
+
+        exportImportConfiguration.setSettings(settings);
 
         _taskRecordService.importTaskRecordsInBackground(exportImportConfiguration, inputStream);
 
