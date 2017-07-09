@@ -6,8 +6,8 @@
     service.xml: Model and service description of Inofix' timetracker
     
     Created:    2013-10-21 14:16 by Christian Berndt
-    Modified:   2017-06-09 18:10 by Christian Berndt   
-    Version:    1.0.2
+    Modified:   2017-07-09 17:03 by Christian Berndt   
+    Version:    1.0.3
 -->
 
 <service-builder package-path="ch.inofix.timetracker">
@@ -59,9 +59,11 @@
 
         <!-- References -->
 
-        <reference entity="AssetEntry" package-path="com.liferay.portlet.asset" />
-        <reference entity="AssetLink" package-path="com.liferay.portlet.asset" />
-        <reference entity="AssetTag" package-path="com.liferay.portlet.asset" />
+        <reference package-path="com.liferay.portlet.asset" entity="AssetEntry" />
+        <reference package-path="com.liferay.portlet.asset" entity="AssetLink" />
+        <reference package-path="com.liferay.portlet.asset" entity="AssetTag" />
+        <reference package-path="com.liferay.portlet.social" entity="SocialActivity" />
+        
         
     </entity>
 
