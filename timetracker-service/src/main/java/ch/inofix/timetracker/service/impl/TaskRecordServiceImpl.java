@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.liferay.exportimport.kernel.model.ExportImportConfiguration;
+import com.liferay.portal.kernel.backgroundtask.BackgroundTaskManagerUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Hits;
@@ -56,8 +57,8 @@ import ch.inofix.timetracker.service.permission.TimetrackerPortletPermission;
  * @author Christian Berndt
  * @author Stefan Luebbers
  * @created 2015-05-07 23:50
- * @modified 2017-07-05 23:01
- * @version 1.1.7
+ * @modified 2017-07-09 16:22
+ * @version 1.1.8
  * @see TaskRecordServiceBaseImpl
  * @see ch.inofix.timetracker.service.TaskRecordServiceUtil
  */
@@ -97,6 +98,15 @@ public class TaskRecordServiceImpl extends TaskRecordServiceBaseImpl {
 
         // Create an empty taskRecord - no permission check required
         return taskRecordLocalService.createTaskRecord(0);
+    }
+
+    @Override
+    public void deleteBackgroundTask(long groupId, long backgroundTaskId) throws PortalException {
+
+        TimetrackerPortletPermission.check(getPermissionChecker(), groupId, TaskRecordActionKeys.EXPORT_IMPORT_TASK_RECORDS);
+
+        BackgroundTaskManagerUtil.deleteBackgroundTask(backgroundTaskId);
+
     }
 
     @Override
@@ -199,5 +209,6 @@ public class TaskRecordServiceImpl extends TaskRecordServiceBaseImpl {
 
     }
 
-//    private static final Log _log = LogFactoryUtil.getLog(TaskRecordServiceImpl.class.getName());
+    // private static final Log _log =
+    // LogFactoryUtil.getLog(TaskRecordServiceImpl.class.getName());
 }
