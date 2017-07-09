@@ -34,6 +34,8 @@ import com.liferay.portal.kernel.backgroundtask.BackgroundTaskManagerUtil;
 import com.liferay.portal.kernel.exception.LocaleException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -65,6 +67,7 @@ import ch.inofix.timetracker.background.task.TaskRecordExportBackgroundTaskExecu
 import ch.inofix.timetracker.background.task.TaskRecordImportBackgroundTaskExecutor;
 import ch.inofix.timetracker.model.TaskRecord;
 import ch.inofix.timetracker.service.base.TaskRecordLocalServiceBaseImpl;
+import ch.inofix.timetracker.social.TaskRecordActivityKeys;
 
 /**
  * The implementation of the task record local service.
@@ -82,8 +85,8 @@ import ch.inofix.timetracker.service.base.TaskRecordLocalServiceBaseImpl;
  *
  * @author Christian Berndt
  * @created 2013-10-06 21:24
- * @modified 2017-07-04 17:17
- * @version 1.6.4
+ * @modified 2017-07-09 17:13
+ * @version 1.6.5
  * @see TaskRecordLocalServiceBaseImpl
  * @see ch.inofix.timetracker.service.TaskRecordLocalServiceUtil
  */
@@ -144,6 +147,15 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
 
         updateAsset(userId, taskRecord, serviceContext.getAssetCategoryIds(), serviceContext.getAssetTagNames(),
                 serviceContext.getAssetLinkEntryIds(), serviceContext.getAssetPriority());
+
+        // Social
+
+        JSONObject extraDataJSONObject = JSONFactoryUtil.createJSONObject();
+
+        extraDataJSONObject.put("title", String.valueOf(taskRecordId));
+
+        socialActivityLocalService.addActivity(userId, groupId, TaskRecord.class.getName(), taskRecordId,
+                TaskRecordActivityKeys.ADD_TASK_RECORD, extraDataJSONObject.toString(), 0);
 
         return taskRecord;
 
@@ -493,6 +505,16 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
 
         updateAsset(userId, taskRecord, serviceContext.getAssetCategoryIds(), serviceContext.getAssetTagNames(),
                 serviceContext.getAssetLinkEntryIds(), serviceContext.getAssetPriority());
+
+        // Social
+
+        JSONObject extraDataJSONObject = JSONFactoryUtil.createJSONObject();
+
+        extraDataJSONObject.put("title", String.valueOf(taskRecordId));
+
+        socialActivityLocalService.addActivity(userId, groupId, TaskRecord.class.getName(),
+                taskRecord.getTaskRecordId(), TaskRecordActivityKeys.UPDATE_TASK_RECORD, extraDataJSONObject.toString(),
+                0);
 
         return taskRecord;
 

@@ -35,8 +35,8 @@ import ch.inofix.timetracker.service.permission.TimetrackerPortletPermission;
  *
  * @author Christian Berndt
  * @created 2017-03-21 13:52
- * @modified 2017-03-21 17:36
- * @version 1.0.1
+ * @modified 2017-07-09 18:02
+ * @version 1.0.2
  *
  */
 @Component(immediate = true, property = {
@@ -47,10 +47,12 @@ public class TaskRecordAssetRendererFactory extends BaseAssetRendererFactory<Tas
 
     public TaskRecordAssetRendererFactory() {
 
+        setCategorizable(true);
         setClassName(TaskRecord.class.getName());
         setLinkable(true);
         setPortletId(PortletKeys.TIMETRACKER);
         setSearchable(true);
+        setSelectable(true);
 
     }
 

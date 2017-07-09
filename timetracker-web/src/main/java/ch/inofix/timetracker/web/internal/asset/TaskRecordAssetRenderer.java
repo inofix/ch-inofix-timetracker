@@ -19,6 +19,7 @@ import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.PortletURLFactoryUtil;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.trash.TrashRenderer;
 import com.liferay.portal.kernel.util.PortalUtil;
 
 import ch.inofix.timetracker.constants.PortletKeys;
@@ -30,11 +31,11 @@ import ch.inofix.timetracker.web.internal.constants.TimetrackerWebKeys;
  *
  * @author Christian Berndt
  * @created 2017-03-21 13:51
- * @modified 2017-03-21 13:51
- * @version 1.0.0
+ * @modified 2017-07-09 17:39
+ * @version 1.0.1
  *
  */
-public class TaskRecordAssetRenderer extends BaseJSPAssetRenderer<TaskRecord> {
+public class TaskRecordAssetRenderer extends BaseJSPAssetRenderer<TaskRecord> implements TrashRenderer {
 
     public TaskRecordAssetRenderer(TaskRecord taskRecord) {
         _taskRecord = taskRecord;
@@ -63,13 +64,13 @@ public class TaskRecordAssetRenderer extends BaseJSPAssetRenderer<TaskRecord> {
     @Override
     public String getJspPath(HttpServletRequest request, String template) {
         if (template.equals(TEMPLATE_ABSTRACT) || template.equals(TEMPLATE_FULL_CONTENT)) {
-            // TODO: add jsp-tempates
             return "/asset/" + template + ".jsp";
         } else {
             return null;
         }
     }
 
+    @Override
     public String getPortletId() {
         AssetRendererFactory<TaskRecord> assetRendererFactory = getAssetRendererFactory();
 
@@ -91,6 +92,7 @@ public class TaskRecordAssetRenderer extends BaseJSPAssetRenderer<TaskRecord> {
         return _taskRecord.getWorkPackage();
     }
 
+    @Override
     public String getType() {
         return TaskRecordAssetRendererFactory.TYPE;
     }
