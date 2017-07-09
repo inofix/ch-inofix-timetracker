@@ -44,7 +44,6 @@ import com.liferay.exportimport.kernel.model.ExportImportConfiguration;
 import com.liferay.exportimport.kernel.service.ExportImportConfigurationLocalService;
 import com.liferay.exportimport.kernel.service.ExportImportService;
 import com.liferay.exportimport.kernel.staging.StagingUtil;
-import com.liferay.portal.kernel.backgroundtask.BackgroundTaskManagerUtil;
 import com.liferay.portal.kernel.exception.LayoutPrototypeException;
 import com.liferay.portal.kernel.exception.LocaleException;
 import com.liferay.portal.kernel.exception.NoSuchBackgroundTaskException;
@@ -106,8 +105,8 @@ import ch.inofix.timetracker.web.internal.portlet.util.TemplateUtil;
  * @author Christian Berndt
  * @author Stefan Luebbers
  * @created 2013-10-07 10:47
- * @modified 2017-07-07 23:16
- * @version 1.8.2
+ * @modified 2017-07-09 16:23
+ * @version 1.8.3
  */
 @Component(immediate = true, property = { "com.liferay.portlet.css-class-wrapper=portlet-timetracker",
         "com.liferay.portlet.display-category=category.inofix",
@@ -157,7 +156,6 @@ public class TimetrackerPortlet extends MVCPortlet {
             } else if (cmd.equals("deleteBackgroundTasks")) {
 
                 deleteBackgroundTasks(actionRequest, actionResponse);
-                addSuccessMessage(actionRequest, actionResponse);
 
             } else if (cmd.equals("deleteGroupTaskRecords")) {
 
@@ -333,13 +331,14 @@ public class TimetrackerPortlet extends MVCPortlet {
 
     protected void deleteBackgroundTasks(ActionRequest actionRequest, ActionResponse actionResponse) throws Exception {
 
-        _log.info("deleteBackgroundTasks");
+        ThemeDisplay themeDisplay = (ThemeDisplay) actionRequest.getAttribute(WebKeys.THEME_DISPLAY);
+        long groupId = themeDisplay.getScopeGroupId();
 
         try {
             long[] backgroundTaskIds = ParamUtil.getLongValues(actionRequest, "deleteBackgroundTaskIds");
 
             for (long backgroundTaskId : backgroundTaskIds) {
-                BackgroundTaskManagerUtil.deleteBackgroundTask(backgroundTaskId);
+                _taskRecordService.deleteBackgroundTask(groupId, backgroundTaskId);
             }
         } catch (Exception e) {
             if (e instanceof NoSuchBackgroundTaskException || e instanceof PrincipalException) {
@@ -347,6 +346,9 @@ public class TimetrackerPortlet extends MVCPortlet {
                 SessionErrors.add(actionRequest, e.getClass());
 
                 actionResponse.setRenderParameter("mvcPath", "/error.jsp");
+
+                hideDefaultSuccessMessage(actionRequest);
+
             } else {
                 throw e;
             }
@@ -357,6 +359,9 @@ public class TimetrackerPortlet extends MVCPortlet {
 
         actionResponse.setRenderParameter("tabs1", tabs1);
         actionResponse.setRenderParameter("tabs2", tabs2);
+
+        addSuccessMessage(actionRequest, actionResponse);
+
     }
 
     /**
@@ -408,8 +413,6 @@ public class TimetrackerPortlet extends MVCPortlet {
 
     protected void deleteTempFileEntry(ActionRequest actionRequest, ActionResponse actionResponse, String folderName)
             throws Exception {
-
-        _log.info("deleteTempFileEntry");
 
         ThemeDisplay themeDisplay = (ThemeDisplay) actionRequest.getAttribute(WebKeys.THEME_DISPLAY);
 
