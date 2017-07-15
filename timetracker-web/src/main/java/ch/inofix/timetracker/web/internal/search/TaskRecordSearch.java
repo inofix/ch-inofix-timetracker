@@ -29,8 +29,8 @@ import ch.inofix.timetracker.model.TaskRecord;
  * @author Christian Berndt
  * @author Stefan Luebbers
  * @created 2013-10-06 18:26
- * @modified 2017-06-18 15:20
- * @version 1.0.5
+ * @modified 2017-07-15 23.54
+ * @version 1.0.6
  *
  */
 public class TaskRecordSearch extends SearchContainer<TaskRecord> {
@@ -57,13 +57,13 @@ public class TaskRecordSearch extends SearchContainer<TaskRecord> {
         orderableHeaders.put("description", "description_sortable");
         orderableHeaders.put("duration", "duration_Number_sortable");
         orderableHeaders.put("from-date", "fromDate_Number_sortable");
+        orderableHeaders.put("modified-date", "modifiedDate_Number_sortable");
         orderableHeaders.put("status", "status_Number_sortable");
         orderableHeaders.put("task-record-id", "taskRecordId_Number_sortable");
         orderableHeaders.put("ticket-url", "ticketURL_sortable");
-        orderableHeaders.put("work-package", "workPackage_sortable");
-        orderableHeaders.put("user-name", "userName_sortable");
-        orderableHeaders.put("modified-date", "modifiedDate_Number_sortable");
         orderableHeaders.put("until-date", "untilDate_Number_sortable");
+        orderableHeaders.put("user-name", "userName_sortable");
+        orderableHeaders.put("work-package", "workPackage_sortable");
     }
 
     public TaskRecordSearch(PortletRequest portletRequest, PortletURL iteratorURL) {
