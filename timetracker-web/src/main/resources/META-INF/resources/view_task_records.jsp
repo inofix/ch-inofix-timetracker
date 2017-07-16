@@ -94,6 +94,9 @@
 
 <aui:script use="aui-io-request">
 	AUI().ready('aui-io-request', function(A) {
+		
+		console.log('aui-io-request'); 
+		
 		A.io.request('<%= resourceURL.toString() %>', {
 			on : {
 				success : function() {

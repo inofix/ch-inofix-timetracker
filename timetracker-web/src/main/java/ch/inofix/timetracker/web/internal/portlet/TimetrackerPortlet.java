@@ -105,8 +105,8 @@ import ch.inofix.timetracker.web.internal.portlet.util.TemplateUtil;
  * @author Christian Berndt
  * @author Stefan Luebbers
  * @created 2013-10-07 10:47
- * @modified 2017-07-09 16:23
- * @version 1.8.3
+ * @modified 2017-07-16 00:09
+ * @version 1.8.4
  */
 @Component(immediate = true, property = { "com.liferay.portlet.css-class-wrapper=portlet-timetracker",
         "com.liferay.portlet.display-category=category.inofix",
@@ -460,11 +460,9 @@ public class TimetrackerPortlet extends MVCPortlet {
 
     protected void download(ResourceRequest resourceRequest, ResourceResponse resourceResponse) throws Exception {
 
-        HttpServletRequest request = PortalUtil.getHttpServletRequest(resourceRequest);
-
         PortletPreferences portletPreferences = resourceRequest.getPreferences();
 
-        List<TaskRecord> taskRecords = getTaskRecords(request);
+        List<TaskRecord> taskRecords = getTaskRecords(resourceRequest);
 
         Map<String, Object> contextObjects = new HashMap<>();
 
@@ -610,9 +608,11 @@ public class TimetrackerPortlet extends MVCPortlet {
      */
     protected void getSum(ResourceRequest resourceRequest, ResourceResponse resourceResponse) throws Exception {
 
-        HttpServletRequest request = PortalUtil.getHttpServletRequest(resourceRequest);
+        _log.info("getSum");
 
-        List<TaskRecord> taskRecords = getTaskRecords(request);
+        List<TaskRecord> taskRecords = getTaskRecords(resourceRequest);
+
+        _log.info("taskRecords.size() = " + taskRecords.size());
 
         long minutes = 0;
 
@@ -666,7 +666,8 @@ public class TimetrackerPortlet extends MVCPortlet {
      * @since 1.1.6
      * @throws SearchException
      */
-    protected List<TaskRecord> getTaskRecords(HttpServletRequest request) throws Exception {
+    protected List<TaskRecord> getTaskRecords(PortletRequest request) throws Exception {
+
 
         ThemeDisplay themeDisplay = (ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY);
 
@@ -675,10 +676,17 @@ public class TimetrackerPortlet extends MVCPortlet {
         boolean andOperator = ParamUtil.getBoolean(request, "andOperator", true);
         int end = ParamUtil.getInteger(request, "end");
 
-        int fromDateDay = ParamUtil.getInteger(request, "fromDateDay");
-        int fromDateMonth = ParamUtil.getInteger(request, "fromDateMonth");
-        int fromDateYear = ParamUtil.getInteger(request, "fromDateYear");
-        Date fromDate = PortalUtil.getDate(fromDateMonth, fromDateDay, fromDateYear);
+        boolean ignoreFromDate = ParamUtil.getBoolean(request, "ignoreFromDate");
+
+        Date fromDate = null;
+
+        if (!ignoreFromDate) {
+
+            int fromDateDay = ParamUtil.getInteger(request, "fromDateDay");
+            int fromDateMonth = ParamUtil.getInteger(request, "fromDateMonth");
+            int fromDateYear = ParamUtil.getInteger(request, "fromDateYear");
+            fromDate = PortalUtil.getDate(fromDateMonth, fromDateDay, fromDateYear);
+        }
 
         String keywords = ParamUtil.getString(request, "keywords");
         String orderByCol = ParamUtil.getString(request, "orderByCol", "modifiedDate");
@@ -687,16 +695,35 @@ public class TimetrackerPortlet extends MVCPortlet {
         int start = ParamUtil.getInteger(request, "start");
         int status = ParamUtil.getInteger(request, Field.STATUS);
 
-        int untilDateDay = ParamUtil.getInteger(request, "untilDateDay");
-        int untilDateMonth = ParamUtil.getInteger(request, "untilDateMonth");
-        int untilDateYear = ParamUtil.getInteger(request, "untilDateYear");
-        Date untilDate = PortalUtil.getDate(untilDateMonth, untilDateDay, untilDateYear);
+        boolean ignoreUntilDate = ParamUtil.getBoolean(request, "ignoreUntilDate");
+
+        Date untilDate = null;
+
+        if (!ignoreUntilDate) {
+
+            int untilDateDay = ParamUtil.getInteger(request, "untilDateDay");
+            int untilDateMonth = ParamUtil.getInteger(request, "untilDateMonth");
+            int untilDateYear = ParamUtil.getInteger(request, "untilDateYear");
+            untilDate = PortalUtil.getDate(untilDateMonth, untilDateDay, untilDateYear);
+        }
 
         String workPackage = ParamUtil.getString(request, "workPackage");
 
         boolean reverse = "desc".equals(orderByType);
 
         Sort sort = new Sort(orderByCol, reverse);
+
+        _log.info("themeDisplay.getUserId() = " + themeDisplay.getUserId());
+        _log.info("themeDisplay.getScopeGroupId() = " + themeDisplay.getScopeGroupId());
+        _log.info("ownerUserId = " + ownerUserId);
+        _log.info("workPackage = " + workPackage);
+        _log.info("description = " + description);
+        _log.info("status = " + status);
+        _log.info("fromDate = " + fromDate);
+        _log.info("untilDate = " + untilDate);
+        _log.info("andOperator = " + andOperator);
+        _log.info("keywords = " + keywords);
+        _log.info("advancedSearch = " + advancedSearch);
 
         Hits hits = null;
 
