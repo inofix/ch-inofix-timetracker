@@ -105,8 +105,8 @@ import ch.inofix.timetracker.web.internal.portlet.util.TemplateUtil;
  * @author Christian Berndt
  * @author Stefan Luebbers
  * @created 2013-10-07 10:47
- * @modified 2017-07-16 00:09
- * @version 1.8.4
+ * @modified 2017-07-16 19:06
+ * @version 1.8.5
  */
 @Component(immediate = true, property = { "com.liferay.portlet.css-class-wrapper=portlet-timetracker",
         "com.liferay.portlet.display-category=category.inofix",
@@ -731,7 +731,7 @@ public class TimetrackerPortlet extends MVCPortlet {
             hits = TaskRecordServiceUtil.search(themeDisplay.getUserId(), themeDisplay.getScopeGroupId(), ownerUserId,
                     workPackage, description, status, fromDate, untilDate, null, andOperator, start, end, sort);
         } else {
-            hits = TaskRecordServiceUtil.search(themeDisplay.getUserId(), themeDisplay.getScopeGroupId(), ownerUserId,
+            hits = TaskRecordServiceUtil.search(themeDisplay.getUserId(), themeDisplay.getScopeGroupId(), 0,
                     keywords, start, end, sort);
         }
 

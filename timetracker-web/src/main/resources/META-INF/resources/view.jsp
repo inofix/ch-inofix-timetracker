@@ -2,8 +2,8 @@
     view.jsp: Default view of Inofix' timetracker.
     
     Created:     2013-10-06 16:52 by Christian Berndt
-    Modified:    2017-07-16 18:31 by Christian Berndt
-    Version:     1.7.3
+    Modified:    2017-07-16 19:11 by Christian Berndt
+    Version:     1.7.4
 --%>
 
 <%@ include file="/init.jsp" %>
@@ -75,7 +75,7 @@
                 searchContainer.getEnd(), sort);
     } else {
         
-        hits = TaskRecordServiceUtil.search(themeDisplay.getUserId(), scopeGroupId, ownerUserId, keywords,
+        hits = TaskRecordServiceUtil.search(themeDisplay.getUserId(), scopeGroupId, 0, keywords,
                 searchContainer.getStart(), searchContainer.getEnd(), sort);
     }
 
