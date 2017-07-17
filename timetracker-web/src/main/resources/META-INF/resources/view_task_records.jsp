@@ -2,8 +2,8 @@
     view_task_records.jsp: search-container of Inofix' timetracker.
     
     Created:     2017-06-05 13:22 by Christian Berndt
-    Modified:    2017-06-25 16:00 by Christian Berndt
-    Version:     1.0.8
+    Modified:    2017-07-17 14:09 by Christian Berndt
+    Version:     1.0.9
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -90,20 +90,30 @@
 
 	resourceURL.setParameter("start", "0");
 	resourceURL.setParameter("end", String.valueOf(Integer.MAX_VALUE));
+    
+    String namespace = liferayPortletResponse.getNamespace();
+    
+    String ajaxURL = HttpUtil.removeParameter(resourceURL.toString(), namespace + "redirect"); 
 %>
 
 <aui:script use="aui-io-request">
+
 	AUI().ready('aui-io-request', function(A) {
 		
-		console.log('aui-io-request'); 
+        A.io.request('<%= ajaxURL %>', {
+            cache: 'false',
+            on : {
+                success : function() {
+                                        
+                    var data = this.get('responseData');
+                    A.one('#sum').setHTML(data);
+                },
+                failure : function(e) {
+                    console.log('An error occured');
+                    console.log(e);
+                }
+            }
+        });
 		
-		A.io.request('<%= resourceURL.toString() %>', {
-			on : {
-				success : function() {
-					var data = this.get('responseData');
-					A.one('#sum').setHTML(data);
-				}
-			}
-		});
 	});
 </aui:script>
