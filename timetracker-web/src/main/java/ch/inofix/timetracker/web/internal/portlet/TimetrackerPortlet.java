@@ -105,8 +105,8 @@ import ch.inofix.timetracker.web.internal.portlet.util.TemplateUtil;
  * @author Christian Berndt
  * @author Stefan Luebbers
  * @created 2013-10-07 10:47
- * @modified 2017-07-16 19:06
- * @version 1.8.5
+ * @modified 2017-07-22 12:37
+ * @version 1.8.6
  */
 @Component(immediate = true, property = { "com.liferay.portlet.css-class-wrapper=portlet-timetracker",
         "com.liferay.portlet.display-category=category.inofix",
@@ -668,7 +668,6 @@ public class TimetrackerPortlet extends MVCPortlet {
      */
     protected List<TaskRecord> getTaskRecords(PortletRequest request) throws Exception {
 
-
         ThemeDisplay themeDisplay = (ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY);
 
         String description = ParamUtil.getString(request, "description");
@@ -712,18 +711,6 @@ public class TimetrackerPortlet extends MVCPortlet {
         boolean reverse = "desc".equals(orderByType);
 
         Sort sort = new Sort(orderByCol, reverse);
-
-        _log.info("themeDisplay.getUserId() = " + themeDisplay.getUserId());
-        _log.info("themeDisplay.getScopeGroupId() = " + themeDisplay.getScopeGroupId());
-        _log.info("ownerUserId = " + ownerUserId);
-        _log.info("workPackage = " + workPackage);
-        _log.info("description = " + description);
-        _log.info("status = " + status);
-        _log.info("fromDate = " + fromDate);
-        _log.info("untilDate = " + untilDate);
-        _log.info("andOperator = " + andOperator);
-        _log.info("keywords = " + keywords);
-        _log.info("advancedSearch = " + advancedSearch);
 
         Hits hits = null;
 
