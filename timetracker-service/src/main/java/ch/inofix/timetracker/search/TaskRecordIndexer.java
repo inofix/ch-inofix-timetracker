@@ -42,8 +42,8 @@ import ch.inofix.timetracker.service.permission.TaskRecordPermission;
  * @author Christian Berndt
  * @author Stefan Luebbers
  * @created 2016-11-26 15:04
- * @modified 2017-07-03 16:53
- * @version 1.0.5
+ * @modified 2017-07-22 14:41
+ * @version 1.0.6
  *
  */
 @Component(immediate = true, service = Indexer.class)
@@ -125,17 +125,18 @@ public class TaskRecordIndexer extends BaseIndexer<TaskRecord> {
 
         Document document = getBaseModelDocument(CLASS_NAME, taskRecord);
 
+        document.addDateSortable(Field.CREATE_DATE, taskRecord.getCreateDate());
+        document.addTextSortable("description", taskRecord.getDescription());
+        document.addNumberSortable("duration", taskRecord.getDuration());
+        document.addDateSortable("fromDate", taskRecord.getFromDate());
         document.addNumberSortable("taskRecordId", taskRecord.getTaskRecordId());
         document.addNumberSortable(Field.STATUS, taskRecord.getStatus());
         document.addTextSortable("workPackage", taskRecord.getWorkPackage());
-        document.addTextSortable("userName", taskRecord.getUserName());
         document.addTextSortable("ticketURL", taskRecord.getTicketURL());
-        document.addTextSortable("description", taskRecord.getDescription());
-        document.addDateSortable(Field.CREATE_DATE, taskRecord.getCreateDate());
+        document.addKeyword("ownerUserId", taskRecord.getUserId());
         document.addDateSortable("modifiedDate", taskRecord.getModifiedDate());
-        document.addDateSortable("fromDate", taskRecord.getFromDate());
         document.addDateSortable("untilDate", taskRecord.getUntilDate());
-        document.addNumberSortable("duration", taskRecord.getDuration());
+        document.addTextSortable("userName", taskRecord.getUserName());
 
         return document;
 

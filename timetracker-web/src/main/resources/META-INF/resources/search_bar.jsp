@@ -2,14 +2,22 @@
     search.jsp: The extended search of the timetracker portlet.
 
     Created:     2017-06-05 22:04 by Christian Berndt
-    Modified:    2017-06-15 19:32 by Christian Berndt
-    Version:     1.0.5
+    Modified:    2017-07-21 22:37 by Christian Berndt
+    Version:     1.0.6
 --%>
 
 <%@ include file="/init.jsp" %>
 
 <%@page import="java.util.Collections"%>
 
+<%@page import="com.liferay.portal.kernel.search.facet.collector.FacetCollector"%>
+<%@page import="com.liferay.portal.kernel.search.facet.collector.TermCollector"%>
+<%@page import="com.liferay.portal.kernel.search.facet.Facet"%>
+<%@page import="com.liferay.portal.kernel.search.facet.MultiValueFacet"%>
+<%@page import="com.liferay.portal.kernel.search.IndexerRegistryUtil"%>
+<%@page import="com.liferay.portal.kernel.search.Indexer"%>
+<%@page import="com.liferay.portal.kernel.search.SearchContextFactory"%>
+<%@page import="com.liferay.portal.kernel.search.SearchContext"%>
 <%@page import="com.liferay.portal.kernel.service.UserServiceUtil"%>
 <%@page import="com.liferay.portal.kernel.util.comparator.UserLastNameComparator"%>
 
@@ -29,12 +37,33 @@
     Date untilDate = PortalUtil.getDate(untilDateMonth, untilDateDay, untilDateYear);
     boolean ignoreUntilDate = untilDate == null; 
     
-    List<User> users = Collections.emptyList();
+    List<User> users = new ArrayList<User>(); 
     
-    if (themeDisplay.isSignedIn()) {
-        users = UserServiceUtil.getGroupUsers(scopeGroupId); 
-        Collections.sort(users, new UserLastNameComparator(false));
+    SearchContext searchContext = SearchContextFactory.getInstance(request);
+    Facet userIdFacet = new MultiValueFacet(searchContext); 
+    userIdFacet.setFieldName("ownerUserId"); 
+    searchContext.addFacet(userIdFacet);
+    
+    // remove facet attributes from context, since we need the field's index here
+    searchContext.setAttribute("ownerUserId", null); 
+    
+    Indexer<TaskRecord> indexer = IndexerRegistryUtil.getIndexer(TaskRecord.class);
+    Hits hits = indexer.search(searchContext);
+    
+    FacetCollector userIdCollector = userIdFacet.getFacetCollector(); 
+    List<TermCollector> userIdTermCollectors = userIdCollector.getTermCollectors(); 
+    
+    for (TermCollector termCollector : userIdTermCollectors) {
+        
+        long selectUserId = GetterUtil.getLong(termCollector.getTerm()); 
+        User selectUser = UserLocalServiceUtil.getUser(selectUserId); 
+        
+        users.add(selectUser); 
+        
     }
+    
+    Collections.sort(users, new UserLastNameComparator(true));  
+
 %>
 
 <liferay-ui:search-toggle
