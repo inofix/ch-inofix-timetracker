@@ -1,5 +1,6 @@
 package ch.inofix.timetracker.search;
 
+import java.text.DateFormat;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Locale;
@@ -42,8 +43,8 @@ import ch.inofix.timetracker.service.permission.TaskRecordPermission;
  * @author Christian Berndt
  * @author Stefan Luebbers
  * @created 2016-11-26 15:04
- * @modified 2017-07-22 14:41
- * @version 1.0.6
+ * @modified 2017-07-23 12:48
+ * @version 1.0.7
  *
  */
 @Component(immediate = true, service = Indexer.class)
@@ -78,8 +79,8 @@ public class TaskRecordIndexer extends BaseIndexer<TaskRecord> {
 
         // from- and until-date
 
-        Date fromDate = (Date) searchContext.getAttribute("fromDate");
-        Date untilDate = (Date) searchContext.getAttribute("untilDate");
+        Date fromDate = GetterUtil.getDate(searchContext.getAttribute("fromDate"), DateFormat.getDateInstance(), null);
+        Date untilDate = GetterUtil.getDate(searchContext.getAttribute("untilDate"), DateFormat.getDateInstance(), null);
 
         long max = Long.MAX_VALUE;
         long min = Long.MIN_VALUE;
