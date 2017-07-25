@@ -2,8 +2,8 @@
     edit_task_record.jsp: edit a single task-record.
 
     Created:     2013-10-07 10:41 by Christian Berndt
-    Modified:    2017-07-03 16:42 by Christian Berndt
-    Version:     1.6.5
+    Modified:    2017-07-25 19:19 by Christian Berndt
+    Version:     1.6.6
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -153,7 +153,7 @@
         
                     <aui:fieldset>
         
-                        <aui:field-wrapper name="date">
+                        <aui:field-wrapper name="date" label="date" required="true">
         
                             <liferay-ui:input-date name="fromDate"
                                 disabled="<%= !hasUpdatePermission %>"
