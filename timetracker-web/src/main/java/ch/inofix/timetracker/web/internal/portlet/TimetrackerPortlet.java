@@ -718,8 +718,8 @@ public class TimetrackerPortlet extends MVCPortlet {
             hits = TaskRecordServiceUtil.search(themeDisplay.getUserId(), themeDisplay.getScopeGroupId(), ownerUserId,
                     workPackage, description, status, fromDate, untilDate, null, andOperator, start, end, sort);
         } else {
-            hits = TaskRecordServiceUtil.search(themeDisplay.getUserId(), themeDisplay.getScopeGroupId(), 0,
-                    keywords, start, end, sort);
+            hits = TaskRecordServiceUtil.search(themeDisplay.getUserId(), themeDisplay.getScopeGroupId(), 0, keywords,
+                    start, end, sort);
         }
 
         List<TaskRecord> taskRecords = TaskRecordUtil.getTaskRecords(hits);
