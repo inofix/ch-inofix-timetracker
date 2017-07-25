@@ -85,8 +85,8 @@ import ch.inofix.timetracker.social.TaskRecordActivityKeys;
  *
  * @author Christian Berndt
  * @created 2013-10-06 21:24
- * @modified 2017-07-09 17:13
- * @version 1.6.5
+ * @modified 2017-07-24 18:24
+ * @version 1.6.6
  * @see TaskRecordLocalServiceBaseImpl
  * @see ch.inofix.timetracker.service.TaskRecordLocalServiceUtil
  */
@@ -518,22 +518,6 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
 
         return taskRecord;
 
-    }
-
-    @Override
-    public void updateTaskRecordResources(TaskRecord taskRecord, ModelPermissions modelPermissions)
-            throws PortalException {
-
-        resourceLocalService.updateResources(taskRecord.getCompanyId(), taskRecord.getGroupId(),
-                TaskRecord.class.getName(), taskRecord.getTaskRecordId(), modelPermissions);
-    }
-
-    @Override
-    public void updateTaskRecordResources(TaskRecord taskRecord, String[] groupPermissions, String[] guestPermissions)
-            throws PortalException {
-
-        resourceLocalService.updateResources(taskRecord.getCompanyId(), taskRecord.getGroupId(),
-                TaskRecord.class.getName(), taskRecord.getTaskRecordId(), groupPermissions, guestPermissions);
     }
 
     protected SearchContext buildSearchContext(long userId, long groupId, long ownerUserId, String workPackage,
