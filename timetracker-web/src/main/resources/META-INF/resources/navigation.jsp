@@ -2,8 +2,8 @@
     navigation.jsp: Default navigation of Inofix' timetracker.
     
     Created:     2017-06-05 12:39 by Christian Berndt
-    Modified:    2017-07-25 19:00 by Christian Berndt
-    Version:     1.0.7
+    Modified:    2017-07-25 19:14 by Christian Berndt
+    Version:     1.0.8
 --%>
 
 <%@ include file="/init.jsp" %>
@@ -14,6 +14,8 @@
     
     PortletURL exportImportURL = renderResponse.createRenderURL();
     exportImportURL.setParameter("tabs1", "export-import"); 
+    
+    long formDateTime = ParamUtil.getLong(request, "formDate"); 
 %>
 
 <aui:nav-bar cssClass="collapse-basic-search" markupView="<%= markupView %>">
@@ -26,11 +28,13 @@
     <liferay-portlet:renderURL varImpl="searchURL"/>
 
     <aui:form action="<%= searchURL.toString() %>" cssClass="task-record-search" name="searchFm">
-            
-        <div class="clear-message">
-            <liferay-frontend:management-bar-button href='<%= portletURL.toString() %>' icon='times' label='clear' />      
-            <aui:a cssClass="muted" href="<%= portletURL.toString() %>" label="clear-current-query-and-sorts"/>
-        </div>
+         
+        <c:if test="<%= formDateTime > 0 %>">           
+            <div class="clear-message">
+                <liferay-frontend:management-bar-button href='<%= portletURL.toString() %>' icon='times' label='clear' />      
+                <aui:a cssClass="muted" href="<%= portletURL.toString() %>" label="clear-current-query-and-sorts"/>
+            </div>
+        </c:if> 
         
         <liferay-util:include page="/search_bar.jsp" servletContext="<%= application %>"/>      
 
