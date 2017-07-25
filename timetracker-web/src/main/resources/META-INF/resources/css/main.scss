@@ -2,8 +2,8 @@
  * main.scss: css specific to the timetracker-portlet.
  *
  * Created:     2013-10-09 22:44 by Christian Berndt
- * Modified:    2017-06-30 00:45 by Christian Berndt
- * Version:     1.2.4
+ * Modified:    2017-07-23 14:09 by Christian Berndt
+ * Version:     1.2.5
  * 
  */
 @import "bourbon";
@@ -91,12 +91,15 @@
     }
     
     .task-record-search {
+    
+        text-align: right; 
         
         .clear-message {
         
             display: inline-block;
-            padding-bottom: 13px;
-            padding-top: 13px;
+            padding-bottom: 17px;
+            padding-top: 17px;
+            padding-right: 15px;
             
             a {
                 color: #777;
@@ -153,6 +156,10 @@
             .form-control {
                 width: 100px;
             }
+        }
+        
+        .toggler-content-wrapper {
+            text-align: left; 
         }
     }
     
