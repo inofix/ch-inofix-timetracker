@@ -24,7 +24,8 @@
 <aui:button-row>
     <c:if test="<%= hasDeletePermission %>">
         <liferay-ui:icon-menu>
-            <liferay-ui:icon-delete cssClass="btn btn-danger"  message="delete-group-task-records" url="<%= deleteGroupRecordsURL %>" />
+            <liferay-ui:icon-delete cssClass="btn btn-danger"  
+                message="delete-group-task-records" url="<%= deleteGroupRecordsURL %>" />
         </liferay-ui:icon-menu>
     </c:if>
     <c:if test="<%= !hasDeletePermission %>">

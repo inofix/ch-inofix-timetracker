@@ -208,7 +208,4 @@ public class TaskRecordServiceImpl extends TaskRecordServiceBaseImpl {
                 endDate, startDate, status, duration, serviceContext);
 
     }
-
-    // private static final Log _log =
-    // LogFactoryUtil.getLog(TaskRecordServiceImpl.class.getName());
 }

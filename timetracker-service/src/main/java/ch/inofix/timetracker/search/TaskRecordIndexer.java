@@ -20,6 +20,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.BaseIndexer;
+import com.liferay.portal.kernel.search.BooleanClauseOccur;
 import com.liferay.portal.kernel.search.BooleanQuery;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
@@ -28,6 +29,7 @@ import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.Summary;
 import com.liferay.portal.kernel.search.filter.BooleanFilter;
+import com.liferay.portal.kernel.search.filter.PrefixFilter;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -43,8 +45,8 @@ import ch.inofix.timetracker.service.permission.TaskRecordPermission;
  * @author Christian Berndt
  * @author Stefan Luebbers
  * @created 2016-11-26 15:04
- * @modified 2017-07-23 12:48
- * @version 1.0.7
+ * @modified 2017-07-25 17:23
+ * @version 1.0.8
  *
  */
 @Component(immediate = true, service = Indexer.class)
@@ -55,7 +57,7 @@ public class TaskRecordIndexer extends BaseIndexer<TaskRecord> {
     public TaskRecordIndexer() {
         setDefaultSelectedFieldNames(Field.ASSET_TAG_NAMES, Field.COMPANY_ID, Field.ENTRY_CLASS_NAME,
                 Field.ENTRY_CLASS_PK, Field.GROUP_ID, Field.MODIFIED_DATE, Field.SCOPE_GROUP_ID, Field.TITLE, Field.UID,
-                Field.URL);
+                "workPackage");
         setFilterSearch(true);
         setPermissionAware(true);
     }
@@ -80,7 +82,8 @@ public class TaskRecordIndexer extends BaseIndexer<TaskRecord> {
         // from- and until-date
 
         Date fromDate = GetterUtil.getDate(searchContext.getAttribute("fromDate"), DateFormat.getDateInstance(), null);
-        Date untilDate = GetterUtil.getDate(searchContext.getAttribute("untilDate"), DateFormat.getDateInstance(), null);
+        Date untilDate = GetterUtil.getDate(searchContext.getAttribute("untilDate"), DateFormat.getDateInstance(),
+                null);
 
         long max = Long.MAX_VALUE;
         long min = Long.MIN_VALUE;
@@ -95,6 +98,18 @@ public class TaskRecordIndexer extends BaseIndexer<TaskRecord> {
 
         contextBooleanFilter.addRangeTerm("fromDate_Number_sortable", min, max);
 
+        // We use a prefixFilter for the workPackage field, since filtering via
+        // the addSearchTerm method does not work for workPackages à la
+        // "ch.inofix". For yet incomplete understood reasons, the "type" :
+        // "phrase_prefix" clause returns only a subset of the expected results.
+
+        String workPackage = (String) searchContext.getAttribute("workPackage");
+
+        if (Validator.isNotNull(workPackage)) {
+             BooleanFilter booleanFilter = new BooleanFilter();
+             booleanFilter.add(new PrefixFilter("workPackage", workPackage));
+             contextBooleanFilter.add(booleanFilter, BooleanClauseOccur.MUST);
+        }
     }
 
     @Override
@@ -102,8 +117,7 @@ public class TaskRecordIndexer extends BaseIndexer<TaskRecord> {
             SearchContext searchContext) throws Exception {
 
         addSearchTerm(searchQuery, searchContext, "description", false);
-        // TODO: add ticketURL
-        addSearchTerm(searchQuery, searchContext, "workPackage", false);
+        // // TODO: add ticketURL
 
         LinkedHashMap<String, Object> params = (LinkedHashMap<String, Object>) searchContext.getAttribute("params");
 
