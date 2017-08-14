@@ -161,9 +161,10 @@ copyPortalExt.dependsOn unzipLiferay
 setUpTestableTomcat.dependsOn copyPortalExt
 
 jar {
-    if (project.hasProperty('dir')) {
-        destinationDir = file(dir);
-    }
+    jar.enabled = false
+//    if (project.hasProperty('dir')) {
+//        destinationDir = file(dir);
+//    }
 }
 
 setUpTestableTomcat {
