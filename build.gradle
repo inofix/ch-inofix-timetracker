@@ -1,3 +1,19 @@
-task wrapper(type: Wrapper) {
-    gradleVersion = '3.0'
+buildscript {
+    dependencies {
+        classpath group: "com.liferay", name: "com.liferay.gradle.plugins.defaults", version: "1.1.1"
+//        classpath group: "com.liferay", name: "com.liferay.gradle.plugins.defaults", version: "1.2.0"
+    }
+
+    repositories {
+        mavenCentral()
+
+//        maven {
+//            url "https://cdn.lfrs.sl/repository.liferay.com/nexus/content/groups/public"
+//        }
+
+    }
+}
+
+configure(subprojects.findAll {!it.childProjects}) {
+    apply plugin: "com.liferay.defaults.plugin"
 }
