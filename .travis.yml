@@ -11,7 +11,7 @@ jdk:
   - oraclejdk8
 
 script:
-  - ./gradlew clean testIntegration
+  - ./gradlew buildService 
 
 after_script:
   - ruby ./scripts/publish-gh-pages.rb
