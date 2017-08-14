@@ -13,7 +13,7 @@ jdk:
 install: true
 
 script:
-  - ./gradlew clean buildService deploy testIntegration
+  - ./gradlew clean buildService testIntegration
 
 after_script:
   - ruby ./scripts/publish-gh-pages.rb
