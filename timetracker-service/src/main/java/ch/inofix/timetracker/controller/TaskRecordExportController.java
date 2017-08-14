@@ -112,8 +112,8 @@ public class TaskRecordExportController extends BaseExportImportController imple
             @Override
             public void performAction(TaskRecord taskRecord) {
                 String xml = _xStream.toXML(taskRecord);
-                sb.append(xml);
-                sb.append(StringPool.NEW_LINE);
+                // sb.append(xml);
+                // sb.append(StringPool.NEW_LINE);
             }
 
         });
