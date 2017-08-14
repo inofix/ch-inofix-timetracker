@@ -31,7 +31,7 @@ repositories {
 }
 
 
-//apply plugin: "com.liferay.plugin"
+apply plugin: "com.liferay.plugin"
 apply plugin: 'de.undercouch.download'
 apply plugin: "jacoco"
 
