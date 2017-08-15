@@ -1,6 +1,6 @@
 buildscript {
     dependencies {
-        classpath group: "com.liferay", name: "com.liferay.gradle.plugins", version: "3.2.40"
+        classpath group: "com.liferay", name: "com.liferay.gradle.plugins", version: "3.2.40" 
         classpath 'de.undercouch:gradle-download-task:3.1.1'
         classpath 'de.undercouch:gradle-download-task:3.1.1'
     }
@@ -161,9 +161,10 @@ copyPortalExt.dependsOn unzipLiferay
 setUpTestableTomcat.dependsOn copyPortalExt
 
 jar {
-    if (project.hasProperty('dir')) {
-        destinationDir = file(dir);
-    }
+    jar.enabled = false
+//    if (project.hasProperty('dir')) {
+//        destinationDir = file(dir);
+//    }
 }
 
 setUpTestableTomcat {
