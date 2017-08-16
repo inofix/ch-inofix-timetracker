@@ -7,7 +7,8 @@ import java.io.File;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.lang3.time.StopWatch;
+//TODO: 
+// import org.apache.commons.lang3.time.StopWatch;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -92,9 +93,9 @@ public class TaskRecordImportController extends BaseExportImportController imple
 
     protected void doImportFile(File file, long userId, long groupId) throws Exception {
 
-        StopWatch stopWatch = new StopWatch();
+        // StopWatch stopWatch = new StopWatch();
 
-        stopWatch.start();
+        // stopWatch.start();
 
         int numAdded = 0;
         int numIgnored = 0;
@@ -196,7 +197,7 @@ public class TaskRecordImportController extends BaseExportImportController imple
         }
 
         if (_log.isInfoEnabled()) {
-            _log.info("Importing taskRecords takes " + stopWatch.getTime() + " ms.");
+//            _log.info("Importing taskRecords takes " + stopWatch.getTime() + " ms.");
             _log.info("Added " + numAdded + " taskRecords as new, since they did not have a taskRecordId.");
             _log.info("Ignored " + numIgnored + " taskRecords since they already exist in this instance.");
             _log.info("Imported " + numImported + " taskRecords since they did not exist in this instance.");
