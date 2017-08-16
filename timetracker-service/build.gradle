@@ -16,11 +16,9 @@ dependencies {
     compileOnly project(":modules:ch-inofix-timetracker:timetracker-api")
 }
 
-/*
 buildService {
     apiDir = "../timetracker-api/src/main/java"
     osgiModule = true
     propsUtil = "ch.inofix.timetracker.service.util.PropsUtil"
-    testDir = "../timetracker-test/src/testIntegration/java"
+//    testDir = "../timetracker-test/src/testIntegration/java"
 }
-*/
