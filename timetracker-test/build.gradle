@@ -1,41 +1,32 @@
 buildscript {
-    dependencies {
-        classpath group: "com.liferay", name: "com.liferay.gradle.plugins", version: "3.2.40" 
-        classpath 'de.undercouch:gradle-download-task:3.1.1'
-        classpath 'de.undercouch:gradle-download-task:3.1.1'
-    }
 
     repositories {
-        mavenLocal()
-
         mavenCentral()
-
-        jcenter()
-
-        maven {
-            url "https://cdn.lfrs.sl/repository.liferay.com/nexus/content/groups/public"
-        }
     }
 }
 
 repositories {
-    mavenLocal()
 
     mavenCentral()
 
-    jcenter()
-
-    maven {
-        url "https://cdn.lfrs.sl/repository.liferay.com/nexus/content/groups/public"
-    }
 }
 
-
-// apply plugin: "com.liferay.plugin"
-apply plugin: 'de.undercouch.download'
 apply plugin: "jacoco"
 
-import com.liferay.gradle.util.copy.RenameDependencyClosure
+dependencies {
+
+    testIntegrationCompile group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "2.5.0"
+    testIntegrationCompile (group: "com.liferay.arquillian", name: "com.liferay.arquillian.arquillian-container-liferay", version: "1.0.6") {
+        exclude group: "org.slf4j", module: "slf4j-log4j12"
+    }
+    testIntegrationCompile group: "org.slf4j", name: "slf4j-api", version: "1.7.+"
+    testIntegrationCompile group: "org.slf4j", name: "slf4j-simple", version: "1.7.+"
+//    testIntegrationCompile group: "org.slf4j", name: "slf4j-log4j12", version: "1.7.+"
+
+    testIntegrationCompile group: "junit", name: "junit", version: "4.12"
+    testIntegrationCompile group: "org.jboss.arquillian.graphene", name: "graphene-webdriver", version: "2.1.0.Final"
+    testIntegrationCompile group: "org.jboss.arquillian.junit", name: "arquillian-junit-container", version: "1.1.11.Final"
+}
 
 task deployTestLibs(type: Copy)
 
@@ -48,21 +39,6 @@ dependencies {
     testLibs group: "org.apache.aries.jmx", name: "org.apache.aries.jmx.api", transitive: false, version: "1.1.1"
     testLibs group: "org.apache.aries.jmx", name: "org.apache.aries.jmx.core", transitive: false, version: "1.1.3"
 }
-
-deploy {
-    deleteAllActions()
-
-    dependsOn = []
-
-    finalizedBy deployTestLibs
-    
-    includeEmptyDirs = false
-}
-
-// deployDependencies {
-//     from configurations.provided
-//     rename(/javax.el-(.+)\.jar/, "javax.el" + renameSuffix)
-// }
 
 deployTestLibs {
     ext {
@@ -78,156 +54,18 @@ deployTestLibs {
     outputs.upToDateWhen {
         false
     }
-
-    rename new RenameDependencyClosure(project, configurations.testLibs.name)
 }
-
-jacoco {
-    toolVersion = "0.7.9"
-}
-
-dependencies {
-    compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "2.5.0"
-    compileOnly group: "com.liferay.portal", name: "com.liferay.util.taglib", version: "2.5.0"
-    compileOnly group: "javax.portlet", name: "portlet-api", version: "2.0"
-    compileOnly group: "javax.servlet", name: "javax.servlet-api", version: "3.0.1"
-    compileOnly group: "javax.websocket", name: "javax.websocket-api", version: "1.1"
-    compileOnly group: "jstl", name: "jstl", version: "1.2"
-    compileOnly group: "org.osgi", name: "osgi.cmpn", version: "6.0.0"
-    compileOnly group: "org.osgi", name: "osgi.core", version: "6.0.0"
-    compileOnly project(":modules:ch-inofix-timetracker:timetracker-api") 
-    compileOnly project(":modules:ch-inofix-timetracker:timetracker-service")
-
-    testIntegrationCompile (group: "com.liferay", name: "com.liferay.arquillian.extension.junit.bridge", version: "1.0.7") {
-        exclude group: "org.slf4j", module: "slf4j-log4j12"
-    }
-    testIntegrationCompile group: "com.liferay.arquillian", name: "com.liferay.arquillian.arquillian-container-liferay", version: "1.0.6"
-    testIntegrationCompile group: "com.liferay.portal", name: "com.liferay.portal.test", version: "2.0.0"  
-    testIntegrationCompile group: "com.liferay.portal", name: "com.liferay.portal.test.integration", version: "2.0.0"
-    testIntegrationCompile group: "junit", name: "junit", version: "4.12"
-    testIntegrationCompile group: "org.jboss.arquillian.graphene", name: "graphene-webdriver", version: "2.1.0.Final"
-    testIntegrationCompile group: "org.jboss.arquillian.junit", name: "arquillian-junit-container", version: "1.1.11.Final"
-    
-    testIntegrationCompile project(":modules:ch-inofix-timetracker:timetracker-api") 
-    testIntegrationCompile project(":modules:ch-inofix-timetracker:timetracker-service")
-}
-
-import de.undercouch.gradle.tasks.download.Download
-import org.gradle.api.tasks.testing.logging.TestExceptionFormat
-import org.gradle.api.tasks.testing.logging.TestLogEvent
-import java.lang.management.*
-import javax.management.ObjectName
-import javax.management.remote.JMXConnectorFactory as JmxFactory
-import javax.management.remote.JMXServiceURL as JmxUrl
-
-
-def bundle = 'liferay/bundle.zip'
-
-liferay {
-    liferayHome = 'liferay/liferay-ce-portal-7.0-ga4'
-//    liferayHome = 'liferay/liferay-ce-portal-7.0-ga3'
-}
-
-task copyJacocoAgent(type: Copy) {
-println configurations.jacocoAgent
-
-    configurations.jacocoAgent.asFileTree.each {
-        from(zipTree(it))
-    }
-
-    into "${rootDir}/build/jacoco"
-}
-
-task downloadLiferay(type: Download) {
-    src 'http://downloads.sourceforge.net/project/lportal/Liferay%20Portal/7.0.3%20GA4/liferay-ce-portal-tomcat-7.0-ga4-20170613175008905.zip'
-//  src 'http://downloads.sourceforge.net/project/lportal/Liferay%20Portal/7.0.2%20GA3/liferay-ce-portal-tomcat-7.0-ga3-20160804222206210.zip?r=&ts=1476801340&use_mirror=kent'
-    dest  file(bundle)
-    overwrite false
-    enabled !(file(liferay.liferayHome).exists())
-}
-
-task unzipLiferay(type: Copy) {
-    from(zipTree(bundle))
-    into 'liferay'
-    enabled !(file(liferay.liferayHome).exists())
-}
-
-task copyPortalExt(type: Copy) {
-    from file('src/testIntegration/resources/portal-ext.properties')
-    into "${liferay.liferayHome}"
-    enabled !(file(liferay.liferayHome).exists())
-}
-
-unzipLiferay.dependsOn downloadLiferay
-copyPortalExt.dependsOn unzipLiferay
-setUpTestableTomcat.dependsOn copyPortalExt
 
 jar {
-    jar.enabled = false
-//    if (project.hasProperty('dir')) {
-//        destinationDir = file(dir);
-//    }
-}
-
-setUpTestableTomcat {
-    dependsOn copyJacocoAgent
-
-    // enable the line below if you have trouble with integration test connection to JMX server
-    catalinaOptsReplacement "-XX:MaxPermSize=384m\"", "-XX:MaxPermSize=384m\"\n\nJACOCO_OPTS=\"-javaagent:${rootDir}/build/jacoco/jacocoagent.jar=destfile=${rootDir}/build/jacoco/testIntegration.exec,output=file,append=true,jmx=true\"\n\nCATALINA_OPTS=\"\${CATALINA_OPTS} \${JACOCO_OPTS}\"\n"
-}
-
-startTestableTomcat {
-    checkTimeout = 10 * 60 * 1000
-}
-
-repositories {
-    mavenLocal()
-
-    maven {
-        url "https://cdn.lfrs.sl/repository.liferay.com/nexus/content/groups/public"
-    }
-}
-
-task dumpJacoco {
-    doLast {
-        def serverUrl = 'service:jmx:rmi:///jndi/rmi://localhost:8099/jmxrmi'
-        String beanName = "org.jacoco:type=Runtime"
-        def server = JmxFactory.connect(new JmxUrl(serverUrl)).MBeanServerConnection
-        def gmxb = new GroovyMBean(server, beanName)
-
-        println "Connected to:\n$gmxb\n"
-        println "Executing dump()"
-        gmxb.dump(true)
-    }
-}
-
-jacocoTestReport {
-    dependsOn dumpJacoco
-    group = "Reporting"
-    reports {
-        xml.enabled true
-        csv.enabled false
-        html.destination "${buildDir}/reports/coverage"
-    }
-    executionData = files("${rootDir}/build/jacoco/testIntegration.exec")
+    onlyIf { !sourceSets.main.allSource.files.isEmpty() }
 }
 
 testIntegration {
+
     dependsOn deployTestLibs
+    dependsOn ":modules:ch-inofix-timetracker:timetracker-api:deploy" 
+    dependsOn ":modules:ch-inofix-timetracker:timetracker-service:deploy" 
+    dependsOn ":modules:ch-inofix-timetracker:timetracker-web:deploy" 
 
-    finalizedBy jacocoTestReport
 }
 
-tasks.withType(Test) {
-    testLogging {
-        events TestLogEvent.FAILED,
-                TestLogEvent.PASSED,
-                TestLogEvent.SKIPPED,
-                TestLogEvent.STANDARD_ERROR,
-                TestLogEvent.STANDARD_OUT
-        exceptionFormat TestExceptionFormat.FULL
-        showCauses true
-        showExceptions true
-        showStackTraces true
-    }
-}
