@@ -9,7 +9,8 @@ import java.io.File;
 import java.io.Serializable;
 import java.util.Map;
 
-import org.apache.commons.lang3.time.StopWatch;
+// TODO:
+// import org.apache.commons.lang3.time.StopWatch;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -93,9 +94,9 @@ public class TaskRecordExportController extends BaseExportImportController imple
 
     protected File doExport(PortletDataContext portletDataContext) throws Exception {
 
-        StopWatch stopWatch = new StopWatch();
+        // StopWatch stopWatch = new StopWatch();
 
-        stopWatch.start();
+        // stopWatch.start();
 
         StringBuilder sb = new StringBuilder();
         sb.append("<TaskRecords>");
@@ -123,7 +124,7 @@ public class TaskRecordExportController extends BaseExportImportController imple
         sb.append("</TaskRecords>");
 
         if (_log.isInfoEnabled()) {
-            _log.info("Exporting taskRecords takes " + stopWatch.getTime() + " ms");
+//            _log.info("Exporting taskRecords takes " + stopWatch.getTime() + " ms");
         }
 
         portletDataContext.addZipEntry("/TaskRecords.xml", sb.toString());
