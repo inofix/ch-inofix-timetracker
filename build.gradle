@@ -30,6 +30,9 @@ task downloadBundle(type: Download) {
     src 'http://downloads.sourceforge.net/project/lportal/Liferay%20Portal/7.0.3%20GA4/liferay-ce-portal-tomcat-7.0-ga4-20170613175008905.zip'
     dest file (bundles)
     overwrite false
+    
+    enabled = project.name == rootProject.name
+    
 }
 
 task unzipBundle(type: Copy) {
@@ -38,7 +41,9 @@ task unzipBundle(type: Copy) {
 
     from(zipTree(bundles))
     into "tmp" 
-
+    
+    enabled = project.name == rootProject.name
+    
 }
 
 task initBundle(type: Copy) {
@@ -47,6 +52,7 @@ task initBundle(type: Copy) {
 
     from("tmp/liferay-ce-portal-7.0-ga4")
     into("../bundles")
+    
+    enabled = project.name == rootProject.name
 
 }
-
