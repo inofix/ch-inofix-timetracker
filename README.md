@@ -1,6 +1,6 @@
 # ch-inofix-timetracker
 
-<a href="https://travis-ci.org/inofix/ch-inofix-timetracker"><img src="https://travis-ci.org/inofix/ch-inofix-timetracker.svg?branch=master"/></a>
+<a href="https://travis-ci.org/inofix/ch-inofix-timetracker" target="_blank"><img src="https://travis-ci.org/inofix/ch-inofix-timetracker.svg?branch=master"/></a>
 
 A timetracker plugin for Liferay.
 
