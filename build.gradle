@@ -10,7 +10,9 @@ buildscript {
 }
 
 configure(subprojects.findAll {!it.childProjects}) {
-    apply plugin: "com.liferay.defaults.plugin"
+    if (parent.name == rootProject.name) {
+        apply plugin: "com.liferay.defaults.plugin"
+    }
 }
 
 def bundles = "bundles.zip"
