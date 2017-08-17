@@ -74,4 +74,3 @@ testIntegration {
     ignoreFailures = false
 
 }
-
