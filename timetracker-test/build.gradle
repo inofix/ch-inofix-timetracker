@@ -64,6 +64,10 @@ jar {
     onlyIf { !sourceSets.main.allSource.files.isEmpty() }
 }
 
+startTestableTomcat {
+    checkTimeout = 10 * 60 * 1000
+}
+
 testIntegration {
 
     dependsOn deployTestLibs
