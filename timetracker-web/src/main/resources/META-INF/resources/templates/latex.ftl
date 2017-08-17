@@ -3,8 +3,8 @@
     as a latex-report.
     
     Created: 2017-06-16 16:13 by Christian Berndt   
-    Modified: 2017-08-17 13:12 by Christian Berndt
-    Version: 1.0.1
+    Modified: 2017-08-17 13:27 by Christian Berndt
+    Version: 1.0.2
 -->
 
 \begin{supertabular}{p{0.6cm}|p{12cm}|p{1.8cm}|R|}
@@ -13,7 +13,7 @@ MA & Beschreibung & Zeitraum & Menge \\
 
 <#assign sumPeriod = 0 />
 
-<#list taskRecords as taskRecord>
+<#list taskRecords?sort_by("fromDate")?reverse as taskRecord>
     <#assign duration = taskRecord.duration / 1000 / 60 / 60 />
     <#assign fromDate = taskRecord.fromDate?date />
     <#assign initials = "" />
