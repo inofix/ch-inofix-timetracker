@@ -3,8 +3,8 @@
     as a latex-report.
     
     Created: 2017-06-16 16:13 by Christian Berndt   
-    Modified: 2017-06-16 16:13 by Christian Berndt
-    Version: 1.0.0
+    Modified: 2017-08-17 13:12 by Christian Berndt
+    Version: 1.0.1
 -->
 
 \begin{supertabular}{p{0.6cm}|p{12cm}|p{1.8cm}|R|}
