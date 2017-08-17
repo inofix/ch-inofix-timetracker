@@ -10,14 +10,25 @@
 \begin{supertabular}{p{0.6cm}|p{12cm}|p{1.8cm}|R|}
 MA & Beschreibung & Zeitraum & Menge \\
 \hline
+
+<#assign sumPeriod = 0 />
+
 <#list taskRecords as taskRecord>
-${taskRecord.userName} & \textbf{up:} ${taskRecord.description}  & ${taskRecord.fromDate?date}  & ${taskRecord.duration?number / 60 / 1000 / 60}  \\
+    <#assign duration = taskRecord.duration / 1000 / 60 / 60 />
+    <#assign fromDate = taskRecord.fromDate?date />
+    <#assign initials = "" />
+    <#list taskRecord.userName?split(" ") as token>
+        <#assign initials = initials + token?substring(0,1) />
+    </#list>
+    <#assign sumPeriod = sumPeriod + duration />
+${initials?lower_case} & \textbf{op:} ${taskRecord.description} & ${fromDate?string["yyyy-MM-dd"]} & ${duration?string(",##0.00")} \\
 </#list>
+
 \hline
- & Periodentotal & & 116.25\\
+ & Periodentotal & & ${sumPeriod?string(",##0.00")}\\
  & Übertrag Vorperiode (sep. Abrg) & & 0.00\\
 \hline
- & Total & & 116.25\\
+ & Total & & 0.00\\
 \hline
 \hline
 \end{supertabular}
@@ -25,6 +36,7 @@ ${taskRecord.userName} & \textbf{up:} ${taskRecord.description}  & ${taskRecord.
 {\scriptsize
 \textbf{Mitarbeitende (MA):}
 \begin{deflist}[aaaa]
+ \item[ml] Michael Lustenberger
  \item[cb] Christian Berndt
 \end{deflist}
 }
@@ -33,13 +45,8 @@ ${taskRecord.userName} & \textbf{up:} ${taskRecord.description}  & ${taskRecord.
 {\scriptsize
 \textbf{Kategorien:}
 \begin{deflist}[aaa]
- \item[up] Upgrade
- \item[ne] Newsletter
- \item[se] Service
- \item[pm] Pm
- \item[in] Inofix-theme
- \item[te] Testing
- \item[we] Web
+ \item[su] Support
+ \item[op] Operations
 \end{deflist}
 }
 \end{minipage}
