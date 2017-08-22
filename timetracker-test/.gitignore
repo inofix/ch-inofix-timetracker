@@ -6,3 +6,6 @@ build/
 /.project
 /liferay/
 /target/
+/test-classes/
+/test-coverage/
+/test-results/
