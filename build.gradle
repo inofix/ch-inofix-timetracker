@@ -14,7 +14,9 @@ buildscript {
 	}
 }
 
-apply plugin: "com.liferay.root.defaults.plugin"
+apply plugin: "com.liferay.defaults.plugin"
+
+// apply plugin: "com.liferay.root.defaults.plugin"
 
 
 def bundles = "bundles.zip"
