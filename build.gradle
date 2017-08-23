@@ -14,9 +14,11 @@ buildscript {
 	}
 }
 
-apply plugin: "com.liferay.defaults.plugin"
-
-// apply plugin: "com.liferay.root.defaults.plugin"
+if (parent == null) {
+    apply plugin: "com.liferay.root.defaults.plugin"
+} else {
+    apply plugin: "com.liferay.defaults.plugin"
+}
 
 
 def bundles = "bundles.zip"
