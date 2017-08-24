@@ -18,4 +18,4 @@ buildService {
     testDir = "../timetracker-test/src/testIntegration/java"
 }
 
-// group = "ch.inofix.timetracker"
+group = "ch.inofix.timetracker"
