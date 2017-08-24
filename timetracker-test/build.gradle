@@ -9,6 +9,10 @@ dependencies {
 	testIntegrationCompile project(":modules:ch-inofix-timetracker:timetracker-service")
 }
 
+jar {
+    enabled = false
+}
+
 startTestableTomcat {
     checkTimeout = 10 * 60 * 1000
 }
