@@ -7,3 +7,4 @@ Export-Package:\
 	ch.inofix.timetracker.model,\
 	ch.inofix.timetracker.service,\
 	ch.inofix.timetracker.service.persistence
+-includeresource: META-INF/service.xml=../timetracker-service/service.xml
