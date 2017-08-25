@@ -39,8 +39,8 @@ import ch.inofix.timetracker.service.TaskRecordLocalService;
 /**
  * @author Christian Berndt
  * @created 2017-04-21 19:23
- * @modified 2017-08-25 10:45
- * @version 1.0.3
+ * @modified 2017-08-25 11:20
+ * @version 1.0.4
  */
 @Component(immediate = true, property = { "model.class.name=ch.inofix.timetracker.model.TaskRecord" }, service = {
         ExportImportController.class, TaskRecordExportController.class })
@@ -89,12 +89,13 @@ public class TaskRecordExportController extends BaseExportImportController imple
     }
 
     protected File doExport(PortletDataContext portletDataContext) throws Exception {
-
+        
          StopWatch stopWatch = new StopWatch();
 
          stopWatch.start();
 
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
+        
         sb.append("<TaskRecords>");
         sb.append(StringPool.NEW_LINE);
 
