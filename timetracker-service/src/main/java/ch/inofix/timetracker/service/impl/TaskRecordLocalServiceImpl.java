@@ -258,8 +258,6 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
     @Override
     public File exportTaskRecordsAsFile(ExportImportConfiguration exportImportConfiguration) throws PortalException {
 
-        _log.info("exportTaskRecordsAsFile");
-
         try {
             ExportController taskRecordExportController = ExportImportControllerRegistryUtil
                     .getExportController(TaskRecord.class.getName());
@@ -278,8 +276,6 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
     @Override
     public long exportTaskRecordsAsFileInBackground(long userId, ExportImportConfiguration exportImportConfiguration)
             throws PortalException {
-
-        _log.info("exportTaskRecordsAsFileInBackground");
 
         // TODO: The export may have different file types / extensions:
         // - .csv
