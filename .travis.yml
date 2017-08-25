@@ -12,6 +12,9 @@ jdk:
 
 install: true
 
+before_script:
+  - mv standalone-gradle.properties gradle.properties
+
 script:
   - ./gradlew clean initBundle buildService testIntegration
 
