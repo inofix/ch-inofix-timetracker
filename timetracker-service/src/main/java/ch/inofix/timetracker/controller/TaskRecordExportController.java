@@ -9,8 +9,7 @@ import java.io.File;
 import java.io.Serializable;
 import java.util.Map;
 
-// TODO:
-// import org.apache.commons.lang3.time.StopWatch;
+import org.apache.commons.lang.time.StopWatch;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -31,9 +30,6 @@ import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.util.DateRange;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.StringPool;
-//import com.liferay.portal.kernel.xml.Document;
-//import com.liferay.portal.kernel.xml.Element;
-//import com.liferay.portal.kernel.xml.SAXReaderUtil;
 import com.liferay.portal.kernel.zip.ZipWriter;
 
 import ch.inofix.timetracker.internal.exportimport.util.ExportImportThreadLocal;
@@ -43,8 +39,8 @@ import ch.inofix.timetracker.service.TaskRecordLocalService;
 /**
  * @author Christian Berndt
  * @created 2017-04-21 19:23
- * @modified 2017-07-07 23:26
- * @version 1.0.2
+ * @modified 2017-08-25 10:45
+ * @version 1.0.3
  */
 @Component(immediate = true, property = { "model.class.name=ch.inofix.timetracker.model.TaskRecord" }, service = {
         ExportImportController.class, TaskRecordExportController.class })
@@ -94,9 +90,9 @@ public class TaskRecordExportController extends BaseExportImportController imple
 
     protected File doExport(PortletDataContext portletDataContext) throws Exception {
 
-        // StopWatch stopWatch = new StopWatch();
+         StopWatch stopWatch = new StopWatch();
 
-        // stopWatch.start();
+         stopWatch.start();
 
         StringBuilder sb = new StringBuilder();
         sb.append("<TaskRecords>");
@@ -113,8 +109,8 @@ public class TaskRecordExportController extends BaseExportImportController imple
             @Override
             public void performAction(TaskRecord taskRecord) {
                 String xml = _xStream.toXML(taskRecord);
-                // sb.append(xml);
-                // sb.append(StringPool.NEW_LINE);
+                sb.append(xml);
+                sb.append(StringPool.NEW_LINE);
             }
 
         });
@@ -124,7 +120,7 @@ public class TaskRecordExportController extends BaseExportImportController imple
         sb.append("</TaskRecords>");
 
         if (_log.isInfoEnabled()) {
-//            _log.info("Exporting taskRecords takes " + stopWatch.getTime() + " ms");
+            _log.info("Exporting taskRecords takes " + stopWatch.getTime() + " ms");
         }
 
         portletDataContext.addZipEntry("/TaskRecords.xml", sb.toString());
