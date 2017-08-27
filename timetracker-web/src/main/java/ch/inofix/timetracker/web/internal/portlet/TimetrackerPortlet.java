@@ -17,6 +17,7 @@ import javax.portlet.PortletException;
 import javax.portlet.PortletPreferences;
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletRequestDispatcher;
+import javax.portlet.PortletURL;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 import javax.portlet.ResourceRequest;
@@ -57,6 +58,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.JSONPortletResponseUtil;
 import com.liferay.portal.kernel.portlet.PortletConfigFactoryUtil;
 import com.liferay.portal.kernel.portlet.PortletResponseUtil;
+import com.liferay.portal.kernel.portlet.PortletURLFactoryUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Field;
@@ -98,6 +100,7 @@ import ch.inofix.timetracker.web.configuration.TimetrackerConfiguration;
 import ch.inofix.timetracker.web.internal.constants.TimetrackerWebKeys;
 import ch.inofix.timetracker.web.internal.portlet.util.PortletUtil;
 import ch.inofix.timetracker.web.internal.portlet.util.TemplateUtil;
+import ch.inofix.timetracker.web.internal.search.TaskRecordSearch;
 
 /**
  * View Controller of Inofix' timetracker.
@@ -105,8 +108,8 @@ import ch.inofix.timetracker.web.internal.portlet.util.TemplateUtil;
  * @author Christian Berndt
  * @author Stefan Luebbers
  * @created 2013-10-07 10:47
- * @modified 2017-07-22 12:37
- * @version 1.8.6
+ * @modified 2017-08-27 21:33
+ * @version 1.8.7
  */
 @Component(immediate = true, property = { "com.liferay.portlet.css-class-wrapper=portlet-timetracker",
         "com.liferay.portlet.display-category=category.inofix",
@@ -137,9 +140,6 @@ public class TimetrackerPortlet extends MVCPortlet {
     public void processAction(ActionRequest actionRequest, ActionResponse actionResponse) {
 
         String cmd = ParamUtil.getString(actionRequest, Constants.CMD);
-
-        _log.info("processAction");
-        _log.info("cmd = " + cmd);
 
         try {
             if (cmd.equals(Constants.ADD_TEMP)) {
@@ -608,11 +608,7 @@ public class TimetrackerPortlet extends MVCPortlet {
      */
     protected void getSum(ResourceRequest resourceRequest, ResourceResponse resourceResponse) throws Exception {
 
-        _log.info("getSum");
-
         List<TaskRecord> taskRecords = getTaskRecords(resourceRequest);
-
-        _log.info("taskRecords.size() = " + taskRecords.size());
 
         long minutes = 0;
 
@@ -670,6 +666,9 @@ public class TimetrackerPortlet extends MVCPortlet {
 
         ThemeDisplay themeDisplay = (ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY);
 
+        PortletURL iteratorURL = PortletURLFactoryUtil.create(request, PortletKeys.TIMETRACKER,
+                themeDisplay.getLayout(), PortletRequest.RENDER_PHASE);
+
         String description = ParamUtil.getString(request, "description");
         boolean advancedSearch = ParamUtil.getBoolean(request, "advancedSearch", false);
         boolean andOperator = ParamUtil.getBoolean(request, "andOperator", true);
@@ -693,6 +692,10 @@ public class TimetrackerPortlet extends MVCPortlet {
         long ownerUserId = ParamUtil.getLong(request, "ownerUserId");
         int start = ParamUtil.getInteger(request, "start");
         int status = ParamUtil.getInteger(request, Field.STATUS);
+
+        TaskRecordSearch taskRecordSearch = new TaskRecordSearch(request, iteratorURL);
+
+        orderByCol = taskRecordSearch.getOrderByCol();
 
         boolean ignoreUntilDate = ParamUtil.getBoolean(request, "ignoreUntilDate");
 
