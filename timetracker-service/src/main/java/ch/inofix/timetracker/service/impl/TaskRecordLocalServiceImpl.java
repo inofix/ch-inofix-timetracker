@@ -65,6 +65,7 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import aQute.bnd.annotation.ProviderType;
 import ch.inofix.timetracker.background.task.TaskRecordExportBackgroundTaskExecutor;
 import ch.inofix.timetracker.background.task.TaskRecordImportBackgroundTaskExecutor;
+import ch.inofix.timetracker.exception.TaskRecordDurationException;
 import ch.inofix.timetracker.model.TaskRecord;
 import ch.inofix.timetracker.service.base.TaskRecordLocalServiceBaseImpl;
 import ch.inofix.timetracker.social.TaskRecordActivityKeys;
@@ -85,8 +86,8 @@ import ch.inofix.timetracker.social.TaskRecordActivityKeys;
  *
  * @author Christian Berndt
  * @created 2013-10-06 21:24
- * @modified 2017-07-24 18:24
- * @version 1.6.6
+ * @modified 2017-08-29 22:45
+ * @version 1.6.7
  * @see TaskRecordLocalServiceBaseImpl
  * @see ch.inofix.timetracker.service.TaskRecordLocalServiceUtil
  */
@@ -110,12 +111,16 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
         User user = userPersistence.findByPrimaryKey(userId);
         long groupId = serviceContext.getScopeGroupId();
 
-        // TODO
-        // validate();
-
         long taskRecordId = counterLocalService.increment();
 
         TaskRecord taskRecord = taskRecordPersistence.create(taskRecordId);
+
+        if (duration <= 0) {
+            duration = untilDate.getTime() - fromDate.getTime();
+        }
+
+        validate(duration);
+        validate(duration, fromDate, untilDate);
 
         taskRecord.setUuid(serviceContext.getUuid());
         taskRecord.setGroupId(groupId);
@@ -482,7 +487,12 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
 
         TaskRecord taskRecord = taskRecordPersistence.findByPrimaryKey(taskRecordId);
 
-        // TODO: validate taskRecord
+        if (duration <= 0) {
+            duration = untilDate.getTime() - fromDate.getTime();
+        }
+
+        validate(duration);
+        validate(duration, fromDate, untilDate);
 
         taskRecord.setGroupId(groupId);
         taskRecord.setExpandoBridgeAttributes(serviceContext);
@@ -578,6 +588,18 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
         searchContext.setStart(start);
 
         return searchContext;
+    }
+
+    protected void validate(long duration) throws PortalException {
+        if (duration <= 0) {
+            throw new TaskRecordDurationException();
+        }
+    }
+
+    protected void validate(long duration, Date fromDate, Date untilDate) throws PortalException {
+        if (duration != untilDate.getTime() - fromDate.getTime()) {
+            throw new TaskRecordDurationException();
+        }
     }
 
     private static final Log _log = LogFactoryUtil.getLog(TaskRecordLocalServiceImpl.class.getName());

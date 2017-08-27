@@ -6,8 +6,8 @@
     service.xml: Model and service description of Inofix' timetracker
     
     Created:    2013-10-21 14:16 by Christian Berndt
-    Modified:   2017-07-09 17:03 by Christian Berndt   
-    Version:    1.0.3
+    Modified:   2017-08-29 21:41 by Christian Berndt   
+    Version:    1.0.4
 -->
 
 <service-builder package-path="ch.inofix.timetracker">
@@ -68,6 +68,7 @@
     </entity>
 
     <exceptions>
+        <exception>TaskRecordDuration</exception>
         <exception>TaskRecordFromDate</exception>
         <exception>TaskRecordUntilDate</exception>
     </exceptions>
