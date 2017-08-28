@@ -1,5 +1,5 @@
 <%--
-    init.jsp: Common setup code for the timetracker portlet.
+    init.jsp: Common imports and initialization code.
 
     Created:     2014-02-01 15:31 by Christian Berndt
     Modified:    2017-06-25 15:59 by Christian Berndt
