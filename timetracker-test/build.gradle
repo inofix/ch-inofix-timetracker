@@ -23,6 +23,6 @@ testIntegration {
     dependsOn ":modules:ch-inofix-timetracker:timetracker-service:deploy" 
     dependsOn ":modules:ch-inofix-timetracker:timetracker-web:deploy" 
 
-//    ignoreFailures = false
+    ignoreFailures = false
 
 }
