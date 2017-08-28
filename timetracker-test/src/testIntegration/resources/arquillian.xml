@@ -13,10 +13,7 @@
 
 	<extension qualifier="jacoco">
 		<property name="excludes">com.liferay.arquillian.test</property>
-		<property name="includes">com.liferay.arquillian.sample.*</property>
+		<property name="includes">ch.inofix.timetracker.*</property>
 	</extension>
 
-	<engine>
-		<property name="deploymentExportPath">build/deployments</property>
-	</engine>
 </arquillian>
