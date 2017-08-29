@@ -111,12 +111,16 @@ import ch.inofix.timetracker.web.internal.search.TaskRecordSearch;
  * @modified 2017-08-27 21:33
  * @version 1.8.7
  */
-@Component(immediate = true, property = { "com.liferay.portlet.css-class-wrapper=portlet-timetracker",
+@Component(immediate = true, property = { 
+        "com.liferay.portlet.css-class-wrapper=portlet-timetracker",
         "com.liferay.portlet.display-category=category.inofix",
         "com.liferay.portlet.footer-portlet-javascript=/js/main.js",
-        "com.liferay.portlet.header-portlet-css=/css/main.css", "com.liferay.portlet.instanceable=false",
-        "javax.portlet.display-name=Timetracker", "javax.portlet.init-param.template-path=/",
-        "javax.portlet.init-param.view-template=/view.jsp", "javax.portlet.resource-bundle=content.Language",
+        "com.liferay.portlet.header-portlet-css=/css/main.css", 
+        "com.liferay.portlet.instanceable=false",
+        "javax.portlet.display-name=Timetracker", 
+        "javax.portlet.init-param.template-path=/",
+        "javax.portlet.init-param.view-template=/view.jsp", 
+        "javax.portlet.resource-bundle=content.Language",
         "javax.portlet.security-role-ref=power-user,user" }, service = Portlet.class)
 public class TimetrackerPortlet extends MVCPortlet {
 
