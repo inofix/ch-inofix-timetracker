@@ -2,8 +2,8 @@
  * main.scss: css specific to the timetracker-portlet.
  *
  * Created:     2013-10-09 22:44 by Christian Berndt
- * Modified:    2017-07-23 14:09 by Christian Berndt
- * Version:     1.2.5
+ * Modified:    2017-08-29 12:13 by Christian Berndt
+ * Version:     1.2.6
  * 
  */
 @import "bourbon";
@@ -32,6 +32,13 @@
             position: fixed !important;
             bottom: 0 !important;
         }
+    }
+}
+
+.field-wrapper {
+    &.col-sm-6 {
+        padding-left: 0; 
+        padding-right: 0;
     }
 }
     

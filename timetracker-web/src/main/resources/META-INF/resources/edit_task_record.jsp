@@ -2,8 +2,8 @@
     edit_task_record.jsp: edit a single task-record.
 
     Created:     2013-10-07 10:41 by Christian Berndt
-    Modified:    2017-07-25 19:19 by Christian Berndt
-    Version:     1.6.6
+    Modified:    2017-08-29 11:44 19:19 by Christian Berndt
+    Version:     1.6.7
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -115,139 +115,131 @@
         <div class="lfr-form-content">
         
             <aui:fieldset-group markupView="<%= markupView %>">
-        
-            <aui:row>
-                <aui:col span="6">
-                    <aui:fieldset>
-        
-                        <aui:input name="backURL" type="hidden"
-                            value="<%=backURL%>" />
-        
-                        <aui:input name="untilDate" type="hidden"
-                            disabled="<%=!hasUpdatePermission%>" />
-        
-                        <aui:input name="redirect" type="hidden"
-                            value="<%=redirect%>" />
-        
-                        <aui:input name="taskRecordId" type="hidden"
-                            disabled="<%=!hasUpdatePermission%>" />
-        
-                        <aui:input name="workPackage"
-                            helpMessage="work-package-help"
-                            cssClass="timetracker-input"
-                            disabled="<%=!hasUpdatePermission%>" />
-        
-                        <aui:input name="ticketURL" label="ticket-url"
-                            helpMessage="ticket-url-help"
-                            cssClass="timetracker-input"
-                            disabled="<%=!hasUpdatePermission%>" />
-        
-                        <aui:input name="description"
-                            disabled="<%=!hasUpdatePermission%>"
-                            helpMessage="description-help" />
-        
-                    </aui:fieldset>
-                </aui:col>
-        
-                <aui:col span="6">
-        
-                    <aui:fieldset>
-        
-                        <aui:field-wrapper name="date" label="date" required="true">
-        
-                            <liferay-ui:input-date name="fromDate"
+ 
+                <aui:fieldset cssClass="col-md-6">
+    
+                    <aui:input name="backURL" type="hidden"
+                        value="<%=backURL%>" />
+    
+                    <aui:input name="untilDate" type="hidden"
+                        disabled="<%=!hasUpdatePermission%>" />
+    
+                    <aui:input name="redirect" type="hidden"
+                        value="<%=redirect%>" />
+    
+                    <aui:input name="taskRecordId" type="hidden"
+                        disabled="<%=!hasUpdatePermission%>" />
+    
+                    <aui:input name="workPackage"
+                        helpMessage="work-package-help"
+                        cssClass="timetracker-input"
+                        disabled="<%=!hasUpdatePermission%>" />
+    
+                    <aui:input name="ticketURL" label="ticket-url"
+                        helpMessage="ticket-url-help"
+                        cssClass="timetracker-input"
+                        disabled="<%=!hasUpdatePermission%>" />
+    
+                    <aui:input name="description"
+                        disabled="<%=!hasUpdatePermission%>"
+                        helpMessage="description-help" />
+    
+                </aui:fieldset>
+    
+                <aui:fieldset cssClass="col-md-6">
+    
+                    <aui:field-wrapper name="date" label="date" required="true" cssClass="col-sm-6">
+    
+                        <liferay-ui:input-date name="fromDate"
+                            disabled="<%= !hasUpdatePermission %>"
+                            dayParam="fromDateDay"
+                            dayValue="<%=fromDateDay%>"
+                            monthParam="fromDateMonth"
+                            monthValue="<%=fromDateMonth%>"
+                            yearParam="fromDateYear"
+                            yearValue="<%=fromDateYear%>" />
+    
+                    </aui:field-wrapper>
+    
+                    <c:if test="<%=Validator.equals("from-until", timeFormat)%>">
+    
+                        <aui:field-wrapper cssClass="clearfix col-sm-6 from-until"
+                            label="from-until" name="from-until">
+    
+                            <liferay-ui:input-time name="fromTime"
                                 disabled="<%= !hasUpdatePermission %>"
-                                dayParam="fromDateDay"
-                                dayValue="<%=fromDateDay%>"
-                                monthParam="fromDateMonth"
-                                monthValue="<%=fromDateMonth%>"
-                                yearParam="fromDateYear"
-                                yearValue="<%=fromDateYear%>" />
-        
+                                minuteInterval="<%= 15 %>"
+                                minuteParam="fromDateMinute"
+                                minuteValue="<%= fromDateMinute %>"
+                                amPmParam="fromDateAmPm"
+                                hourParam="fromDateHour"
+                                hourValue="<%= fromDateHour %>"
+                                timeFormat="24-hour" />
+    
+                            <liferay-ui:input-time name="untilTime"
+                                disabled="<%= !hasUpdatePermission %>"
+                                minuteInterval="<%= 15 %>"
+                                minuteParam="untilDateMinute"
+                                minuteValue="<%= untilDateMinute %>"
+                                amPmParam="untilDateAmPm"
+                                hourParam="untilDateHour"
+                                hourValue="<%= untilDateHour %>"
+                                timeFormat="24-hour" />
+    
                         </aui:field-wrapper>
+    
+                    </c:if>
+    
+                    <c:if test="<%=!Validator.equals("from-until", timeFormat)%>">
+    
+                        <aui:field-wrapper label="duration"
+                            helpMessage="duration-help">
+    
+                            <%-- TODO: why this? --%>
+                            <input name="<portlet:namespace/>duration"
+                                value="<%=durationInMinutes%>"
+                                class="aui-field-input aui-field-input-text lfr-input-text duration-in-minutes"
+                                disabled="<%=!hasUpdatePermission%>" />
+    
+                        </aui:field-wrapper>
+    
+                    </c:if>
+    
+                    <aui:select name="status" disabled="<%=!hasUpdatePermission%>">
+                        <aui:option
+                            value="<%=WorkflowConstants.STATUS_APPROVED%>"
+                            selected="<%=WorkflowConstants.STATUS_APPROVED == taskRecord.getStatus()%>">
+                            <liferay-ui:message key="approved" />
+                        </aui:option>
+                        <aui:option
+                            value="<%=WorkflowConstants.STATUS_DENIED%>"
+                            selected="<%=WorkflowConstants.STATUS_DENIED == taskRecord.getStatus()%>">
+                            <liferay-ui:message key="denied" />
+                        </aui:option>
+                        <aui:option
+                            value="<%=WorkflowConstants.STATUS_DRAFT%>"
+                            selected="<%=WorkflowConstants.STATUS_DRAFT == taskRecord.getStatus()%>">
+                            <liferay-ui:message key="draft" />
+                        </aui:option>
+                        <aui:option
+                            value="<%=WorkflowConstants.STATUS_INACTIVE%>"
+                            selected="<%=WorkflowConstants.STATUS_INACTIVE == taskRecord.getStatus()%>">
+                            <liferay-ui:message key="inactive" />
+                        </aui:option>
+                        <aui:option
+                            value="<%=WorkflowConstants.STATUS_INCOMPLETE%>"
+                            selected="<%=WorkflowConstants.STATUS_INCOMPLETE == taskRecord.getStatus()%>">
+                            <liferay-ui:message key="incomplete" />
+                        </aui:option>
+                        <aui:option
+                            value="<%=WorkflowConstants.STATUS_PENDING%>"
+                            selected="<%=WorkflowConstants.STATUS_PENDING == taskRecord.getStatus()%>">
+                            <liferay-ui:message key="pending" />
+                        </aui:option>
+                    </aui:select>
+    
+                </aui:fieldset>
         
-                        <c:if
-                            test="<%=Validator.equals("from-until", timeFormat)%>">
-        
-                            <aui:field-wrapper cssClass="clearfix from-until"
-                                name="from-until">
-        
-                                <liferay-ui:input-time name="fromTime"
-                                    disabled="<%= !hasUpdatePermission %>"
-                                    minuteInterval="<%= 15 %>"
-                                    minuteParam="fromDateMinute"
-                                    minuteValue="<%= fromDateMinute %>"
-                                    amPmParam="fromDateAmPm"
-                                    hourParam="fromDateHour"
-                                    hourValue="<%= fromDateHour %>"
-                                    timeFormat="24-hour" />
-        
-                                <liferay-ui:input-time name="untilTime"
-                                    disabled="<%= !hasUpdatePermission %>"
-                                    minuteInterval="<%= 15 %>"
-                                    minuteParam="untilDateMinute"
-                                    minuteValue="<%= untilDateMinute %>"
-                                    amPmParam="untilDateAmPm"
-                                    hourParam="untilDateHour"
-                                    hourValue="<%= untilDateHour %>"
-                                    timeFormat="24-hour" />
-        
-                            </aui:field-wrapper>
-        
-                        </c:if>
-        
-                        <c:if test="<%=!Validator.equals("from-until", timeFormat)%>">
-        
-                            <aui:field-wrapper label="duration"
-                                helpMessage="duration-help">
-        
-                                <%-- TODO: why this? --%>
-                                <input name="<portlet:namespace/>duration"
-                                    value="<%=durationInMinutes%>"
-                                    class="aui-field-input aui-field-input-text lfr-input-text duration-in-minutes"
-                                    disabled="<%=!hasUpdatePermission%>" />
-        
-                            </aui:field-wrapper>
-        
-                        </c:if>
-        
-                        <aui:select name="status" disabled="<%=!hasUpdatePermission%>">
-                            <aui:option
-                                value="<%=WorkflowConstants.STATUS_APPROVED%>"
-                                selected="<%=WorkflowConstants.STATUS_APPROVED == taskRecord.getStatus()%>">
-                                <liferay-ui:message key="approved" />
-                            </aui:option>
-                            <aui:option
-                                value="<%=WorkflowConstants.STATUS_DENIED%>"
-                                selected="<%=WorkflowConstants.STATUS_DENIED == taskRecord.getStatus()%>">
-                                <liferay-ui:message key="denied" />
-                            </aui:option>
-                            <aui:option
-                                value="<%=WorkflowConstants.STATUS_DRAFT%>"
-                                selected="<%=WorkflowConstants.STATUS_DRAFT == taskRecord.getStatus()%>">
-                                <liferay-ui:message key="draft" />
-                            </aui:option>
-                            <aui:option
-                                value="<%=WorkflowConstants.STATUS_INACTIVE%>"
-                                selected="<%=WorkflowConstants.STATUS_INACTIVE == taskRecord.getStatus()%>">
-                                <liferay-ui:message key="inactive" />
-                            </aui:option>
-                            <aui:option
-                                value="<%=WorkflowConstants.STATUS_INCOMPLETE%>"
-                                selected="<%=WorkflowConstants.STATUS_INCOMPLETE == taskRecord.getStatus()%>">
-                                <liferay-ui:message key="incomplete" />
-                            </aui:option>
-                            <aui:option
-                                value="<%=WorkflowConstants.STATUS_PENDING%>"
-                                selected="<%=WorkflowConstants.STATUS_PENDING == taskRecord.getStatus()%>">
-                                <liferay-ui:message key="pending" />
-                            </aui:option>
-                        </aui:select>
-        
-                    </aui:fieldset>
-        
-                </aui:col>
-            </aui:row>
             </aui:fieldset-group>
         </div>
                            
