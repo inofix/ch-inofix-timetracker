@@ -14,6 +14,7 @@ install: true
 
 before_script:
   - mv standalone-gradle.properties gradle.properties
+  - mv standalone-settings.gradle settings.gradle
 
 script:
   - ./gradlew clean initBundle buildService testIntegration
