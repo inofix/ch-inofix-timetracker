@@ -390,6 +390,7 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
 
         try {
 
+            // TODO: use extension from upload
             file = FileUtil.createTempFile("lar");
 
             FileUtil.write(file, inputStream);
