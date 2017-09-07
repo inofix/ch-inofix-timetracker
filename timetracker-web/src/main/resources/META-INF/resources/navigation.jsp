@@ -25,7 +25,9 @@
         <aui:nav-item href="<%= exportImportURL.toString()  %>" label="export-import" selected="<%= "export-import".equals(tabs1) %>" />
     </aui:nav>
 
-    <liferay-portlet:renderURL varImpl="searchURL"/>
+    <liferay-portlet:renderURL varImpl="searchURL">
+        <liferay-portlet:param name="orderByCol" value="<%= ParamUtil.getString(request, "orderByCol") %>"/>
+    </liferay-portlet:renderURL>
 
     <aui:form action="<%= searchURL.toString() %>" cssClass="task-record-search" name="searchFm">
          
