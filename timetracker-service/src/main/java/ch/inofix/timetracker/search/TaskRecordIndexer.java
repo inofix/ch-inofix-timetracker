@@ -45,8 +45,8 @@ import ch.inofix.timetracker.service.permission.TaskRecordPermission;
  * @author Christian Berndt
  * @author Stefan Luebbers
  * @created 2016-11-26 15:04
- * @modified 2017-07-25 17:23
- * @version 1.0.8
+ * @modified 2017-09-09 21:24
+ * @version 1.0.9
  *
  */
 @Component(immediate = true, service = Indexer.class)
@@ -103,13 +103,14 @@ public class TaskRecordIndexer extends BaseIndexer<TaskRecord> {
         // "ch.inofix". For yet incomplete understood reasons, the "type" :
         // "phrase_prefix" clause returns only a subset of the expected results.
 
-        String workPackage = (String) searchContext.getAttribute("workPackage");
-
-        if (Validator.isNotNull(workPackage)) {
-             BooleanFilter booleanFilter = new BooleanFilter();
-             booleanFilter.add(new PrefixFilter("workPackage", workPackage));
-             contextBooleanFilter.add(booleanFilter, BooleanClauseOccur.MUST);
-        }
+//        String workPackage = (String) searchContext.getAttribute("workPackage");
+//
+//        if (Validator.isNotNull(workPackage)) {
+//             BooleanFilter booleanFilter = new BooleanFilter();
+//             PrefixFilter prefixFilter = new PrefixFilter("workPackage", workPackage);
+//             booleanFilter.add(prefixFilter);            
+//             contextBooleanFilter.add(booleanFilter, BooleanClauseOccur.MUST);
+//        }
     }
 
     @Override
@@ -117,6 +118,7 @@ public class TaskRecordIndexer extends BaseIndexer<TaskRecord> {
             SearchContext searchContext) throws Exception {
 
         addSearchTerm(searchQuery, searchContext, "description", false);
+        addSearchTerm(searchQuery, searchContext, "workPackage", true); 
         // // TODO: add ticketURL
 
         LinkedHashMap<String, Object> params = (LinkedHashMap<String, Object>) searchContext.getAttribute("params");
@@ -146,12 +148,12 @@ public class TaskRecordIndexer extends BaseIndexer<TaskRecord> {
         document.addDateSortable("fromDate", taskRecord.getFromDate());
         document.addNumberSortable("taskRecordId", taskRecord.getTaskRecordId());
         document.addNumberSortable(Field.STATUS, taskRecord.getStatus());
-        document.addTextSortable("workPackage", taskRecord.getWorkPackage());
         document.addTextSortable("ticketURL", taskRecord.getTicketURL());
         document.addKeyword("ownerUserId", taskRecord.getUserId());
         document.addDateSortable("modifiedDate", taskRecord.getModifiedDate());
         document.addDateSortable("untilDate", taskRecord.getUntilDate());
         document.addTextSortable("userName", taskRecord.getUserName());
+        document.addTextSortable("workPackage", taskRecord.getWorkPackage());
 
         return document;
 
