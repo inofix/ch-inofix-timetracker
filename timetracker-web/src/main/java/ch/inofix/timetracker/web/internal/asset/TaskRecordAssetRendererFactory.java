@@ -59,8 +59,6 @@ public class TaskRecordAssetRendererFactory extends BaseAssetRendererFactory<Tas
     @Override
     public AssetRenderer<TaskRecord> getAssetRenderer(long classPK, int type) throws PortalException {
 
-        _log.info("getAssetRenderer");
-
         TaskRecord taskRecord = _taskRecordLocalService.getTaskRecord(classPK);
 
         TaskRecordAssetRenderer taskRecordAssetRenderer = new TaskRecordAssetRenderer(taskRecord);
