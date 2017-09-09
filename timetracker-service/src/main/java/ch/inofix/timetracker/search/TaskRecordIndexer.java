@@ -4,7 +4,6 @@ import java.text.DateFormat;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Locale;
-
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletResponse;
 
@@ -45,8 +44,8 @@ import ch.inofix.timetracker.service.permission.TaskRecordPermission;
  * @author Christian Berndt
  * @author Stefan Luebbers
  * @created 2016-11-26 15:04
- * @modified 2017-09-09 22:46
- * @version 1.1.0
+ * @modified 2017-09-09 23:37
+ * @version 1.1.1
  *
  */
 @Component(immediate = true, service = Indexer.class)
@@ -79,6 +78,8 @@ public class TaskRecordIndexer extends BaseIndexer<TaskRecord> {
 
         addStatus(contextBooleanFilter, searchContext);
 
+        boolean advancedSearch = GetterUtil.getBoolean(searchContext.getAttribute("advancedSearch"));
+
         // from- and until-date
 
         Date fromDate = GetterUtil.getDate(searchContext.getAttribute("fromDate"), DateFormat.getDateInstance(), null);
@@ -98,16 +99,19 @@ public class TaskRecordIndexer extends BaseIndexer<TaskRecord> {
 
         contextBooleanFilter.addRangeTerm("fromDate_Number_sortable", min, max);
 
+        // workPackage
+
         String workPackage = (String) searchContext.getAttribute("workPackage");
 
-        if (Validator.isNotNull(workPackage)) {
+        if (Validator.isNotNull(workPackage) && advancedSearch) {
 
             BooleanFilter booleanFilter = new BooleanFilter();
-            
-            // Use the sortable index field, since the regular field is analyzed, 
-            // which means, we can't use hyphens in work-package names.
+
+            // Use the sortable index field, since the regular field is
+            // analyzed, which means, we can't use hyphens in work-package
+            // names.
             PrefixFilter prefixFilter = new PrefixFilter("workPackage_sortable", workPackage);
-            
+
             booleanFilter.add(prefixFilter);
             contextBooleanFilter.add(booleanFilter, BooleanClauseOccur.MUST);
         }
@@ -116,9 +120,15 @@ public class TaskRecordIndexer extends BaseIndexer<TaskRecord> {
     @Override
     public void postProcessSearchQuery(BooleanQuery searchQuery, BooleanFilter fullQueryBooleanFilter,
             SearchContext searchContext) throws Exception {
+        
+        boolean advancedSearch = GetterUtil.getBoolean(searchContext.getAttribute("advancedSearch"));
 
         addSearchTerm(searchQuery, searchContext, "description", false);
-        // // TODO: add ticketURL
+        if (!advancedSearch) {
+            addSearchTerm(searchQuery, searchContext, "workPackage", true);
+        }
+        
+        // TODO: add ticketURL
 
         LinkedHashMap<String, Object> params = (LinkedHashMap<String, Object>) searchContext.getAttribute("params");
 
