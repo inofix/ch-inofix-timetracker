@@ -45,8 +45,8 @@ import ch.inofix.timetracker.service.permission.TaskRecordPermission;
  * @author Christian Berndt
  * @author Stefan Luebbers
  * @created 2016-11-26 15:04
- * @modified 2017-09-09 21:24
- * @version 1.0.9
+ * @modified 2017-09-09 22:46
+ * @version 1.1.0
  *
  */
 @Component(immediate = true, service = Indexer.class)
@@ -98,19 +98,19 @@ public class TaskRecordIndexer extends BaseIndexer<TaskRecord> {
 
         contextBooleanFilter.addRangeTerm("fromDate_Number_sortable", min, max);
 
-        // We use a prefixFilter for the workPackage field, since filtering via
-        // the addSearchTerm method does not work for workPackages à la
-        // "ch.inofix". For yet incomplete understood reasons, the "type" :
-        // "phrase_prefix" clause returns only a subset of the expected results.
+        String workPackage = (String) searchContext.getAttribute("workPackage");
 
-//        String workPackage = (String) searchContext.getAttribute("workPackage");
-//
-//        if (Validator.isNotNull(workPackage)) {
-//             BooleanFilter booleanFilter = new BooleanFilter();
-//             PrefixFilter prefixFilter = new PrefixFilter("workPackage", workPackage);
-//             booleanFilter.add(prefixFilter);            
-//             contextBooleanFilter.add(booleanFilter, BooleanClauseOccur.MUST);
-//        }
+        if (Validator.isNotNull(workPackage)) {
+
+            BooleanFilter booleanFilter = new BooleanFilter();
+            
+            // Use the sortable index field, since the regular field is analyzed, 
+            // which means, we can't use hyphens in work-package names.
+            PrefixFilter prefixFilter = new PrefixFilter("workPackage_sortable", workPackage);
+            
+            booleanFilter.add(prefixFilter);
+            contextBooleanFilter.add(booleanFilter, BooleanClauseOccur.MUST);
+        }
     }
 
     @Override
@@ -118,7 +118,6 @@ public class TaskRecordIndexer extends BaseIndexer<TaskRecord> {
             SearchContext searchContext) throws Exception {
 
         addSearchTerm(searchQuery, searchContext, "description", false);
-        addSearchTerm(searchQuery, searchContext, "workPackage", true); 
         // // TODO: add ticketURL
 
         LinkedHashMap<String, Object> params = (LinkedHashMap<String, Object>) searchContext.getAttribute("params");
