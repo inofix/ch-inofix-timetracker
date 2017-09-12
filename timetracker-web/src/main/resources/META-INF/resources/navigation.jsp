@@ -2,8 +2,8 @@
     navigation.jsp: Default navigation of Inofix' timetracker.
     
     Created:     2017-06-05 12:39 by Christian Berndt
-    Modified:    2017-07-25 19:14 by Christian Berndt
-    Version:     1.0.8
+    Modified:    2017-09-12 22:57 by Christian Berndt
+    Version:     1.0.9
 --%>
 
 <%@ include file="/init.jsp" %>
@@ -43,3 +43,12 @@
     </aui:form>
     
 </aui:nav-bar>
+
+<aui:script>
+    function <portlet:namespace />submitSearch() {
+        
+        var form = AUI.$(document.<portlet:namespace />searchFm);
+        
+        submitForm(form);
+    }
+</aui:script>
