@@ -41,8 +41,8 @@ import ch.inofix.timetracker.service.TaskRecordLocalService;
  *
  * @author Christian Berndt
  * @created 2017-06-04 18:07
- * @modified 2017-06-16 19:29
- * @version 1.0.4
+ * @modified 2017-09-14 10:52
+ * @version 1.0.5
  *
  */
 @Component(immediate = true, property = { "model.class.name=ch.inofix.timetracker.model.TaskRecord" }, service = {
@@ -180,7 +180,6 @@ public class TaskRecordImportController extends BaseExportImportController imple
 
                         // Add taskRecord with its original name
                         _taskRecordLocalService.addTaskRecord(importTaskRecord);
-                        _taskRecordLocalService.addTaskRecordResources(importTaskRecord, true, false);
 
                         numImported++;
 
