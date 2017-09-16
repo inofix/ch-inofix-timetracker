@@ -29,8 +29,8 @@ import ch.inofix.timetracker.service.permission.TimetrackerPortletPermission;
  *
  * @author Christian Berndt
  * @created 2017-04-17 16:42
- * @modified 2017-04-18 16:23
- * @version 1.0.1
+ * @modified 2017-09-16 23:29
+ * @version 1.0.2
  *
  */
 @Component(immediate = true, property = {
@@ -88,6 +88,10 @@ public class TimetrackerPortletDataHandler extends BasePortletDataHandler {
         ActionableDynamicQuery actionableDynamicQuery = _taskRecordLocalService
                 .getExportActionableDynamicQuery(portletDataContext);
 
+        long groupId = portletDataContext.getScopeGroupId();
+
+        actionableDynamicQuery.setGroupId(groupId);
+        
         actionableDynamicQuery.performActions();
 
         return getExportDataRootElementString(rootElement);
@@ -120,7 +124,11 @@ public class TimetrackerPortletDataHandler extends BasePortletDataHandler {
 
         ActionableDynamicQuery actionableDynamicQuery = _taskRecordLocalService
                 .getExportActionableDynamicQuery(portletDataContext);
+        
+        long groupId = portletDataContext.getScopeGroupId();
 
+        actionableDynamicQuery.setGroupId(groupId);
+        
         actionableDynamicQuery.performCount();
     }
 
