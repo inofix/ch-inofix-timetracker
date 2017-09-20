@@ -75,6 +75,10 @@ public class TaskRecordIndexer extends BaseIndexer<TaskRecord> {
     @Override
     public void postProcessContextBooleanFilter(BooleanFilter contextBooleanFilter, SearchContext searchContext)
             throws Exception {
+        
+        if (_log.isDebugEnabled()) {
+            _log.debug("postProcessSearchQuery()");
+        }
 
         addStatus(contextBooleanFilter, searchContext);
 
@@ -101,6 +105,10 @@ public class TaskRecordIndexer extends BaseIndexer<TaskRecord> {
 
         String workPackage = (String) searchContext.getAttribute("workPackage");
 
+        if (_log.isDebugEnabled()) {
+            _log.debug("workPackage = " + workPackage);
+        }
+
         if (Validator.isNotNull(workPackage)) {
 
             BooleanFilter booleanFilter = new BooleanFilter();
@@ -120,12 +128,20 @@ public class TaskRecordIndexer extends BaseIndexer<TaskRecord> {
     public void postProcessSearchQuery(BooleanQuery searchQuery, BooleanFilter fullQueryBooleanFilter,
             SearchContext searchContext) throws Exception {
         
+        if (_log.isDebugEnabled()) {
+            _log.debug("postProcessSearchQuery()");
+        }
+        
         boolean advancedSearch = GetterUtil.getBoolean(searchContext.getAttribute("advancedSearch"));
+        
+        if (_log.isDebugEnabled()) {
+            _log.debug("advancedSearch = " + advancedSearch);
+        }
 
         addSearchTerm(searchQuery, searchContext, "description", false);
-        if (!advancedSearch) {
-            addSearchTerm(searchQuery, searchContext, "workPackage", true);
-        }
+//        if (!advancedSearch) {
+//            addSearchTerm(searchQuery, searchContext, "workPackage", true);
+//        }
         
         // TODO: add ticketURL
 
@@ -200,17 +216,21 @@ public class TaskRecordIndexer extends BaseIndexer<TaskRecord> {
                 isCommitImmediately());
     }
     
-//    @Override 
-//    protected void postProcessFullQuery(BooleanQuery fullQuery, SearchContext searchContext) {
-//
+    @Override 
+    protected void postProcessFullQuery(BooleanQuery fullQuery, SearchContext searchContext) {
+        
+        if (_log.isDebugEnabled()) {
+            _log.debug("fullQuery = " + fullQuery);
+        }
+
 //        String workPackage = (String) searchContext.getAttribute("workPackage");
 //
 //        if (Validator.isNotNull(workPackage)) {       
 //            
 //            fullQuery.addRequiredTerm("workPackage_sortable", workPackage);
 //        }
-//        
-//    }
+        
+    }
 
     protected void reindexTaskRecords(long companyId) throws PortalException {
 
