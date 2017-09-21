@@ -19,6 +19,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.BaseIndexer;
+import com.liferay.portal.kernel.search.BooleanClauseOccur;
 import com.liferay.portal.kernel.search.BooleanQuery;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
@@ -27,6 +28,7 @@ import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.Summary;
 import com.liferay.portal.kernel.search.filter.BooleanFilter;
+import com.liferay.portal.kernel.search.filter.PrefixFilter;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -42,8 +44,8 @@ import ch.inofix.timetracker.service.permission.TaskRecordPermission;
  * @author Christian Berndt
  * @author Stefan Luebbers
  * @created 2016-11-26 15:04
- * @modified 2017-09-19 21:09
- * @version 1.1.2
+ * @modified 2017-09-20 12:16
+ * @version 1.1.3
  *
  */
 @Component(immediate = true, service = Indexer.class)
@@ -73,6 +75,10 @@ public class TaskRecordIndexer extends BaseIndexer<TaskRecord> {
     @Override
     public void postProcessContextBooleanFilter(BooleanFilter contextBooleanFilter, SearchContext searchContext)
             throws Exception {
+        
+        if (_log.isDebugEnabled()) {
+            _log.debug("postProcessSearchQuery()");
+        }
 
         addStatus(contextBooleanFilter, searchContext);
 
@@ -94,6 +100,27 @@ public class TaskRecordIndexer extends BaseIndexer<TaskRecord> {
         }
 
         contextBooleanFilter.addRangeTerm("fromDate_Number_sortable", min, max);
+        
+        // workPackage
+
+        String workPackage = (String) searchContext.getAttribute("workPackage");
+
+        if (_log.isDebugEnabled()) {
+            _log.debug("workPackage = " + workPackage);
+        }
+
+        if (Validator.isNotNull(workPackage)) {
+
+            BooleanFilter booleanFilter = new BooleanFilter();
+
+            // Use the sortable index field, since the regular field is
+            // analyzed, which means, we can't use hyphens in workpackage
+            // names.
+            PrefixFilter prefixFilter = new PrefixFilter("workPackage_sortable", workPackage);
+
+            booleanFilter.add(prefixFilter);
+            contextBooleanFilter.add(booleanFilter, BooleanClauseOccur.MUST);
+        }
 
     }
 
@@ -101,12 +128,20 @@ public class TaskRecordIndexer extends BaseIndexer<TaskRecord> {
     public void postProcessSearchQuery(BooleanQuery searchQuery, BooleanFilter fullQueryBooleanFilter,
             SearchContext searchContext) throws Exception {
         
+        if (_log.isDebugEnabled()) {
+            _log.debug("postProcessSearchQuery()");
+        }
+        
         boolean advancedSearch = GetterUtil.getBoolean(searchContext.getAttribute("advancedSearch"));
+        
+        if (_log.isDebugEnabled()) {
+            _log.debug("advancedSearch = " + advancedSearch);
+        }
 
         addSearchTerm(searchQuery, searchContext, "description", false);
-        if (!advancedSearch) {
-            addSearchTerm(searchQuery, searchContext, "workPackage", true);
-        }
+//        if (!advancedSearch) {
+//            addSearchTerm(searchQuery, searchContext, "workPackage", true);
+//        }
         
         // TODO: add ticketURL
 
@@ -183,13 +218,17 @@ public class TaskRecordIndexer extends BaseIndexer<TaskRecord> {
     
     @Override 
     protected void postProcessFullQuery(BooleanQuery fullQuery, SearchContext searchContext) {
-
-        String workPackage = (String) searchContext.getAttribute("workPackage");
-
-        if (Validator.isNotNull(workPackage)) {       
-            
-            fullQuery.addRequiredTerm("workPackage_sortable", workPackage);
+        
+        if (_log.isDebugEnabled()) {
+            _log.debug("fullQuery = " + fullQuery);
         }
+
+//        String workPackage = (String) searchContext.getAttribute("workPackage");
+//
+//        if (Validator.isNotNull(workPackage)) {       
+//            
+//            fullQuery.addRequiredTerm("workPackage_sortable", workPackage);
+//        }
         
     }
 

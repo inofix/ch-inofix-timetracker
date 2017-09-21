@@ -2,8 +2,8 @@
     edit_task_record.jsp: edit a single task-record.
 
     Created:     2013-10-07 10:41 by Christian Berndt
-    Modified:    2017-08-29 11:44 19:19 by Christian Berndt
-    Version:     1.6.7
+    Modified:    2017-09-20 12:21 by Christian Berndt
+    Version:     1.6.8
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -116,7 +116,7 @@
         
             <aui:fieldset-group markupView="<%= markupView %>">
  
-                <aui:fieldset cssClass="col-md-6">
+                <aui:fieldset>
     
                     <aui:input name="backURL" type="hidden"
                         value="<%=backURL%>" />
@@ -144,9 +144,6 @@
                         disabled="<%=!hasUpdatePermission%>"
                         helpMessage="description-help" />
     
-                </aui:fieldset>
-    
-                <aui:fieldset cssClass="col-md-6">
     
                     <aui:field-wrapper name="date" label="date" required="true" cssClass="col-sm-6">
     
