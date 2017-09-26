@@ -2,8 +2,8 @@
     configuration.jsp: configuration of the timetracker portlet.
     
     Created:    2017-03-09 14:20 by Stefan Lübbers
-    Modified:   2017-06-24 17:55 by Christian Berndt
-    Version:    1.0.8
+    Modified:   2017-09-26 21:40 by Christian Berndt
+    Version:    1.0.9
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -86,14 +86,18 @@
                 title="export" extended="true">
 
                 <aui:fieldset>
+                
+                    <aui:input helpMessage="export-name-help"
+                        name="export-name" value="<%=exportName%>" />
+                        
                     <aui:input helpMessage="export-file-name-help"
                         name="export-file-name"
                         value="<%=exportFileName%>" />
-                    <aui:input helpMessage="export-name-help"
-                        name="export-name" value="<%=exportName%>" />
+
                     <aui:input helpMessage="export-script-help"
                         name="export-script" type="textarea"
                         value="<%= exportScript %>" />
+                        
                 </aui:fieldset>
 
             </liferay-ui:panel>
