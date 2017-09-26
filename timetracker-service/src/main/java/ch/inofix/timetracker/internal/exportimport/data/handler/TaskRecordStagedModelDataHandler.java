@@ -29,7 +29,11 @@ import ch.inofix.timetracker.service.TaskRecordLocalService;
  * @version 1.0.1
  *
  */
-@Component(immediate = true, service = StagedModelDataHandler.class)
+@Component(
+    immediate = true, 
+    property = {"model.class.name=ch.inofix.timetracker.model.TaskRecord"},
+    service = StagedModelDataHandler.class
+)
 public class TaskRecordStagedModelDataHandler extends BaseStagedModelDataHandler<TaskRecord> {
 
     public static final String[] CLASS_NAMES = { TaskRecord.class.getName() };

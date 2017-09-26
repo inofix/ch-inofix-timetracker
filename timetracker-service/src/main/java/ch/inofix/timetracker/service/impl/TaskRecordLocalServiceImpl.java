@@ -53,7 +53,6 @@ import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.service.permission.ModelPermissions;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.FileUtil;
@@ -86,8 +85,8 @@ import ch.inofix.timetracker.social.TaskRecordActivityKeys;
  *
  * @author Christian Berndt
  * @created 2013-10-06 21:24
- * @modified 2017-08-29 22:45
- * @version 1.6.7
+ * @modified 2017-09-14 10:51
+ * @version 1.6.9
  * @see TaskRecordLocalServiceBaseImpl
  * @see ch.inofix.timetracker.service.TaskRecordLocalServiceUtil
  */
@@ -141,12 +140,7 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
 
         // Resources
 
-        if (serviceContext.isAddGroupPermissions() || serviceContext.isAddGuestPermissions()) {
-            addTaskRecordResources(taskRecord, serviceContext.isAddGroupPermissions(),
-                    serviceContext.isAddGuestPermissions());
-        } else {
-            addTaskRecordResources(taskRecord, serviceContext.getModelPermissions());
-        }
+        resourceLocalService.addModelResources(taskRecord, serviceContext);
 
         // Asset
 
@@ -164,40 +158,6 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
 
         return taskRecord;
 
-    }
-
-    @Override
-    public void addTaskRecordResources(TaskRecord taskRecord, boolean addGroupPermissions, boolean addGuestPermissions)
-            throws PortalException {
-
-        resourceLocalService.addResources(taskRecord.getCompanyId(), taskRecord.getGroupId(), taskRecord.getUserId(),
-                TaskRecord.class.getName(), taskRecord.getTaskRecordId(), false, addGroupPermissions,
-                addGuestPermissions);
-    }
-
-    @Override
-    public void addTaskRecordResources(TaskRecord taskRecord, ModelPermissions modelPermissions)
-            throws PortalException {
-
-        resourceLocalService.addModelResources(taskRecord.getCompanyId(), taskRecord.getGroupId(),
-                taskRecord.getUserId(), TaskRecord.class.getName(), taskRecord.getTaskRecordId(), modelPermissions);
-    }
-
-    @Override
-    public void addTaskRecordResources(long taskRecordId, boolean addGroupPermissions, boolean addGuestPermissions)
-            throws PortalException {
-
-        TaskRecord taskRecord = taskRecordPersistence.findByPrimaryKey(taskRecordId);
-
-        addTaskRecordResources(taskRecord, addGroupPermissions, addGuestPermissions);
-    }
-
-    @Override
-    public void addTaskRecordResources(long taskRecordId, ModelPermissions modelPermissions) throws PortalException {
-
-        TaskRecord taskRecord = taskRecordPersistence.findByPrimaryKey(taskRecordId);
-
-        addTaskRecordResources(taskRecord, modelPermissions);
     }
 
     /**
@@ -390,6 +350,7 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
 
         try {
 
+            // TODO: use extension from upload
             file = FileUtil.createTempFile("lar");
 
             FileUtil.write(file, inputStream);

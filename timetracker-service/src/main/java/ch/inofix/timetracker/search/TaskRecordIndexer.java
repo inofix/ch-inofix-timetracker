@@ -4,7 +4,6 @@ import java.text.DateFormat;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Locale;
-
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletResponse;
 
@@ -45,8 +44,8 @@ import ch.inofix.timetracker.service.permission.TaskRecordPermission;
  * @author Christian Berndt
  * @author Stefan Luebbers
  * @created 2016-11-26 15:04
- * @modified 2017-07-25 17:23
- * @version 1.0.8
+ * @modified 2017-09-20 12:16
+ * @version 1.1.3
  *
  */
 @Component(immediate = true, service = Indexer.class)
@@ -76,6 +75,10 @@ public class TaskRecordIndexer extends BaseIndexer<TaskRecord> {
     @Override
     public void postProcessContextBooleanFilter(BooleanFilter contextBooleanFilter, SearchContext searchContext)
             throws Exception {
+        
+        if (_log.isDebugEnabled()) {
+            _log.debug("postProcessSearchQuery()");
+        }
 
         addStatus(contextBooleanFilter, searchContext);
 
@@ -97,27 +100,50 @@ public class TaskRecordIndexer extends BaseIndexer<TaskRecord> {
         }
 
         contextBooleanFilter.addRangeTerm("fromDate_Number_sortable", min, max);
-
-        // We use a prefixFilter for the workPackage field, since filtering via
-        // the addSearchTerm method does not work for workPackages à la
-        // "ch.inofix". For yet incomplete understood reasons, the "type" :
-        // "phrase_prefix" clause returns only a subset of the expected results.
+        
+        // workPackage
 
         String workPackage = (String) searchContext.getAttribute("workPackage");
 
-        if (Validator.isNotNull(workPackage)) {
-             BooleanFilter booleanFilter = new BooleanFilter();
-             booleanFilter.add(new PrefixFilter("workPackage", workPackage));
-             contextBooleanFilter.add(booleanFilter, BooleanClauseOccur.MUST);
+        if (_log.isDebugEnabled()) {
+            _log.debug("workPackage = " + workPackage);
         }
+
+        if (Validator.isNotNull(workPackage)) {
+
+            BooleanFilter booleanFilter = new BooleanFilter();
+
+            // Use the sortable index field, since the regular field is
+            // analyzed, which means, we can't use hyphens in workpackage
+            // names.
+            PrefixFilter prefixFilter = new PrefixFilter("workPackage_sortable", workPackage);
+
+            booleanFilter.add(prefixFilter);
+            contextBooleanFilter.add(booleanFilter, BooleanClauseOccur.MUST);
+        }
+
     }
 
     @Override
     public void postProcessSearchQuery(BooleanQuery searchQuery, BooleanFilter fullQueryBooleanFilter,
             SearchContext searchContext) throws Exception {
+        
+        if (_log.isDebugEnabled()) {
+            _log.debug("postProcessSearchQuery()");
+        }
+        
+        boolean advancedSearch = GetterUtil.getBoolean(searchContext.getAttribute("advancedSearch"));
+        
+        if (_log.isDebugEnabled()) {
+            _log.debug("advancedSearch = " + advancedSearch);
+        }
 
         addSearchTerm(searchQuery, searchContext, "description", false);
-        // // TODO: add ticketURL
+//        if (!advancedSearch) {
+//            addSearchTerm(searchQuery, searchContext, "workPackage", true);
+//        }
+        
+        // TODO: add ticketURL
 
         LinkedHashMap<String, Object> params = (LinkedHashMap<String, Object>) searchContext.getAttribute("params");
 
@@ -146,12 +172,12 @@ public class TaskRecordIndexer extends BaseIndexer<TaskRecord> {
         document.addDateSortable("fromDate", taskRecord.getFromDate());
         document.addNumberSortable("taskRecordId", taskRecord.getTaskRecordId());
         document.addNumberSortable(Field.STATUS, taskRecord.getStatus());
-        document.addTextSortable("workPackage", taskRecord.getWorkPackage());
         document.addTextSortable("ticketURL", taskRecord.getTicketURL());
         document.addKeyword("ownerUserId", taskRecord.getUserId());
         document.addDateSortable("modifiedDate", taskRecord.getModifiedDate());
         document.addDateSortable("untilDate", taskRecord.getUntilDate());
         document.addTextSortable("userName", taskRecord.getUserName());
+        document.addTextSortable("workPackage", taskRecord.getWorkPackage());
 
         return document;
 
@@ -188,6 +214,22 @@ public class TaskRecordIndexer extends BaseIndexer<TaskRecord> {
 
         IndexWriterHelperUtil.updateDocument(getSearchEngineId(), taskRecord.getCompanyId(), document,
                 isCommitImmediately());
+    }
+    
+    @Override 
+    protected void postProcessFullQuery(BooleanQuery fullQuery, SearchContext searchContext) {
+        
+        if (_log.isDebugEnabled()) {
+            _log.debug("fullQuery = " + fullQuery);
+        }
+
+//        String workPackage = (String) searchContext.getAttribute("workPackage");
+//
+//        if (Validator.isNotNull(workPackage)) {       
+//            
+//            fullQuery.addRequiredTerm("workPackage_sortable", workPackage);
+//        }
+        
     }
 
     protected void reindexTaskRecords(long companyId) throws PortalException {
