@@ -2,8 +2,8 @@
     search.jsp: The extended search of the timetracker portlet.
 
     Created:     2017-06-05 22:04 by Christian Berndt
-    Modified:    2017-09-12 23:10 by Christian Berndt
-    Version:     1.0.7
+    Modified:    2017-10-03 14:37 by Christian Berndt
+    Version:     1.0.8
 --%>
 
 <%@ include file="/init.jsp" %>
@@ -47,6 +47,9 @@
     // remove facet attributes from context, since we need the field's index here
     searchContext.setAttribute("ownerUserId", null); 
     
+    // remove keywords
+    searchContext.setAttribute("keywords", null);
+        
     Indexer<TaskRecord> indexer = IndexerRegistryUtil.getIndexer(TaskRecord.class);
     Hits hits = indexer.search(searchContext);
     
@@ -141,3 +144,7 @@
     </aui:fieldset>
     
 </liferay-ui:search-toggle>
+
+<%!
+    private static Log _log = LogFactoryUtil.getLog("ch_inofix_timetracker_web.search_bar_jsp");
+%>

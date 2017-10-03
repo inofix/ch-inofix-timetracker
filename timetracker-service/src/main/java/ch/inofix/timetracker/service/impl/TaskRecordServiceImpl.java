@@ -57,8 +57,8 @@ import ch.inofix.timetracker.service.permission.TimetrackerPortletPermission;
  * @author Christian Berndt
  * @author Stefan Luebbers
  * @created 2015-05-07 23:50
- * @modified 2017-07-09 16:22
- * @version 1.1.8
+ * @modified 2017-09-29 20:52
+ * @version 1.1.0
  * @see TaskRecordServiceBaseImpl
  * @see ch.inofix.timetracker.service.TaskRecordServiceUtil
  */
@@ -189,11 +189,11 @@ public class TaskRecordServiceImpl extends TaskRecordServiceBaseImpl {
 
     @Override
     public Hits search(long userId, long groupId, long ownerUserId, String workPackage, String description, int status,
-            Date fromDate, Date untilDate, LinkedHashMap<String, Object> params, boolean andSearch, int start, int end,
+            Date fromDate, Date untilDate, LinkedHashMap<String, Object> params, boolean andSearch, boolean advancedSearch, int start, int end,
             Sort sort) throws PortalException {
 
         return taskRecordLocalService.search(userId, groupId, ownerUserId, workPackage, description, status, fromDate,
-                untilDate, params, andSearch, start, end, sort);
+                untilDate, params, andSearch, advancedSearch, start, end, sort);
 
     }
 

@@ -85,8 +85,8 @@ import ch.inofix.timetracker.social.TaskRecordActivityKeys;
  *
  * @author Christian Berndt
  * @created 2013-10-06 21:24
- * @modified 2017-09-14 10:51
- * @version 1.6.9
+ * @modified 2017-09-29 20:52
+ * @version 1.7.0
  * @see TaskRecordLocalServiceBaseImpl
  * @see ch.inofix.timetracker.service.TaskRecordLocalServiceUtil
  */
@@ -386,23 +386,23 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
         }
 
         return search(userId, groupId, ownerUserId, workPackage, description, WorkflowConstants.STATUS_ANY, null, null,
-                null, andOperator, start, end, sort);
+                null, andOperator, false, start, end, sort);
 
     }
 
     @Override
     public Hits search(long userId, long groupId, long ownerUserId, String workPackage, String description, int status,
-            Date fromDate, Date untilDate, LinkedHashMap<String, Object> params, boolean andSearch, int start, int end,
-            Sort sort) throws PortalException {
-
+            Date fromDate, Date untilDate, LinkedHashMap<String, Object> params, boolean andSearch,
+            boolean advancedSearch, int start, int end, Sort sort) throws PortalException {
+        
         if (sort == null) {
             sort = new Sort(Field.MODIFIED_DATE, true);
         }
-
+        
         Indexer<TaskRecord> indexer = IndexerRegistryUtil.getIndexer(TaskRecord.class.getName());
 
         SearchContext searchContext = buildSearchContext(userId, groupId, ownerUserId, workPackage, description, status,
-                fromDate, untilDate, params, andSearch, start, end, sort);
+                fromDate, untilDate, params, andSearch, advancedSearch, start, end, sort);
 
         return indexer.search(searchContext);
 
@@ -489,9 +489,11 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
 
     protected SearchContext buildSearchContext(long userId, long groupId, long ownerUserId, String workPackage,
             String description, int status, Date fromDate, Date untilDate, LinkedHashMap<String, Object> params,
-            boolean andSearch, int start, int end, Sort sort) throws PortalException {
+            boolean andSearch, boolean advancedSearch, int start, int end, Sort sort) throws PortalException {
 
         SearchContext searchContext = new SearchContext();
+
+        searchContext.setAttribute("advancedSearch", advancedSearch);
 
         searchContext.setAttribute(Field.STATUS, status);
 

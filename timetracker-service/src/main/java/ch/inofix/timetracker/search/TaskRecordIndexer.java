@@ -44,8 +44,8 @@ import ch.inofix.timetracker.service.permission.TaskRecordPermission;
  * @author Christian Berndt
  * @author Stefan Luebbers
  * @created 2016-11-26 15:04
- * @modified 2017-09-20 12:16
- * @version 1.1.3
+ * @modified 2017-10-03 15:13
+ * @version 1.1.4
  *
  */
 @Component(immediate = true, service = Indexer.class)
@@ -76,10 +76,6 @@ public class TaskRecordIndexer extends BaseIndexer<TaskRecord> {
     public void postProcessContextBooleanFilter(BooleanFilter contextBooleanFilter, SearchContext searchContext)
             throws Exception {
         
-        if (_log.isDebugEnabled()) {
-            _log.debug("postProcessSearchQuery()");
-        }
-
         addStatus(contextBooleanFilter, searchContext);
 
         // from- and until-date
@@ -103,13 +99,10 @@ public class TaskRecordIndexer extends BaseIndexer<TaskRecord> {
         
         // workPackage
 
+        boolean advancedSearch = GetterUtil.getBoolean(searchContext.getAttribute("advancedSearch"), false);
         String workPackage = (String) searchContext.getAttribute("workPackage");
 
-        if (_log.isDebugEnabled()) {
-            _log.debug("workPackage = " + workPackage);
-        }
-
-        if (Validator.isNotNull(workPackage)) {
+        if (Validator.isNotNull(workPackage) && advancedSearch) {
 
             BooleanFilter booleanFilter = new BooleanFilter();
 
@@ -127,21 +120,13 @@ public class TaskRecordIndexer extends BaseIndexer<TaskRecord> {
     @Override
     public void postProcessSearchQuery(BooleanQuery searchQuery, BooleanFilter fullQueryBooleanFilter,
             SearchContext searchContext) throws Exception {
-        
-        if (_log.isDebugEnabled()) {
-            _log.debug("postProcessSearchQuery()");
-        }
-        
-        boolean advancedSearch = GetterUtil.getBoolean(searchContext.getAttribute("advancedSearch"));
-        
-        if (_log.isDebugEnabled()) {
-            _log.debug("advancedSearch = " + advancedSearch);
-        }
+                
+        boolean advancedSearch = GetterUtil.getBoolean(searchContext.getAttribute("advancedSearch"), false);
 
         addSearchTerm(searchQuery, searchContext, "description", false);
-//        if (!advancedSearch) {
-//            addSearchTerm(searchQuery, searchContext, "workPackage", true);
-//        }
+        if (!advancedSearch) {
+            addSearchTerm(searchQuery, searchContext, "workPackage", true);
+        }
         
         // TODO: add ticketURL
 
@@ -214,22 +199,6 @@ public class TaskRecordIndexer extends BaseIndexer<TaskRecord> {
 
         IndexWriterHelperUtil.updateDocument(getSearchEngineId(), taskRecord.getCompanyId(), document,
                 isCommitImmediately());
-    }
-    
-    @Override 
-    protected void postProcessFullQuery(BooleanQuery fullQuery, SearchContext searchContext) {
-        
-        if (_log.isDebugEnabled()) {
-            _log.debug("fullQuery = " + fullQuery);
-        }
-
-//        String workPackage = (String) searchContext.getAttribute("workPackage");
-//
-//        if (Validator.isNotNull(workPackage)) {       
-//            
-//            fullQuery.addRequiredTerm("workPackage_sortable", workPackage);
-//        }
-        
     }
 
     protected void reindexTaskRecords(long companyId) throws PortalException {

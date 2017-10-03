@@ -2,11 +2,13 @@
     view.jsp: Default view of Inofix' timetracker.
     
     Created:     2013-10-06 16:52 by Christian Berndt
-    Modified:    2017-07-23 13:25 by Christian Berndt
-    Version:     1.7.6
+    Modified:    2017-09-29 20:55 by Christian Berndt
+    Version:     1.7.7
 --%>
 
 <%@ include file="/init.jsp" %>
+
+<%-- <%@page import="java.util.LinkedHashMap"%> --%>
 
 <%
     String [] columns = new String[] {"task-record-id", "work-package", "start-date"};
@@ -71,12 +73,15 @@
 
     if (searchTerms.isAdvancedSearch()) {
                 
+//         LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
+//         params.put("advancedSearch", true);
+
         hits = TaskRecordServiceUtil.search(themeDisplay.getUserId(), scopeGroupId, ownerUserId,
-                searchTerms.getWorkPackage(), searchTerms.getDescription(), status, fromDate,
-                untilDate, null, searchTerms.isAndOperator(), searchContainer.getStart(),
+                searchTerms.getWorkPackage(), searchTerms.getDescription(), status, fromDate, untilDate, null,
+                searchTerms.isAndOperator(), searchTerms.isAdvancedSearch(), searchContainer.getStart(),
                 searchContainer.getEnd(), sort);
     } else {
-        
+
         hits = TaskRecordServiceUtil.search(themeDisplay.getUserId(), scopeGroupId, 0, keywords,
                 searchContainer.getStart(), searchContainer.getEnd(), sort);
     }
