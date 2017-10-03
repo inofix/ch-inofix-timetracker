@@ -108,8 +108,8 @@ import ch.inofix.timetracker.web.internal.search.TaskRecordSearch;
  * @author Christian Berndt
  * @author Stefan Luebbers
  * @created 2013-10-07 10:47
- * @modified 2017-09-16 23:27
- * @version 1.8.8
+ * @modified 2017-09-29 21:01
+ * @version 1.8.9
  */
 @Component(immediate = true, property = { 
         "com.liferay.portlet.css-class-wrapper=portlet-timetracker",
@@ -672,7 +672,7 @@ public class TimetrackerPortlet extends MVCPortlet {
      * @throws SearchException
      */
     protected List<TaskRecord> getTaskRecords(PortletRequest request) throws Exception {
-
+        
         ThemeDisplay themeDisplay = (ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY);
 
         PortletURL iteratorURL = PortletURLFactoryUtil.create(request, PortletKeys.TIMETRACKER,
@@ -728,7 +728,8 @@ public class TimetrackerPortlet extends MVCPortlet {
 
         if (advancedSearch) {
             hits = TaskRecordServiceUtil.search(themeDisplay.getUserId(), themeDisplay.getScopeGroupId(), ownerUserId,
-                    workPackage, description, status, fromDate, untilDate, null, andOperator, start, end, sort);
+                    workPackage, description, status, fromDate, untilDate, null, andOperator, advancedSearch, start,
+                    end, sort);
         } else {
             hits = TaskRecordServiceUtil.search(themeDisplay.getUserId(), themeDisplay.getScopeGroupId(), 0, keywords,
                     start, end, sort);
