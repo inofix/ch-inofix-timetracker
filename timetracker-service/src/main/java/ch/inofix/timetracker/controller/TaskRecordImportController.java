@@ -40,8 +40,8 @@ import ch.inofix.timetracker.service.TaskRecordLocalService;
  *
  * @author Christian Berndt
  * @created 2017-06-04 18:07
- * @modified 2017-09-14 10:52
- * @version 1.0.5
+ * @modified 2017-10-09 20:45
+ * @version 1.0.6
  *
  */
 @Component(immediate = true, property = { "model.class.name=ch.inofix.timetracker.model.TaskRecord" }, service = {
