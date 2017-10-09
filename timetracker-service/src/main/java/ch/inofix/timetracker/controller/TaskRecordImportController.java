@@ -7,8 +7,7 @@ import java.io.File;
 import java.util.Date;
 import java.util.List;
 
-//TODO: 
-// import org.apache.commons.lang3.time.StopWatch;
+import org.apache.commons.lang.time.StopWatch;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -41,8 +40,8 @@ import ch.inofix.timetracker.service.TaskRecordLocalService;
  *
  * @author Christian Berndt
  * @created 2017-06-04 18:07
- * @modified 2017-09-14 10:52
- * @version 1.0.5
+ * @modified 2017-10-09 20:45
+ * @version 1.0.6
  *
  */
 @Component(immediate = true, property = { "model.class.name=ch.inofix.timetracker.model.TaskRecord" }, service = {
@@ -93,9 +92,9 @@ public class TaskRecordImportController extends BaseExportImportController imple
 
     protected void doImportFile(File file, long userId, long groupId) throws Exception {
 
-        // StopWatch stopWatch = new StopWatch();
+         StopWatch stopWatch = new StopWatch();
 
-        // stopWatch.start();
+         stopWatch.start();
 
         int numAdded = 0;
         int numIgnored = 0;
@@ -196,7 +195,7 @@ public class TaskRecordImportController extends BaseExportImportController imple
         }
 
         if (_log.isInfoEnabled()) {
-//            _log.info("Importing taskRecords takes " + stopWatch.getTime() + " ms.");
+            _log.info("Importing taskRecords takes " + stopWatch.getTime() + " ms.");
             _log.info("Added " + numAdded + " taskRecords as new, since they did not have a taskRecordId.");
             _log.info("Ignored " + numIgnored + " taskRecords since they already exist in this instance.");
             _log.info("Imported " + numImported + " taskRecords since they did not exist in this instance.");
