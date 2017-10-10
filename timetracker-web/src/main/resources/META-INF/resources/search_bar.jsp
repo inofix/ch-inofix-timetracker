@@ -52,8 +52,8 @@
         
     Indexer<TaskRecord> indexer = IndexerRegistryUtil.getIndexer(TaskRecord.class);
     Hits hits = indexer.search(searchContext);
-    
-    FacetCollector userIdCollector = userIdFacet.getFacetCollector(); 
+        
+    FacetCollector userIdCollector = userIdFacet.getFacetCollector();   
     List<TermCollector> userIdTermCollectors = userIdCollector.getTermCollectors(); 
     
     for (TermCollector termCollector : userIdTermCollectors) {
@@ -75,6 +75,7 @@
     id="toggle_id_task_record_search" markupView="<%=markupView%>">
     
     <aui:fieldset>
+    
         <aui:input inlineField="<%=true%>"
             name="<%=TaskRecordDisplayTerms.WORK_PACKAGE%>"
             onChange='<%= "event.preventDefault(); " + renderResponse.getNamespace() + "submitSearch();" %>'
@@ -140,7 +141,8 @@
                 selected="<%= WorkflowConstants.STATUS_PENDING == status %>">
                 <liferay-ui:message key="pending" />
             </aui:option>
-        </aui:select>
+        </aui:select>        
+        
     </aui:fieldset>
     
 </liferay-ui:search-toggle>
