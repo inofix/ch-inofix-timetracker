@@ -2,8 +2,8 @@
     init.jsp: Common imports and initialization code.
 
     Created:     2014-02-01 15:31 by Christian Berndt
-    Modified:    2017-06-25 15:59 by Christian Berndt
-    Version:     1.1.9
+    Modified:    2017-10-13 15:01 by Christian Berndt
+    Version:     1.2.0
 --%>
 
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
@@ -111,6 +111,7 @@
     Format dateFormatDateTime = FastDateFormatFactoryUtil.getDateTime(locale, timeZone);
 
     String markupView = "lexicon";
+    int maxLength = 50;
     boolean showSearchSpeed = false; 
 
     String tabs1 = ParamUtil.getString(request, "tabs1", "timetracker");
@@ -122,6 +123,7 @@
     if (Validator.isNotNull(timetrackerConfiguration)) {
         
         markupView = portletPreferences.getValue("markup-view", timetrackerConfiguration.markupView());
+        maxLength = GetterUtil.getInteger(portletPreferences.getValue("max-length", String.valueOf(timetrackerConfiguration.maxLength())));
         showSearchSpeed = GetterUtil.getBoolean(portletPreferences.getValue("show-search-speed", String.valueOf(timetrackerConfiguration.showSearchSpeeed())));
         
         // because of current checkbox configuration

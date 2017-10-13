@@ -3,8 +3,8 @@
     for the main view of the timetracker portlet.
 
     Created:     2013-10-07 14:41 by Christian Berndt
-    Modified:    2017-06-18 16:10 by Christian Berndt
-    Version:     1.2.0
+    Modified:    2017-10-13 15:04 by Christian Berndt
+    Version:     1.2.1
 --%>
 
 <%
@@ -35,9 +35,6 @@
 
 <%
     // Crop workpackages if they are too long
-    
-    // TODO: read maxLength from configuration
-    int maxLength = 50; 
 
     String workPackageString = taskRecord.getWorkPackage();
     
