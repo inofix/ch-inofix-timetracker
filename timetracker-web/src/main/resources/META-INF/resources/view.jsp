@@ -2,20 +2,16 @@
     view.jsp: Default view of Inofix' timetracker.
     
     Created:     2013-10-06 16:52 by Christian Berndt
-    Modified:    2017-09-29 20:55 by Christian Berndt
-    Version:     1.7.7
+    Modified:    2017-10-13 15:01 by Christian Berndt
+    Version:     1.7.8
 --%>
 
 <%@ include file="/init.jsp" %>
 
-<%-- <%@page import="java.util.LinkedHashMap"%> --%>
-
 <%
     String [] columns = new String[] {"task-record-id", "work-package", "start-date"};
     String displayStyle = ParamUtil.getString(request, "displayStyle");
-    
-    int maxLength = 50; 
-    
+        
     if (Validator.isNotNull(timetrackerConfiguration)) {
         columns = portletPreferences.getValues("columns", timetrackerConfiguration.columns());
         maxLength = Integer.parseInt(portletPreferences.getValue("max-length", timetrackerConfiguration.maxLength()));
@@ -72,14 +68,12 @@
     Hits hits = null;
 
     if (searchTerms.isAdvancedSearch()) {
-                
-//         LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
-//         params.put("advancedSearch", true);
 
         hits = TaskRecordServiceUtil.search(themeDisplay.getUserId(), scopeGroupId, ownerUserId,
                 searchTerms.getWorkPackage(), searchTerms.getDescription(), status, fromDate, untilDate, null,
                 searchTerms.isAndOperator(), searchTerms.isAdvancedSearch(), searchContainer.getStart(),
                 searchContainer.getEnd(), sort);
+        
     } else {
 
         hits = TaskRecordServiceUtil.search(themeDisplay.getUserId(), scopeGroupId, 0, keywords,
@@ -126,7 +120,7 @@
                         <liferay-ui:search-speed hits="<%= hits %>" searchContainer="<%= searchContainer %>"/>
                     </div>
                 </c:if> 
-                    
+                                    
                 <portlet:actionURL var="editSetURL"/>
                 
                 <aui:form action="<%= editSetURL %>" name="fm" 

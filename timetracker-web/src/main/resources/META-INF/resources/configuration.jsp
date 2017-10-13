@@ -2,8 +2,8 @@
     configuration.jsp: configuration of the timetracker portlet.
     
     Created:    2017-03-09 14:20 by Stefan Lübbers
-    Modified:   2017-09-26 21:40 by Christian Berndt
-    Version:    1.0.9
+    Modified:   2017-10-13 15:00 by Christian Berndt
+    Version:    1.1.0
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -13,7 +13,6 @@
     String exportFileName = "export.txt"; 
     String exportName = "latex"; 
     String exportScript = "Enter your freemarker template code."; 
-    String maxLength = "";
     String timeFormat = "";
     
     if (Validator.isNotNull(timetrackerConfiguration)) {
@@ -22,7 +21,7 @@
         exportName = portletPreferences.getValue("export-name", timetrackerConfiguration.exportName()); 
         exportScript = portletPreferences.getValue("export-script", timetrackerConfiguration.exportScript()); 
         markupView = portletPreferences.getValue("markup-view", timetrackerConfiguration.markupView());
-        maxLength = portletPreferences.getValue("max-length", timetrackerConfiguration.maxLength());
+        maxLength = GetterUtil.getInteger(portletPreferences.getValue("max-length", timetrackerConfiguration.maxLength())); 
         timeFormat = portletPreferences.getValue("time-format", timetrackerConfiguration.timeFormat());
     }
 
@@ -123,7 +122,7 @@
 
                 <aui:fieldset cssClass="col-md-6">
         
-                    <aui:input name="max-length" value="<%=maxLength%>"
+                    <aui:input name="max-length" value="<%= String.valueOf(maxLength) %>"
                         helpMessage="max-length-help" />
                 
                     <aui:field-wrapper label="time-format"
