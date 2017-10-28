@@ -7,12 +7,14 @@ import aQute.bnd.annotation.metatype.Meta;
  * @author Christian Berndt
  * @author Stefan Luebbers
  * @created 2017-03-09 13:43
- * @modified 2017-06-24 17:51
- * @version 1.0.5
+ * @modified 2017-10-28 17:00
+ * @version 1.0.6
  *
  */
-@Meta.OCD(id = "ch.inofix.timetracker.web.configuration.TimetrackerConfiguration", localization = "content/Language", name = "timetracker.configuration.name")
-
+@Meta.OCD(
+    id = "ch.inofix.timetracker.web.configuration.TimetrackerConfiguration", 
+    localization = "content/Language", name = "timetracker.configuration.name"
+)
 public interface TimetrackerConfiguration {
 
     @Meta.AD(deflt = "task-record-id|work-package|from-date|duration|description|user-name|modified-date|status", required = false)

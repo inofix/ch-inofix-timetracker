@@ -45,6 +45,7 @@ import com.liferay.exportimport.kernel.model.ExportImportConfiguration;
 import com.liferay.exportimport.kernel.service.ExportImportConfigurationLocalService;
 import com.liferay.exportimport.kernel.service.ExportImportService;
 import com.liferay.exportimport.kernel.staging.StagingUtil;
+import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.exception.LayoutPrototypeException;
 import com.liferay.portal.kernel.exception.LocaleException;
 import com.liferay.portal.kernel.exception.NoSuchBackgroundTaskException;
@@ -85,7 +86,6 @@ import com.liferay.portal.kernel.util.StreamUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 
-import aQute.bnd.annotation.metatype.Configurable;
 import ch.inofix.timetracker.constants.PortletKeys;
 import ch.inofix.timetracker.exception.NoSuchTaskRecordException;
 import ch.inofix.timetracker.exception.TaskRecordFromDateException;
@@ -108,10 +108,13 @@ import ch.inofix.timetracker.web.internal.search.TaskRecordSearch;
  * @author Christian Berndt
  * @author Stefan Luebbers
  * @created 2013-10-07 10:47
- * @modified 2017-09-29 21:01
- * @version 1.8.9
+ * @modified 2017-10-28 17:03
+ * @version 1.9.0
  */
-@Component(immediate = true, property = { 
+@Component(
+    configurationPid = "ch.inofix.timetracker.web.configuration.TimetrackerConfiguration",
+    immediate = true, 
+    property = { 
         "com.liferay.portlet.css-class-wrapper=portlet-timetracker",
         "com.liferay.portlet.display-category=category.inofix",
         "com.liferay.portlet.footer-portlet-javascript=/js/main.js",
@@ -271,7 +274,10 @@ public class TimetrackerPortlet extends MVCPortlet {
     @Activate
     @Modified
     protected void activate(Map<Object, Object> properties) {
-        _timetrackerConfiguration = Configurable.createConfigurable(TimetrackerConfiguration.class, properties);
+
+        _timetrackerConfiguration = ConfigurableUtil.createConfigurable(
+                TimetrackerConfiguration.class, properties);
+        
     }
 
     protected void addTempFileEntry(ActionRequest actionRequest, String folderName) throws Exception {

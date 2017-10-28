@@ -2,21 +2,14 @@
     view.jsp: Default view of Inofix' timetracker.
     
     Created:     2013-10-06 16:52 by Christian Berndt
-    Modified:    2017-10-13 15:01 by Christian Berndt
-    Version:     1.7.8
+    Modified:    2017-10-28 17:27 by Christian Berndt
+    Version:     1.7.9
 --%>
 
 <%@ include file="/init.jsp" %>
 
 <%
-    String [] columns = new String[] {"task-record-id", "work-package", "start-date"};
     String displayStyle = ParamUtil.getString(request, "displayStyle");
-        
-    if (Validator.isNotNull(timetrackerConfiguration)) {
-        columns = portletPreferences.getValues("columns", timetrackerConfiguration.columns());
-        maxLength = Integer.parseInt(portletPreferences.getValue("max-length", timetrackerConfiguration.maxLength()));
-        //timeFormat = portletPreferences.getValue("time-format", timetrackerConfiguration.timeFormat());
-    }
     
     String backURL = ParamUtil.getString(request, "backURL");
     String keywords = ParamUtil.getString(request, "keywords");

@@ -13,11 +13,11 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Modified;
 
+import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.portlet.ConfigurationAction;
 import com.liferay.portal.kernel.portlet.DefaultConfigurationAction;
 import com.liferay.portal.kernel.util.ParamUtil;
 
-import aQute.bnd.annotation.metatype.Configurable;
 import ch.inofix.timetracker.constants.PortletKeys;
 import ch.inofix.timetracker.web.configuration.TimetrackerConfiguration;
 
@@ -27,41 +27,27 @@ import ch.inofix.timetracker.web.configuration.TimetrackerConfiguration;
  * @author Christian Berndt
  * @author Stefan Luebbers
  * @created 2017-03-09 14:20
- * @modified 2017-06-24 17:53
- * @version 1.0.4
+ * @modified 2017-10-28 17:09
+ * @version 1.0.5
  */
 
-@Component(configurationPid = "ch.inofix.timetracker.web.configuration.TimetrackerConfiguration", configurationPolicy = ConfigurationPolicy.OPTIONAL, immediate = true, property = {
-        "javax.portlet.name=" + PortletKeys.TIMETRACKER }, service = ConfigurationAction.class)
+@Component(
+    configurationPid = "ch.inofix.timetracker.web.configuration.TimetrackerConfiguration",
+    configurationPolicy = ConfigurationPolicy.OPTIONAL, 
+    immediate = true, 
+    property = {"javax.portlet.name=" + PortletKeys.TIMETRACKER }, 
+    service = ConfigurationAction.class
+)
 
 public class TimetrackerConfigurationAction extends DefaultConfigurationAction {
-
-    @Override
-    public String getJspPath(HttpServletRequest httpServletRequest) {
-        return "/configuration.jsp";
-    }
 
     @Override
     public void processAction(PortletConfig portletConfig, ActionRequest actionRequest, ActionResponse actionResponse)
             throws Exception {
 
         String columns = ParamUtil.getString(actionRequest, "columns");
-        String exportFileName = ParamUtil.getString(actionRequest, "export-file-name");
-        String exportName = ParamUtil.getString(actionRequest, "export-name");
-        String exportScript = ParamUtil.getString(actionRequest, "export-script");
-        String markupView = ParamUtil.getString(actionRequest, "markup-view");
-        String maxLength = ParamUtil.getString(actionRequest, "max-length");
-        String showSearchSpeed = ParamUtil.getString(actionRequest, "show-search-speed");
-        String timeFormat = ParamUtil.getString(actionRequest, "time-format", "from-until");
 
         setPreference(actionRequest, "columns", columns.split(","));
-        setPreference(actionRequest, "export-file-name", exportFileName);
-        setPreference(actionRequest, "export-name", exportName);
-        setPreference(actionRequest, "export-script", exportScript);
-        setPreference(actionRequest, "markup-view", markupView);
-        setPreference(actionRequest, "max-length", maxLength);
-        setPreference(actionRequest, "show-search-speed", showSearchSpeed);
-        setPreference(actionRequest, "time-format", timeFormat);
 
         super.processAction(portletConfig, actionRequest, actionResponse);
     }
@@ -78,7 +64,10 @@ public class TimetrackerConfigurationAction extends DefaultConfigurationAction {
     @Activate
     @Modified
     protected void activate(Map<Object, Object> properties) {
-        _timetrackerConfiguration = Configurable.createConfigurable(TimetrackerConfiguration.class, properties);
+
+        _timetrackerConfiguration = ConfigurableUtil.createConfigurable(
+                TimetrackerConfiguration.class, properties);
+        
     }
 
     private volatile TimetrackerConfiguration _timetrackerConfiguration;

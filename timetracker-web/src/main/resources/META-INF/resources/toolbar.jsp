@@ -2,17 +2,13 @@
     toolbar.jsp: The toolbar of the timetracker portlet
     
     Created:    2016-03-20 16:58 by Christian Berndt
-    Modified:   2017-06-30 00:45 by Christian Berndt
-    Version:    1.2.4
+    Modified:   2017-10-28 17:28 by Christian Berndt
+    Version:    1.2.5
 --%>
 
 <%@ include file="/init.jsp"%>
 
-<%@page import="com.liferay.trash.kernel.util.TrashUtil"%>
-
 <%
-    String[] columns = (String[])request.getAttribute("view.jsp-columns");
-
     String orderByCol = ParamUtil.getString(request, "orderByCol", "modified-date");
 
     String orderByType = ParamUtil.getString(request, "orderByType", "desc");
@@ -33,7 +29,6 @@
 
     downloadURL.setParameter("start", "0");
     downloadURL.setParameter("end", String.valueOf(Integer.MAX_VALUE));
-
 %>
 
 <liferay-frontend:management-bar

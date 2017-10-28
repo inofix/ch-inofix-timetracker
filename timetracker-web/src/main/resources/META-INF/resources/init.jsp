@@ -2,8 +2,8 @@
     init.jsp: Common imports and initialization code.
 
     Created:     2014-02-01 15:31 by Christian Berndt
-    Modified:    2017-10-13 15:01 by Christian Berndt
-    Version:     1.2.0
+    Modified:    2017-10-28 17:11 by Christian Berndt
+    Version:     1.2.1
 --%>
 
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
@@ -81,6 +81,7 @@
 <%@page import="com.liferay.portal.kernel.util.Validator"%>
 <%@page import="com.liferay.portal.kernel.util.WebKeys"%>
 <%@page import="com.liferay.portal.kernel.workflow.WorkflowConstants"%>
+<%@page import="com.liferay.trash.kernel.util.TrashUtil"%>
 
 <%@page import="java.text.DateFormat"%>
 <%@page import="java.text.Format"%>
@@ -107,28 +108,38 @@
 <%
     PortalPreferences portalPreferences = PortletPreferencesFactoryUtil.getPortalPreferences(request);
 
+    String[] columns = portletPreferences.getValues("columns", new String[] {"task-record-id","work-package","from-date","duration","description","user-name","modified-date","status"});
     Format dateFormatDate = FastDateFormatFactoryUtil.getDate(locale, timeZone);
     Format dateFormatDateTime = FastDateFormatFactoryUtil.getDateTime(locale, timeZone);
-
-    String markupView = "lexicon";
-    int maxLength = 50;
-    boolean showSearchSpeed = false; 
-
+    String exportFileName = portletPreferences.getValue("exportName", "export.txt");
+    String exportName = portletPreferences.getValue("exportName", "latex");
+    String exportScript = portletPreferences.getValue("exportScript", "Enter your freemarker template code.");
+    String markupView = portletPreferences.getValue("markupView", "lexicon");
+    int maxLength = GetterUtil.getInteger(portletPreferences.getValue("maxLength", "35"));
+    boolean showSearchSpeed = GetterUtil.getBoolean(portletPreferences.getValue("showSearchSpeed", "false"));
     String tabs1 = ParamUtil.getString(request, "tabs1", "timetracker");
     String tabs2 = ParamUtil.getString(request, "tabs2", "export");
+    String timeFormat = portletPreferences.getValue("timeFormat", "from-until");
 
     TimetrackerConfiguration timetrackerConfiguration = (TimetrackerConfiguration) request
             .getAttribute(TimetrackerConfiguration.class.getName());
-    
+
     if (Validator.isNotNull(timetrackerConfiguration)) {
-        
-        markupView = portletPreferences.getValue("markup-view", timetrackerConfiguration.markupView());
-        maxLength = GetterUtil.getInteger(portletPreferences.getValue("max-length", String.valueOf(timetrackerConfiguration.maxLength())));
-        showSearchSpeed = GetterUtil.getBoolean(portletPreferences.getValue("show-search-speed", String.valueOf(timetrackerConfiguration.showSearchSpeeed())));
-        
+
+        columns = portletPreferences.getValues("columns", timetrackerConfiguration.columns());
+        exportFileName = portletPreferences.getValue("exportFileName",
+                timetrackerConfiguration.exportFileName());
+        exportName = portletPreferences.getValue("exportName", timetrackerConfiguration.exportName());
+        exportScript = portletPreferences.getValue("exportScript", timetrackerConfiguration.exportScript());
+        markupView = portletPreferences.getValue("markupView", timetrackerConfiguration.markupView());
+        maxLength = GetterUtil.getInteger(portletPreferences.getValue("maxLength", timetrackerConfiguration.maxLength()));
+        showSearchSpeed = GetterUtil.getBoolean(portletPreferences.getValue("showSearchSpeed",
+                String.valueOf(timetrackerConfiguration.showSearchSpeeed())));
+        timeFormat = portletPreferences.getValue("timeFormat", timetrackerConfiguration.timeFormat());
+
         // because of current checkbox configuration
         if ("false".equals(markupView)) {
-            markupView = ""; 
+            markupView = "";
         }
     }
 %>
