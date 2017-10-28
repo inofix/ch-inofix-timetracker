@@ -2,8 +2,8 @@
     edit_task_record.jsp: edit a single task-record.
 
     Created:     2013-10-07 10:41 by Christian Berndt
-    Modified:    2017-09-20 12:21 by Christian Berndt
-    Version:     1.6.8
+    Modified:    2017-10-28 17:17 by Christian Berndt
+    Version:     1.6.9
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -11,8 +11,6 @@
 <%@page import="java.util.Calendar"%>
 
 <%
-    String timeFormat = portletPreferences.getValue("time-format", "from-until");
-
     TaskRecord taskRecord = (TaskRecord) request.getAttribute(TimetrackerWebKeys.TASK_RECORD);
 
     String durationInMinutes = null;

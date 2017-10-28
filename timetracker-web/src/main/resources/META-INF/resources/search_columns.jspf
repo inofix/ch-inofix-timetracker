@@ -3,13 +3,11 @@
     for the main view of the timetracker portlet.
 
     Created:     2013-10-07 14:41 by Christian Berndt
-    Modified:    2017-10-13 15:04 by Christian Berndt
-    Version:     1.2.1
+    Modified:    2017-10-28 17:44 by Christian Berndt
+    Version:     1.2.2
 --%>
 
 <%
-    String[] columns = (String[])request.getAttribute("view.jsp-columns");
-
     String dateFormatPattern =
         ((SimpleDateFormat) (DateFormat.getDateTimeInstance(
             DateFormat.MEDIUM, DateFormat.SHORT, locale))).toPattern();
