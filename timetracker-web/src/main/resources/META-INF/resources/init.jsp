@@ -2,8 +2,8 @@
     init.jsp: Common imports and initialization code.
 
     Created:     2014-02-01 15:31 by Christian Berndt
-    Modified:    2017-10-28 17:11 by Christian Berndt
-    Version:     1.2.1
+    Modified:    2017-10-30 21:05 by Christian Berndt
+    Version:     1.2.2
 --%>
 
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
@@ -111,9 +111,9 @@
     String[] columns = portletPreferences.getValues("columns", new String[] {"task-record-id","work-package","from-date","duration","description","user-name","modified-date","status"});
     Format dateFormatDate = FastDateFormatFactoryUtil.getDate(locale, timeZone);
     Format dateFormatDateTime = FastDateFormatFactoryUtil.getDateTime(locale, timeZone);
-    String exportFileName = portletPreferences.getValue("exportName", "export.txt");
-    String exportName = portletPreferences.getValue("exportName", "latex");
-    String exportScript = portletPreferences.getValue("exportScript", "Enter your freemarker template code.");
+    String[] exportFileNames = portletPreferences.getValues("exportFileName", new String[] {"out.csv"});
+    String[] exportNames = portletPreferences.getValues("exportName", new String[] {"latex"});
+    String[] exportScripts = portletPreferences.getValues("exportScript", new String[] {"Enter your freemarker template code."});
     String markupView = portletPreferences.getValue("markupView", "lexicon");
     int maxLength = GetterUtil.getInteger(portletPreferences.getValue("maxLength", "35"));
     boolean showSearchSpeed = GetterUtil.getBoolean(portletPreferences.getValue("showSearchSpeed", "false"));
@@ -127,10 +127,10 @@
     if (Validator.isNotNull(timetrackerConfiguration)) {
 
         columns = portletPreferences.getValues("columns", timetrackerConfiguration.columns());
-        exportFileName = portletPreferences.getValue("exportFileName",
-                timetrackerConfiguration.exportFileName());
-        exportName = portletPreferences.getValue("exportName", timetrackerConfiguration.exportName());
-        exportScript = portletPreferences.getValue("exportScript", timetrackerConfiguration.exportScript());
+        exportFileNames = portletPreferences.getValues("exportFileName",
+                timetrackerConfiguration.exportFileNames());
+        exportNames = portletPreferences.getValues("exportName", timetrackerConfiguration.exportNames());
+        exportScripts = portletPreferences.getValues("exportScript", timetrackerConfiguration.exportScripts());
         markupView = portletPreferences.getValue("markupView", timetrackerConfiguration.markupView());
         maxLength = GetterUtil.getInteger(portletPreferences.getValue("maxLength", timetrackerConfiguration.maxLength()));
         showSearchSpeed = GetterUtil.getBoolean(portletPreferences.getValue("showSearchSpeed",

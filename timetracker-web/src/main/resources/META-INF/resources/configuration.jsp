@@ -2,8 +2,8 @@
     configuration.jsp: configuration of the timetracker portlet.
     
     Created:    2017-03-09 14:20 by Stefan Lübbers
-    Modified:   2017-10-28 17:17 by Christian Berndt
-    Version:    1.1.2
+    Modified:   2017-10-30 20:53 by Christian Berndt
+    Version:    1.1.3
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -13,6 +13,8 @@
 
     TaskRecordSearch searchContainer = new TaskRecordSearch(liferayPortletRequest, portletURL);
     List<String> headerList = searchContainer.getHeaderNames();
+    
+    String namespace = liferayPortletResponse.getNamespace();
 %>
 
 <liferay-portlet:actionURL portletConfiguration="<%=true%>"
@@ -73,15 +75,50 @@
                 id="timetrackerExportPanel" markupView="<%=markupView%>"
                 persistState="<%=true%>" title="export">
 
-                <aui:input helpMessage="export-name-help"
-                    name="preferences--exportName--" value="<%=exportName%>" />
+                <aui:fieldset id="<%=namespace + "export"%>"
+                    cssClass="export">
 
-                <aui:input helpMessage="export-file-name-help"
-                    name="preferences--exportFileName--" value="<%=exportFileName%>" />
+                    <%
+                        for (int i = 0; i < exportNames.length; i++) {
 
-                <aui:input helpMessage="export-script-help"
-                    name="preferences--exportScript--" type="textarea"
-                    value="<%=exportScript%>" />
+                            String exportName = null;
+                            if (exportNames.length > i)
+                                exportName = exportNames[i];
+                            
+                            String exportFileName = null;
+                            if (exportFileNames.length > i)
+                                exportFileName = exportFileNames[i];
+                            
+                            String exportScript = null;
+                            if (exportScripts.length > i)
+                                exportScript = exportScripts[i];
+                    %>
+                    <div class="lfr-form-row">
+
+                        <div class="row-fields">
+
+                            <aui:input helpMessage="export-name-help"
+                                name="exportName"
+                                required="<%=true%>"
+                                value="<%=exportName%>" />
+
+                            <aui:input
+                                helpMessage="export-file-name-help"
+                                name="exportFileName"
+                                value="<%=exportFileName%>" />
+
+                            <aui:input helpMessage="export-script-help"
+                                name="exportScript"
+                                type="textarea"
+                                value="<%=exportScript%>" />
+
+                        </div>
+                    </div>
+
+                    <%
+                        }
+                    %>
+                </aui:fieldset>
 
             </liferay-ui:panel>
 
@@ -152,3 +189,19 @@
         submitForm(form);
     }
 </aui:script>
+
+<%-- Configure auto-fields --%>
+<aui:script use="liferay-auto-fields">
+
+    var exportAutoFields = new Liferay.AutoFields({
+        contentBox : 'fieldset#<portlet:namespace />export',
+        namespace : '<portlet:namespace />',
+        on : {
+            'clone' : function(event) {
+                restoreOriginalNames(event);
+            }
+        }
+    }).render();
+    
+</aui:script>
+

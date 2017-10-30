@@ -46,8 +46,14 @@ public class TimetrackerConfigurationAction extends DefaultConfigurationAction {
             throws Exception {
 
         String columns = ParamUtil.getString(actionRequest, "columns");
+        String[] exportFileNames = actionRequest.getParameterValues("exportFileName"); 
+        String[] exportNames = actionRequest.getParameterValues("exportName"); 
+        String[] exportScripts = actionRequest.getParameterValues("exportScript");      
 
         setPreference(actionRequest, "columns", columns.split(","));
+        setPreference(actionRequest, "exportFileName", exportFileNames);
+        setPreference(actionRequest, "exportName", exportNames);
+        setPreference(actionRequest, "exportScript", exportScripts);
 
         super.processAction(portletConfig, actionRequest, actionResponse);
     }
@@ -71,5 +77,4 @@ public class TimetrackerConfigurationAction extends DefaultConfigurationAction {
     }
 
     private volatile TimetrackerConfiguration _timetrackerConfiguration;
-
 }
