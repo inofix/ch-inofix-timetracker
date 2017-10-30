@@ -108,8 +108,8 @@ import ch.inofix.timetracker.web.internal.search.TaskRecordSearch;
  * @author Christian Berndt
  * @author Stefan Luebbers
  * @created 2013-10-07 10:47
- * @modified 2017-10-28 17:03
- * @version 1.9.0
+ * @modified 2017-10-30 22:35
+ * @version 1.9.1
  */
 @Component(
     configurationPid = "ch.inofix.timetracker.web.configuration.TimetrackerConfiguration",
@@ -474,6 +474,10 @@ public class TimetrackerPortlet extends MVCPortlet {
     }
 
     protected void download(ResourceRequest resourceRequest, ResourceResponse resourceResponse) throws Exception {
+        
+        int idx = ParamUtil.getInteger(resourceRequest, "idx"); 
+        
+        _log.info("idx = " + idx);
 
         PortletPreferences portletPreferences = resourceRequest.getPreferences();
 
@@ -491,14 +495,13 @@ public class TimetrackerPortlet extends MVCPortlet {
 
         String exportStr = null;
 
-        // TODO: re-enable downloads
-//        try {
-//            exportStr = TemplateUtil.transform(contextObjects, exportScript, exportName, "ftl");
-//        } catch (Exception e) {
-//            exportStr = e.getCause().getMessage();
-//        }
-//
-//        PortletResponseUtil.sendFile(resourceRequest, resourceResponse, exportFileName, exportStr.getBytes());
+        try {
+            exportStr = TemplateUtil.transform(contextObjects, exportScripts[idx], exportNames[idx], "ftl");
+        } catch (Exception e) {
+            exportStr = e.getCause().getMessage();
+        }
+
+        PortletResponseUtil.sendFile(resourceRequest, resourceResponse, exportFileNames[idx], exportStr.getBytes());
 
     }
 
