@@ -7,8 +7,8 @@ import aQute.bnd.annotation.metatype.Meta;
  * @author Christian Berndt
  * @author Stefan Luebbers
  * @created 2017-03-09 13:43
- * @modified 2017-10-28 17:00
- * @version 1.0.6
+ * @modified 2017-10-30 21:15
+ * @version 1.0.7
  *
  */
 @Meta.OCD(
@@ -20,14 +20,14 @@ public interface TimetrackerConfiguration {
     @Meta.AD(deflt = "task-record-id|work-package|from-date|duration|description|user-name|modified-date|status", required = false)
     public String[] columns();
 
-    @Meta.AD(deflt = "out.txt", required = false)
-    public String exportFileName();
+    @Meta.AD(deflt = "out.csv", required = false)
+    public String[] exportFileNames();
 
-    @Meta.AD(deflt = "latex", required = false)
-    public String exportName();
+    @Meta.AD(deflt = "CSV", required = false)
+    public String[] exportNames();
 
     @Meta.AD(deflt = "<#list taskRecords as taskRecord><h3>${taskRecord.workPackage}</h3>\n</#list>", required = false)
-    public String exportScript();
+    public String[] exportScripts();
 
     @Meta.AD(deflt = "lexicon", required = false)
     public String markupView();

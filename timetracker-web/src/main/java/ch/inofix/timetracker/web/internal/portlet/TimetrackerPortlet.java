@@ -483,20 +483,22 @@ public class TimetrackerPortlet extends MVCPortlet {
 
         contextObjects.put("taskRecords", taskRecords);
 
-        String exportFileName = portletPreferences.getValue("export-file-name",
-                _timetrackerConfiguration.exportFileName());
-        String exportName = portletPreferences.getValue("export-name", _timetrackerConfiguration.exportName());
-        String exportScript = portletPreferences.getValue("export-script", _timetrackerConfiguration.exportScript());
+        String[] exportFileNames = portletPreferences.getValues("exportFileName",
+                _timetrackerConfiguration.exportFileNames());
+        String[] exportNames = portletPreferences.getValues("exportName", _timetrackerConfiguration.exportNames());
+        String[] exportScripts = portletPreferences.getValues("exportScript",
+                _timetrackerConfiguration.exportScripts());
 
         String exportStr = null;
 
-        try {
-            exportStr = TemplateUtil.transform(contextObjects, exportScript, exportName, "ftl");
-        } catch (Exception e) {
-            exportStr = e.getCause().getMessage();
-        }
-
-        PortletResponseUtil.sendFile(resourceRequest, resourceResponse, exportFileName, exportStr.getBytes());
+        // TODO: re-enable downloads
+//        try {
+//            exportStr = TemplateUtil.transform(contextObjects, exportScript, exportName, "ftl");
+//        } catch (Exception e) {
+//            exportStr = e.getCause().getMessage();
+//        }
+//
+//        PortletResponseUtil.sendFile(resourceRequest, resourceResponse, exportFileName, exportStr.getBytes());
 
     }
 
