@@ -2,8 +2,8 @@
     toolbar.jsp: The toolbar of the timetracker portlet
     
     Created:    2016-03-20 16:58 by Christian Berndt
-    Modified:   2017-10-30 22:40 by Christian Berndt
-    Version:    1.2.6
+    Modified:   2017-10-30 23:18 by Christian Berndt
+    Version:    1.2.7
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -40,14 +40,14 @@
 
     <liferay-frontend:management-bar-buttons>
 
-        <liferay-ui:icon-menu cssClass="pull-left"
+        <liferay-ui:icon-menu cssClass="pull-left" direction="down"
             disabled="<%=total == 0%>" icon="icon-download"
-            message="download">
+            message="download" showWhenSingleIcon="true">
             <%
-                for (int i=0; i< exportNames.length; i++ ) {
+                for (int i = 0; i < exportNames.length; i++) {
 
-                    String exportName = exportNames[i]; 
-                    
+                    String exportName = exportNames[i];
+
                     ResourceURL downloadURL = liferayPortletResponse.createResourceURL();
 
                     downloadURL.setResourceID("download");
@@ -55,16 +55,18 @@
                     // Copy render parameters to resourceRequest
                     downloadURL.setParameters(renderRequest.getParameterMap());
 
-                    downloadURL.setParameter("idx", String.valueOf(i)); 
+                    downloadURL.setParameter("idx", String.valueOf(i));
                     downloadURL.setParameter("start", "0");
                     downloadURL.setParameter("end", String.valueOf(Integer.MAX_VALUE));
             %>
             <liferay-ui:icon
                 message="<%=exportName%>"
                 url="<%=downloadURL.toString()%>" />
-            <% } %>
+            <%
+                }
+            %>
         </liferay-ui:icon-menu>
-        
+
         <liferay-util:include page="/display_style_buttons.jsp"
             servletContext="<%=application%>" />
     </liferay-frontend:management-bar-buttons>
@@ -72,6 +74,7 @@
     <liferay-frontend:management-bar-action-buttons>
     
         <liferay-ui:icon-menu cssClass="pull-left">
+        <% // TODO %>
 <%--             <liferay-ui:icon iconCssClass="icon-ok" message="approve" url="<%= portletURL.toString() %>" /> --%>
 <%--             <liferay-ui:icon iconCssClass="icon-download" message="download" url="<%= portletURL.toString() %>" /> --%>
 <%--             <liferay-ui:icon iconCssClass="icon-ban-circle" message="reject" url="<%= portletURL.toString() %>" /> --%>
