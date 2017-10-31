@@ -2,8 +2,8 @@
     edit_task_record.jsp: edit a single task-record.
 
     Created:     2013-10-07 10:41 by Christian Berndt
-    Modified:    2017-10-28 17:17 by Christian Berndt
-    Version:     1.6.9
+    Modified:    2017-11-01 00:35 by Christian Berndt
+    Version:     1.7.0
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -159,7 +159,7 @@
                     <c:if test="<%=Validator.equals("from-until", timeFormat)%>">
     
                         <aui:field-wrapper cssClass="clearfix col-sm-6 from-until"
-                            label="from-until" name="from-until">
+                            label="from-until" name="from-until" required="true">
     
                             <liferay-ui:input-time name="fromTime"
                                 disabled="<%= !hasUpdatePermission %>"
