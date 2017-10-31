@@ -18,8 +18,14 @@ import ch.inofix.timetracker.constants.PortletKeys;
  * @version 1.0.0
  *
  */
-@Component(immediate = true, property = { "panel.app.order:Integer=800",
-        "panel.category.key=" + PanelCategoryKeys.SITE_ADMINISTRATION_CONTENT }, service = PanelApp.class)
+@Component(
+    immediate = true, 
+    property = { 
+        "panel.app.order:Integer=800",
+        "panel.category.key=" + PanelCategoryKeys.SITE_ADMINISTRATION_CONTENT 
+    }, 
+    service = PanelApp.class
+)
 public class TimetrackerPanelApp extends BasePanelApp {
 
     @Override
