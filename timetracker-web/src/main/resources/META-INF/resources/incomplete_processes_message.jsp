@@ -1,4 +1,10 @@
-
+<%--
+    incomplete_processes_message.jsp: alert the user of incomplete exports and imports
+    
+    Created:    2017-05-30 20:00 by Christian Berndt
+    Modified:   2017-05-30 20:00 by Christian Berndt
+    Version:    1.0.0
+--%>
 
 <%@ include file="/init.jsp" %>
 

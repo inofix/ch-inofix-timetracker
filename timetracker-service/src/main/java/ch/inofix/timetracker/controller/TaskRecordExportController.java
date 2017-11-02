@@ -42,8 +42,14 @@ import ch.inofix.timetracker.service.TaskRecordLocalService;
  * @modified 2017-08-25 11:20
  * @version 1.0.4
  */
-@Component(immediate = true, property = { "model.class.name=ch.inofix.timetracker.model.TaskRecord" }, service = {
-        ExportImportController.class, TaskRecordExportController.class })
+@Component(
+    immediate = true, 
+    property = { "model.class.name=ch.inofix.timetracker.model.TaskRecord" }, 
+    service = {
+        ExportImportController.class, 
+        TaskRecordExportController.class 
+    }
+)
 public class TaskRecordExportController extends BaseExportImportController implements ExportController {
 
     public TaskRecordExportController() {
