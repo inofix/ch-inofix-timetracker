@@ -2,8 +2,8 @@
     edit_task_record.jsp: edit a single task-record.
 
     Created:     2013-10-07 10:41 by Christian Berndt
-    Modified:    2017-11-01 00:35 by Christian Berndt
-    Version:     1.7.0
+    Modified:    2017-11-07 12:12 by Christian Berndt
+    Version:     1.7.1
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -106,11 +106,13 @@
             value="<%= Constants.UPDATE %>"/>
         <aui:input name="userId" type="hidden"
             value="<%=String.valueOf(themeDisplay.getUserId())%>" />
-    
+        
         <aui:model-context bean="<%=taskRecord%>"
             model="<%=TaskRecord.class%>" />
     
         <div class="lfr-form-content">
+        
+            <liferay-ui:error exception="<%= TaskRecordDurationException.class %>" message="please-enter-a-valid-duration" />
         
             <aui:fieldset-group markupView="<%= markupView %>">
  
