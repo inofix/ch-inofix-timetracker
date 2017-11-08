@@ -2,8 +2,8 @@
     init.jsp: Common imports and initialization code.
 
     Created:     2014-02-01 15:31 by Christian Berndt
-    Modified:    2017-10-30 21:05 by Christian Berndt
-    Version:     1.2.2
+    Modified:    2017-11-07 12:14 by Christian Berndt
+    Version:     1.2.3
 --%>
 
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
@@ -21,6 +21,7 @@
 <%@page import="ch.inofix.timetracker.constants.PortletKeys"%>
 <%@page import="ch.inofix.timetracker.constants.TaskRecordActionKeys"%>
 <%@page import="ch.inofix.timetracker.exception.NoSuchTaskRecordException"%>
+<%@page import="ch.inofix.timetracker.exception.TaskRecordDurationException"%>
 <%@page import="ch.inofix.timetracker.model.TaskRecord"%>
 <%@page import="ch.inofix.timetracker.service.permission.TaskRecordPermission"%>
 <%@page import="ch.inofix.timetracker.service.permission.TimetrackerPortletPermission"%>

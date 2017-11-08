@@ -85,8 +85,8 @@ import ch.inofix.timetracker.social.TaskRecordActivityKeys;
  *
  * @author Christian Berndt
  * @created 2013-10-06 21:24
- * @modified 2017-09-29 20:52
- * @version 1.7.0
+ * @modified 2017-11-09 00:43
+ * @version 1.7.1
  * @see TaskRecordLocalServiceBaseImpl
  * @see ch.inofix.timetracker.service.TaskRecordLocalServiceUtil
  */
@@ -99,27 +99,27 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
      * ch.inofix.timetracker.service.TaskRecordLocalServiceUtil} to access the
      * task record local service.
      */
-    @Override
     @Indexable(type = IndexableType.REINDEX)
+    @Override
     public TaskRecord addTaskRecord(long userId, String workPackage, String description, String ticketURL,
             Date untilDate, Date fromDate, int status, long duration, ServiceContext serviceContext)
             throws PortalException {
 
         // TaskRecord
 
-        User user = userPersistence.findByPrimaryKey(userId);
+        User user = userLocalService.getUser(userId);
+        
+        if (duration <= 0) {
+            duration = untilDate.getTime() - fromDate.getTime();
+        }
+
+        validate(duration, fromDate, untilDate);
+        
         long groupId = serviceContext.getScopeGroupId();
 
         long taskRecordId = counterLocalService.increment();
 
         TaskRecord taskRecord = taskRecordPersistence.create(taskRecordId);
-
-        if (duration <= 0) {
-            duration = untilDate.getTime() - fromDate.getTime();
-        }
-
-        validate(duration);
-        validate(duration, fromDate, untilDate);
 
         taskRecord.setUuid(serviceContext.getUuid());
         taskRecord.setGroupId(groupId);
@@ -436,15 +436,13 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
                 AssetLinkConstants.TYPE_RELATED);
     }
 
-    @Override
     @Indexable(type = IndexableType.REINDEX)
+    @Override
     public TaskRecord updateTaskRecord(long taskRecordId, long userId, String workPackage, String description,
             String ticketURL, Date untilDate, Date fromDate, int status, long duration, ServiceContext serviceContext)
             throws PortalException {
 
         // TaskRecord
-
-        long groupId = serviceContext.getScopeGroupId();
 
         TaskRecord taskRecord = taskRecordPersistence.findByPrimaryKey(taskRecordId);
 
@@ -452,10 +450,10 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
             duration = untilDate.getTime() - fromDate.getTime();
         }
 
-        validate(duration);
         validate(duration, fromDate, untilDate);
 
-        taskRecord.setGroupId(groupId);
+        // long groupId = serviceContext.getScopeGroupId();
+        // taskRecord.setGroupId(groupId);
         taskRecord.setExpandoBridgeAttributes(serviceContext);
 
         taskRecord.setWorkPackage(workPackage);
@@ -479,7 +477,7 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
 
         extraDataJSONObject.put("title", String.valueOf(taskRecordId));
 
-        socialActivityLocalService.addActivity(userId, groupId, TaskRecord.class.getName(),
+        socialActivityLocalService.addActivity(userId, taskRecord.getGroupId(), TaskRecord.class.getName(),
                 taskRecord.getTaskRecordId(), TaskRecordActivityKeys.UPDATE_TASK_RECORD, extraDataJSONObject.toString(),
                 0);
 
@@ -553,13 +551,12 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
         return searchContext;
     }
 
-    protected void validate(long duration) throws PortalException {
+    protected void validate(long duration, Date fromDate, Date untilDate) throws PortalException {
+        
         if (duration <= 0) {
             throw new TaskRecordDurationException();
         }
-    }
-
-    protected void validate(long duration, Date fromDate, Date untilDate) throws PortalException {
+        
         if (duration != untilDate.getTime() - fromDate.getTime()) {
             throw new TaskRecordDurationException();
         }

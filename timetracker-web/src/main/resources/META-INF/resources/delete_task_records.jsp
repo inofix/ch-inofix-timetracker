@@ -1,5 +1,5 @@
 <%--
-    delete-task_records.jspf: Delete all task-records of this group
+    delete-task_records.jsp: Delete all task-records of this group
     
     Created:    2016-03-22 12:12 by Christian Berndt
     Modified:   2017-07-05 11:47 by Christian Berndt
