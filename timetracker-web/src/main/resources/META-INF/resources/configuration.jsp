@@ -2,8 +2,8 @@
     configuration.jsp: configuration of the timetracker portlet.
     
     Created:    2017-03-09 14:20 by Stefan Lübbers
-    Modified:   2017-10-30 20:53 by Christian Berndt
-    Version:    1.1.3
+    Modified:   2017-11-09 18:30 by Christian Berndt
+    Version:    1.1.4
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -16,6 +16,14 @@
     
     String namespace = liferayPortletResponse.getNamespace();
 %>
+
+<style>
+<!--
+    .portlet-timetracker .panel-title {
+        position: relative;
+    }
+-->
+</style>
 
 <liferay-portlet:actionURL portletConfiguration="<%=true%>"
     var="configurationActionURL" />
