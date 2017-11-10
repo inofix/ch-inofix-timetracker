@@ -2,13 +2,11 @@
     view_task_records.jsp: search-container of Inofix' timetracker.
     
     Created:     2017-06-05 13:22 by Christian Berndt
-    Modified:    2017-10-09 20:43 by Christian Berndt
-    Version:     1.1.1
+    Modified:    2017-11-10 15:41 by Christian Berndt
+    Version:     1.1.2
 --%>
 
 <%@ include file="/init.jsp"%>
-
-<%@page import="ch.inofix.timetracker.web.internal.search.EntriesChecker"%>
 
 <%
     TaskRecordSearch searchContainer = (TaskRecordSearch) request.getAttribute("view.jsp-searchContainer");
@@ -50,9 +48,9 @@
 			request.setAttribute("viewURL", viewURL.toString());
 
 			boolean hasUpdatePermission = TaskRecordPermission.contains(permissionChecker,
-					taskRecord.getTaskRecordId(), TaskRecordActionKeys.UPDATE);
+					taskRecord.getTaskRecordId(), TimetrackerActionKeys.UPDATE);
 			boolean hasViewPermission = TaskRecordPermission.contains(permissionChecker,
-					taskRecord.getTaskRecordId(), TaskRecordActionKeys.VIEW);
+					taskRecord.getTaskRecordId(), TimetrackerActionKeys.VIEW);
 
 			String detailURL = null;
 

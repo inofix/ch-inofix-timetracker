@@ -85,8 +85,8 @@ import ch.inofix.timetracker.social.TaskRecordActivityKeys;
  *
  * @author Christian Berndt
  * @created 2013-10-06 21:24
- * @modified 2017-11-09 00:43
- * @version 1.7.1
+ * @modified 2017-11-10 15:24
+ * @version 1.7.2
  * @see TaskRecordLocalServiceBaseImpl
  * @see ch.inofix.timetracker.service.TaskRecordLocalServiceUtil
  */
@@ -342,7 +342,7 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
 
     @Override
     public long importTaskRecordsInBackground(long userId, ExportImportConfiguration exportImportConfiguration,
-            InputStream inputStream) throws PortalException {
+            InputStream inputStream, String extension) throws PortalException {
 
         _log.info("importTaskRecordsInBackground()");
 
@@ -350,8 +350,7 @@ public class TaskRecordLocalServiceImpl extends TaskRecordLocalServiceBaseImpl {
 
         try {
 
-            // TODO: use extension from upload
-            file = FileUtil.createTempFile("lar");
+            file = FileUtil.createTempFile(extension);
 
             FileUtil.write(file, inputStream);
 

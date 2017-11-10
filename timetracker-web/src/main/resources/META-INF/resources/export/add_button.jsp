@@ -2,15 +2,15 @@
     add_button.jsp: create a new export process
     
     Created:    2017-06-06 22:50 by Christian Berndt
-    Modified:   2017-07-05 11:28 by Christian Berndt
-    Version:    1.0.1
+    Modified:   2017-11-10 15:35 by Christian Berndt
+    Version:    1.0.2
 --%>
 
 <%@ include file="/init.jsp"%>
 
 <%    
     boolean hasExportPermission = TimetrackerPortletPermission.contains(permissionChecker, scopeGroupId,
-            TaskRecordActionKeys.EXPORT_TASK_RECORDS);
+            TimetrackerActionKeys.EXPORT_TASK_RECORDS);
 %>
 
 <liferay-frontend:add-menu>

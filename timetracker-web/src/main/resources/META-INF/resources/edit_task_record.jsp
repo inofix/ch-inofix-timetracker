@@ -2,13 +2,11 @@
     edit_task_record.jsp: edit a single task-record.
 
     Created:     2013-10-07 10:41 by Christian Berndt
-    Modified:    2017-11-07 12:12 by Christian Berndt
-    Version:     1.7.1
+    Modified:    2017-11-10 15:38 by Christian Berndt
+    Version:     1.7.2
 --%>
 
 <%@ include file="/init.jsp"%>
-
-<%@page import="java.util.Calendar"%>
 
 <%
     TaskRecord taskRecord = (TaskRecord) request.getAttribute(TimetrackerWebKeys.TASK_RECORD);
@@ -67,13 +65,13 @@
                 String.valueOf(taskRecord.getTaskRecordId()));
 
         hasUpdatePermission = TaskRecordPermission.contains(permissionChecker, taskRecord,
-                TaskRecordActionKeys.UPDATE);
+                TimetrackerActionKeys.UPDATE);
         hasViewPermission = TaskRecordPermission.contains(permissionChecker, taskRecord,
-                TaskRecordActionKeys.VIEW);
+                TimetrackerActionKeys.VIEW);
         hasDeletePermission = TaskRecordPermission.contains(permissionChecker, taskRecord,
-                TaskRecordActionKeys.DELETE);
+                TimetrackerActionKeys.DELETE);
         hasPermissionsPermission = TaskRecordPermission.contains(permissionChecker, taskRecord,
-                TaskRecordActionKeys.PERMISSIONS);
+                TimetrackerActionKeys.PERMISSIONS);
 
     } else {
 

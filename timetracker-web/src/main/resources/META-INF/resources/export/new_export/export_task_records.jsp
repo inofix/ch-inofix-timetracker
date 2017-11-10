@@ -2,16 +2,11 @@
     export_task_records.jsp: Configure a task_records export.
     
     Created:    2017-05-16 17:30 by Christian Berndt
-    Modified:   2017-07-05 11:26 by Christian Berndt
-    Version:    1.0.4
+    Modified:   2017-11-10 15:33 by Christian Berndt
+    Version:    1.0.5
 --%>
 
 <%@ include file="/init.jsp" %>
-
-<%@page import="ch.inofix.timetracker.background.task.TaskRecordExportBackgroundTaskExecutor"%>
-
-<%@page import="com.liferay.exportimport.kernel.exception.LARFileNameException"%>
-<%@page import="com.liferay.exportimport.kernel.model.ExportImportConfiguration"%>
 
 <%
     long exportImportConfigurationId = 0;
@@ -21,7 +16,7 @@
     boolean configuredExport = (exportImportConfiguration == null) ? false : true;
 
     boolean hasExportPermission = TimetrackerPortletPermission.contains(permissionChecker, scopeGroupId,
-            TaskRecordActionKeys.EXPORT_TASK_RECORDS);
+            TimetrackerActionKeys.EXPORT_TASK_RECORDS);
 
     PortletURL portletURL = renderResponse.createRenderURL();
 
