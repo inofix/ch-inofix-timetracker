@@ -2,8 +2,8 @@
     edit_task_record.jsp: edit a single task-record.
 
     Created:     2013-10-07 10:41 by Christian Berndt
-    Modified:    2017-11-10 21:20 by Christian Berndt
-    Version:     1.7.3
+    Modified:    2017-11-10 23:23 by Christian Berndt
+    Version:     1.7.4
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -103,7 +103,7 @@
         <aui:input name="cmd" type="hidden" 
             value="<%= Constants.UPDATE %>"/>
         <aui:input name="redirect" type="hidden" 
-            value="<%= redirect %>" />
+            value="<%= currentURL %>" />
         <aui:input name="userId" type="hidden"
             value="<%=String.valueOf(themeDisplay.getUserId())%>" />
         
