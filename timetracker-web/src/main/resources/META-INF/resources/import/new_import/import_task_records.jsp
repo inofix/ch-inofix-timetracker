@@ -2,13 +2,11 @@
     import_task_records.jsp: configure the task records import.
     
     Created:    2017-06-01 21:27 by Christian Berndt
-    Modified:   2017-06-20 18:54 by Christian Berndt
-    Version:    1.0.3
+    Modified:   2017-11-10 18:44 by Christian Berndt
+    Version:    1.0.4
 --%>
 
 <%@ include file="/init.jsp" %>
-
-<%@page import="javax.portlet.PortletRequest"%>
 
 <%
     long groupId = ParamUtil.getLong(request, "groupId");

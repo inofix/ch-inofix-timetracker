@@ -2,13 +2,15 @@
     edit_task_record.jsp: edit a single task-record.
 
     Created:     2013-10-07 10:41 by Christian Berndt
-    Modified:    2017-11-10 15:38 by Christian Berndt
-    Version:     1.7.2
+    Modified:    2017-11-10 21:20 by Christian Berndt
+    Version:     1.7.3
 --%>
 
 <%@ include file="/init.jsp"%>
 
 <%
+    String redirect = ParamUtil.getString(request, "redirect");
+
     TaskRecord taskRecord = (TaskRecord) request.getAttribute(TimetrackerWebKeys.TASK_RECORD);
 
     String durationInMinutes = null;
@@ -80,8 +82,6 @@
 
     }
 
-    String redirect = ParamUtil.getString(request, "redirect");
-
     String backURL = ParamUtil.getString(request, "backURL", redirect);
 
     portletDisplay.setShowBackIcon(true);
@@ -94,7 +94,7 @@
 
 <div class="container-fluid-1280">
 
-    <portlet:actionURL name="updateTaskRecord" var="updateTaskRecordURL">
+    <portlet:actionURL name="editTaskRecord" var="updateTaskRecordURL">
         <portlet:param name="mvcPath" value="/edit_task_record.jsp" />
     </portlet:actionURL>
 
@@ -102,6 +102,8 @@
     
         <aui:input name="cmd" type="hidden" 
             value="<%= Constants.UPDATE %>"/>
+        <aui:input name="redirect" type="hidden" 
+            value="<%= redirect %>" />
         <aui:input name="userId" type="hidden"
             value="<%=String.valueOf(themeDisplay.getUserId())%>" />
         

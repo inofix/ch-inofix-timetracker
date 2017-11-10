@@ -1,9 +1,9 @@
 <%--
-    publish_process_message.jsp: TODO
+    import_process_message.jsp: TODO
     
     Created:     2017-06-05 12:39 by Christian Berndt
-    Modified:    2017-06-05 12:39 by Christian Berndt
-    Version:     1.0.0
+    Modified:    2017-11-10 17:48 by Christian Berndt
+    Version:     1.0.1
 --%>
 
 
@@ -107,7 +107,7 @@ BackgroundTask backgroundTask = (BackgroundTask)row.getObject();
 	</h5>
 
 	<div class="background-task-status-message hide" id="<portlet:namespace />backgroundTaskStatusMessage<%= backgroundTask.getBackgroundTaskId() %>">
-		<liferay-util:include page="/publish_process_message_task_details.jsp" servletContext="<%= application %>">
+		<liferay-util:include page="/import_process_message_task_details.jsp" servletContext="<%= application %>">
 			<liferay-util:param name="backgroundTaskId" value="<%= String.valueOf(backgroundTask.getBackgroundTaskId()) %>" />
 		</liferay-util:include>
 	</div>

@@ -2,17 +2,17 @@
     navigation.jsp: Default navigation of Inofix' timetracker.
     
     Created:     2017-06-05 12:39 by Christian Berndt
-    Modified:    2017-09-12 22:57 by Christian Berndt
-    Version:     1.0.9
+    Modified:    2017-11-10 16:59 by Christian Berndt
+    Version:     1.1.0
 --%>
 
 <%@ include file="/init.jsp" %>
 
 <%
-    PortletURL portletURL = renderResponse.createRenderURL();
+    PortletURL portletURL = liferayPortletResponse.createRenderURL();
     portletURL.setParameter("tabs1", "timetracker");
     
-    PortletURL exportImportURL = renderResponse.createRenderURL();
+    PortletURL exportImportURL = liferayPortletResponse.createRenderURL();
     exportImportURL.setParameter("tabs1", "export-import"); 
     
     long formDateTime = ParamUtil.getLong(request, "formDate"); 

@@ -2,8 +2,8 @@
     display_styles_buttons.jsp: Select the display style of the Timetracker.
     
     Created:    2017-06-05 13:06 by Christian Berndt
-    Modified:   2017-06-05 22:15 by Christian Berndt
-    Version:    1.0.1
+    Modified:   2017-11-10 16:58 by Christian Berndt
+    Version:    1.0.2
 --%>
 
 <%@ include file="/init.jsp" %>
@@ -18,7 +18,7 @@
 //         displayStyle = portalPreferences.getValue(PortletKeys.TIMETRACKER, "display-style", "descriptive");
     }
     
-    PortletURL displayStyleURL = renderResponse.createRenderURL();
+    PortletURL displayStyleURL = liferayPortletResponse.createRenderURL();
     // TODO: implement displayStyle descriptive
 %>
 

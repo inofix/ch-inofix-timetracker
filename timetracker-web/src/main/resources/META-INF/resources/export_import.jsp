@@ -2,7 +2,7 @@
     export_import.jsp: Import taskRecords from an uploaded file. 
     
     Created:    2016-03-21 21:51 by Christian Berndt
-    Modified:   2017-07-05 12:18 by Christian Berndt
+    Modified:   2017-11-10 16:59 by Christian Berndt
     Version:    1.1.3
 --%>
 
@@ -11,7 +11,7 @@
 <%
     String redirect = ParamUtil.getString(request, "redirect");
 
-    PortletURL portletURL = renderResponse.createRenderURL();
+    PortletURL portletURL = liferayPortletResponse.createRenderURL();
 
     portletURL.setParameter("mvcPath", "/view.jsp");
     portletURL.setParameter("redirect", redirect);

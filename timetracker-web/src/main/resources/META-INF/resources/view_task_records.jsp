@@ -2,8 +2,8 @@
     view_task_records.jsp: search-container of Inofix' timetracker.
     
     Created:     2017-06-05 13:22 by Christian Berndt
-    Modified:    2017-11-10 15:41 by Christian Berndt
-    Version:     1.1.2
+    Modified:    2017-11-10 16:45 by Christian Berndt
+    Version:     1.1.3
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -81,9 +81,10 @@
 <%
     ResourceURL resourceURL = liferayPortletResponse.createResourceURL();
 
-	resourceURL.setResourceID("getSum");
+	resourceURL.setResourceID("viewTaskRecord");
 
-	resourceURL.setParameter("start", "0");
+    resourceURL.setParameter("cmd", "getSum");
+    resourceURL.setParameter("start", "0");
 	resourceURL.setParameter("end", String.valueOf(Integer.MAX_VALUE));
     
     String namespace = liferayPortletResponse.getNamespace();

@@ -2,8 +2,8 @@
     import/view.jsp: default view of the taskRecords import
     
     Created:    2017-06-01 21:08 by Christian Berndt
-    Modified:   2017-11-10 15:03 by Christian Berndt
-    Version:    1.0.3
+    Modified:   2017-11-10 22:25 by Christian Berndt
+    Version:    1.0.4
 --%>
 
 <%@ include file="/init.jsp" %>
@@ -80,7 +80,7 @@
     </c:otherwise>
 </c:choose>
 
-<liferay-portlet:resourceURL copyCurrentRenderParameters="<%= false %>" id="importMeasurements" var="importProcessesURL">
+<liferay-portlet:resourceURL copyCurrentRenderParameters="<%= false %>" id="importTaskRecords" var="importProcessesURL">
     <portlet:param name="<%= Constants.CMD %>" value="<%= Constants.IMPORT %>" />
     <portlet:param name="<%= SearchContainer.DEFAULT_CUR_PARAM %>" value="<%= ParamUtil.getString(request, SearchContainer.DEFAULT_CUR_PARAM) %>" />
     <portlet:param name="<%= SearchContainer.DEFAULT_DELTA_PARAM %>" value="<%= ParamUtil.getString(request, SearchContainer.DEFAULT_DELTA_PARAM) %>" />

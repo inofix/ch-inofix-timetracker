@@ -2,16 +2,11 @@
     import_task_records_processes.jsp: list of import processes
     
     Created:    2017-06-08 00:21 by Christian Berndt
-    Modified:   2017-06-22 21:02 by Christian Berndt
-    Version:    1.0.4
+    Modified:   2017-11-10 17:28 by Christian Berndt
+    Version:    1.0.5
 --%>
 
 <%@ include file="/init.jsp" %>
-
-<%@page import="com.liferay.background.task.kernel.util.comparator.BackgroundTaskComparatorFactoryUtil"%>
-<%@page import="com.liferay.portal.kernel.portletfilerepository.PortletFileRepositoryUtil"%>
-<%@page import="com.liferay.portal.kernel.util.OrderByComparator"%>
-<%@page import="com.liferay.portal.kernel.util.StringBundler"%>
 
 <%
     long groupId = ParamUtil.getLong(request, "groupId");
@@ -33,9 +28,10 @@
     OrderByComparator<BackgroundTask> orderByComparator = BackgroundTaskComparatorFactoryUtil.getBackgroundTaskOrderByComparator(orderByCol, orderByType);
 %>
 
-<portlet:actionURL var="deleteBackgroundTasksURL"/>
+<portlet:actionURL name="importTaskRecords" var="deleteBackgroundTasksURL"/>
 
 <aui:form action="<%= deleteBackgroundTasksURL %>" method="get" name="fm">
+
     <aui:input name="<%= Constants.CMD %>" type="hidden" />
     <aui:input name="deleteBackgroundTaskIds" type="hidden" />
     <aui:input name="redirect" type="hidden" value="<%= currentURL.toString() %>" />
@@ -54,26 +50,32 @@
         <liferay-ui:search-container-results>
 
             <%
-            int backgroundTasksCount = 0;
-            List<BackgroundTask> backgroundTasks = null;
+                int backgroundTasksCount = 0;
+                List<BackgroundTask> backgroundTasks = null;
 
-            if (navigation.equals("all")) {
-                backgroundTasksCount = BackgroundTaskManagerUtil.getBackgroundTasksCount(groupId, TaskRecordImportBackgroundTaskExecutor.class.getName());
-                backgroundTasks = BackgroundTaskManagerUtil.getBackgroundTasks(groupId, TaskRecordImportBackgroundTaskExecutor.class.getName(), searchContainer.getStart(), searchContainer.getEnd(), searchContainer.getOrderByComparator());
-            }
-            else {
-                boolean completed = false;
+                if (navigation.equals("all")) {
+                    backgroundTasksCount = BackgroundTaskManagerUtil.getBackgroundTasksCount(groupId,
+                            TaskRecordImportBackgroundTaskExecutor.class.getName());
+                    backgroundTasks = BackgroundTaskManagerUtil.getBackgroundTasks(groupId,
+                            TaskRecordImportBackgroundTaskExecutor.class.getName(), searchContainer.getStart(),
+                            searchContainer.getEnd(), searchContainer.getOrderByComparator());
+                } else {
+                    boolean completed = false;
 
-                if (navigation.equals("completed")) {
-                    completed = true;
+                    if (navigation.equals("completed")) {
+                        completed = true;
+                    }
+
+                    backgroundTasksCount = BackgroundTaskManagerUtil.getBackgroundTasksCount(groupId,
+                            TaskRecordImportBackgroundTaskExecutor.class.getName(), completed);
+                    backgroundTasks = BackgroundTaskManagerUtil.getBackgroundTasks(groupId,
+                            TaskRecordImportBackgroundTaskExecutor.class.getName(), completed,
+                            searchContainer.getStart(), searchContainer.getEnd(),
+                            searchContainer.getOrderByComparator());
                 }
 
-                backgroundTasksCount = BackgroundTaskManagerUtil.getBackgroundTasksCount(groupId, TaskRecordImportBackgroundTaskExecutor.class.getName(), completed);
-                backgroundTasks = BackgroundTaskManagerUtil.getBackgroundTasks(groupId, TaskRecordImportBackgroundTaskExecutor.class.getName(), completed, searchContainer.getStart(), searchContainer.getEnd(), searchContainer.getOrderByComparator());
-            }
-
-            searchContainer.setResults(backgroundTasks);
-            searchContainer.setTotal(backgroundTasksCount);
+                searchContainer.setResults(backgroundTasks);
+                searchContainer.setTotal(backgroundTasksCount);
             %>
 
         </liferay-ui:search-container-results>
@@ -196,7 +198,7 @@
                             </h6>
 
                             <div class="background-task-status-message hide" id="<portlet:namespace />backgroundTaskStatusMessage<%= backgroundTask.getBackgroundTaskId() %>">
-                                <liferay-util:include page="/publish_process_message_task_details.jsp" servletContext="<%= application %>">
+                                <liferay-util:include page="/import_process_message_task_details.jsp" servletContext="<%= application %>">
                                     <liferay-util:param name="backgroundTaskId" value="<%= String.valueOf(backgroundTask.getBackgroundTaskId()) %>" />
                                 </liferay-util:include>
                             </div>
@@ -226,7 +228,7 @@
 
                     <liferay-ui:search-container-column-jsp
                         name="status"
-                        path="/publish_process_message.jsp"
+                        path="/import_process_message.jsp"
                     />
 
                     <liferay-ui:search-container-column-date
@@ -281,8 +283,7 @@
             <liferay-ui:search-container-column-text>
                 <c:if test="<%= !backgroundTask.isInProgress() %>">
                     <liferay-ui:icon-menu direction="left-side" icon="<%= StringPool.BLANK %>" markupView="<%= markupView %>" message="<%= StringPool.BLANK %>" showWhenSingleIcon="<%= true %>">
-                        <portlet:actionURL name="editImportConfiguration" var="relaunchURL">
-<%--                             <portlet:param name="mvcRenderCommandName" value="editImportConfiguration" /> --%>
+                        <portlet:actionURL name="importTaskRecords" var="relaunchURL">
                             <portlet:param name="<%= Constants.CMD %>" value="<%= Constants.RELAUNCH %>" />
                             <portlet:param name="redirect" value="<%= portletURL.toString() %>" />
                             <portlet:param name="backgroundTaskId" value="<%= String.valueOf(backgroundTask.getBackgroundTaskId()) %>" />
@@ -290,7 +291,8 @@
 
                         <liferay-ui:icon icon="reload" markupView="<%= markupView %>" message="relaunch" url="<%= relaunchURL %>" />
 
-                        <portlet:actionURL name="deleteBackgroundTasks" var="deleteBackgroundTaskURL">
+                        <portlet:actionURL name="importTaskRecords" var="deleteBackgroundTaskURL">
+                            <portlet:param name="<%= Constants.CMD %>" value="deleteBackgroundTasks" />                            
                             <portlet:param name="redirect" value="<%= portletURL.toString() %>" />
                             <portlet:param name="deleteBackgroundTaskIds" value="<%= String.valueOf(backgroundTask.getBackgroundTaskId()) %>" />
                         </portlet:actionURL>
@@ -310,6 +312,5 @@
         </liferay-ui:search-container-row>
 
         <liferay-ui:search-iterator displayStyle="<%= displayStyle %>" markupView="<%= markupView %>" />
-<%--         <liferay-ui:search-iterator displayStyle="<%= displayStyle %>" markupView="lexicon" resultRowSplitter="<%= new ImportImportResultRowSplitter() %>" /> --%>
     </liferay-ui:search-container>
 </aui:form>

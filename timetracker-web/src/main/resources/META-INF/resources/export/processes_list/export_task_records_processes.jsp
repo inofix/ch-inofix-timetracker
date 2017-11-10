@@ -2,8 +2,8 @@
     export_task_records_processes.jsp: list of export processes
     
     Created:    2017-06-06 23:36 by Christian Berndt
-    Modified:   2017-06-22 21:03 by Christian Berndt
-    Version:    1.0.5
+    Modified:   2017-11-10 22:25 by Christian Berndt
+    Version:    1.0.6
 --%>
 
 <%@ include file="/init.jsp" %>
@@ -195,7 +195,7 @@
                             </h6>
 
                             <div class="background-task-status-message hide" id="<portlet:namespace />backgroundTaskStatusMessage<%= backgroundTask.getBackgroundTaskId() %>">
-                                <liferay-util:include page="/publish_process_message_task_details.jsp" servletContext="<%= application %>">
+                                <liferay-util:include page="/import_process_message_task_details.jsp" servletContext="<%= application %>">
                                     <liferay-util:param name="backgroundTaskId" value="<%= String.valueOf(backgroundTask.getBackgroundTaskId()) %>" />
                                 </liferay-util:include>
                             </div>
@@ -225,7 +225,7 @@
 
                     <liferay-ui:search-container-column-jsp
                         name="status"
-                        path="/publish_process_message.jsp"
+                        path="/import_process_message.jsp"
                     />
 
                     <liferay-ui:search-container-column-date
