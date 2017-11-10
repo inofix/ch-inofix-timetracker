@@ -2,8 +2,8 @@
     init.jsp: Common imports and initialization code.
 
     Created:     2014-02-01 15:31 by Christian Berndt
-    Modified:    2017-11-10 15:05 by Christian Berndt
-    Version:     1.2.4
+    Modified:    2017-11-10 17:28 by Christian Berndt
+    Version:     1.2.5
 --%>
 
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
@@ -34,9 +34,14 @@
 <%@page import="ch.inofix.timetracker.web.internal.constants.TimetrackerWebKeys"%>
 <%@page import="ch.inofix.timetracker.web.configuration.TimetrackerConfiguration"%>
 
+<%@page import="com.liferay.background.task.kernel.util.comparator.BackgroundTaskComparatorFactoryUtil"%>
+<%@page import="com.liferay.exportimport.kernel.exception.LARFileException"%>
 <%@page import="com.liferay.exportimport.kernel.exception.LARFileNameException"%>
+<%@page import="com.liferay.exportimport.kernel.exception.LARFileSizeException"%>
+<%@page import="com.liferay.exportimport.kernel.exception.LARTypeException"%>
 <%@page import="com.liferay.exportimport.kernel.lar.ExportImportHelper"%>
 <%@page import="com.liferay.exportimport.kernel.lar.ExportImportHelperUtil"%>
+<%@page import="com.liferay.exportimport.kernel.lar.PortletDataHandlerKeys"%>
 <%@page import="com.liferay.exportimport.kernel.model.ExportImportConfiguration"%>
 <%@page import="com.liferay.portal.kernel.backgroundtask.BackgroundTask"%>
 <%@page import="com.liferay.portal.kernel.backgroundtask.BackgroundTaskConstants"%>
@@ -52,11 +57,14 @@
 <%@page import="com.liferay.portal.kernel.log.LogFactoryUtil"%>
 <%@page import="com.liferay.portal.kernel.model.Group"%>
 <%@page import="com.liferay.portal.kernel.model.Portlet"%>
+<%@page import="com.liferay.portal.kernel.model.Ticket"%>
+<%@page import="com.liferay.portal.kernel.model.TicketConstants"%>
 <%@page import="com.liferay.portal.kernel.model.User"%>
 <%@page import="com.liferay.portal.kernel.portlet.PortalPreferences"%>
 <%@page import="com.liferay.portal.kernel.portlet.PortletURLUtil"%>
 <%@page import="com.liferay.portal.kernel.portlet.LiferayWindowState"%>
 <%@page import="com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil"%>
+<%@page import="com.liferay.portal.kernel.portletfilerepository.PortletFileRepositoryUtil"%>
 <%@page import="com.liferay.portal.kernel.repository.model.FileEntry"%>
 <%@page import="com.liferay.portal.kernel.search.Document"%>
 <%@page import="com.liferay.portal.kernel.search.Hits"%>
@@ -64,8 +72,11 @@
 <%@page import="com.liferay.portal.kernel.search.SortFactoryUtil"%>
 <%@page import="com.liferay.portal.kernel.security.auth.PrincipalException"%>
 <%@page import="com.liferay.portal.kernel.security.permission.ResourceActionsUtil"%>
-<%@page import="com.liferay.portal.kernel.service.UserLocalServiceUtil"%>
+<%@page import="com.liferay.portal.kernel.service.GroupLocalServiceUtil"%>
 <%@page import="com.liferay.portal.kernel.service.PortletLocalServiceUtil"%>
+<%@page import="com.liferay.portal.kernel.service.ServiceContext"%>
+<%@page import="com.liferay.portal.kernel.service.TicketLocalServiceUtil"%>
+<%@page import="com.liferay.portal.kernel.service.UserLocalServiceUtil"%>
 <%@page import="com.liferay.portal.kernel.util.CalendarFactoryUtil"%>
 <%@page import="com.liferay.portal.kernel.util.Constants"%>
 <%@page import="com.liferay.portal.kernel.util.DateUtil"%>
@@ -76,19 +87,23 @@
 <%@page import="com.liferay.portal.kernel.util.KeyValuePair"%>
 <%@page import="com.liferay.portal.kernel.util.KeyValuePairComparator"%>
 <%@page import="com.liferay.portal.kernel.util.ListUtil"%>
+<%@page import="com.liferay.portal.kernel.util.OrderByComparator"%>
 <%@page import="com.liferay.portal.kernel.util.ParamUtil"%>
 <%@page import="com.liferay.portal.kernel.util.PortalUtil"%>
 <%@page import="com.liferay.portal.kernel.util.PrefsPropsUtil"%>
 <%@page import="com.liferay.portal.kernel.util.PropsKeys"%>
 <%@page import="com.liferay.portal.kernel.util.SetUtil"%>
+<%@page import="com.liferay.portal.kernel.util.StringBundler"%>
 <%@page import="com.liferay.portal.kernel.util.StringPool"%>
 <%@page import="com.liferay.portal.kernel.util.StringUtil"%>
 <%@page import="com.liferay.portal.kernel.util.TextFormatter"%>
+<%@page import="com.liferay.portal.kernel.util.Time"%>
 <%@page import="com.liferay.portal.kernel.util.Validator"%>
 <%@page import="com.liferay.portal.kernel.util.WebKeys"%>
 <%@page import="com.liferay.portal.kernel.workflow.WorkflowConstants"%>
 <%@page import="com.liferay.trash.kernel.util.TrashUtil"%>
 
+<%@page import="java.text.DecimalFormatSymbols"%>
 <%@page import="java.util.Calendar"%>
 <%@page import="java.text.DateFormat"%>
 <%@page import="java.text.Format"%>
@@ -102,6 +117,7 @@
 <%@page import="java.util.Set"%>
 
 <%@page import="javax.portlet.PortletPreferences"%>
+<%@page import="javax.portlet.PortletRequest"%>
 <%@page import="javax.portlet.PortletURL"%>
 <%@page import="javax.portlet.ResourceURL"%>
 <%@page import="javax.portlet.WindowState"%>

@@ -2,8 +2,8 @@
     toolbar.jsp: The toolbar of the timetracker portlet
     
     Created:    2016-03-20 16:58 by Christian Berndt
-    Modified:   2017-10-30 23:18 by Christian Berndt
-    Version:    1.2.7
+    Modified:   2017-11-10 16:51 by Christian Berndt
+    Version:    1.2.8
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -17,7 +17,7 @@
     
     int total = GetterUtil.getInteger(request.getAttribute("view.jsp-total"));
     
-    PortletURL portletURL = renderResponse.createRenderURL();
+    PortletURL portletURL = liferayPortletResponse.createRenderURL();
     portletURL.setParameters(renderRequest.getParameterMap());
 %>
 
@@ -50,11 +50,12 @@
 
                     ResourceURL downloadURL = liferayPortletResponse.createResourceURL();
 
-                    downloadURL.setResourceID("download");
+                    downloadURL.setResourceID("viewTaskRecord");
 
                     // Copy render parameters to resourceRequest
                     downloadURL.setParameters(renderRequest.getParameterMap());
 
+                    downloadURL.setParameter("cmd", "download");
                     downloadURL.setParameter("idx", String.valueOf(i));
                     downloadURL.setParameter("start", "0");
                     downloadURL.setParameter("end", String.valueOf(Integer.MAX_VALUE));

@@ -2,20 +2,11 @@
     import_task_records_validation.jsp: validate the task records import.
     
     Created:    2017-06-01 21:45 by Christian Berndt
-    Modified:   2017-06-01 21:45 by Christian Berndt
-    Version:    1.0.0
+    Modified:   2017-11-10 18:51 by Christian Berndt
+    Version:    1.0.1
 --%>
 
-
 <%@ include file="/init.jsp" %>
-
-<%@page import="java.text.DecimalFormatSymbols"%>
-
-<%@page import="com.liferay.portal.kernel.service.ServiceContext"%>
-<%@page import="com.liferay.portal.kernel.service.TicketLocalServiceUtil"%>
-<%@page import="com.liferay.portal.kernel.model.Ticket"%>
-<%@page import="com.liferay.portal.kernel.model.TicketConstants"%>
-<%@page import="com.liferay.portal.kernel.util.Time"%>
 
 <%
     long groupId = ParamUtil.getLong(request, "groupId");
@@ -30,7 +21,7 @@
     </div>
 
     <%
-    FileEntry fileEntry = ExportImportHelperUtil.getTempFileEntry(groupId, themeDisplay.getUserId(), ExportImportHelper.TEMP_FOLDER_NAME);
+        FileEntry fileEntry = ExportImportHelperUtil.getTempFileEntry(groupId, themeDisplay.getUserId(), ExportImportHelper.TEMP_FOLDER_NAME);
     %>
 
     <aui:button-row>
