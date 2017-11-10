@@ -11,7 +11,7 @@ import com.liferay.portal.kernel.security.permission.ActionKeys;
  * @version 1.0.5
  *
  */
-public class TaskRecordActionKeys extends ActionKeys {
+public class TimetrackerActionKeys extends ActionKeys {
 
     public static final String ADD_TASK_RECORD = "ADD_TASK_RECORD";
     public static final String DELETE_GROUP_TASK_RECORDS = "DELETE_GROUP_TASK_RECORDS";
