@@ -22,7 +22,7 @@ import ch.inofix.timetracker.service.TaskRecordLocalServiceUtil;
  * @version 1.0.1
  *
  */
-public class TaskRecordUtil {
+public class TimetrackerUtil {
 
     public static List<TaskRecord> getTaskRecords(Hits hits) {
 
@@ -48,6 +48,6 @@ public class TaskRecordUtil {
         return taskRecords;
     }
 
-    private static final Log _log = LogFactoryUtil.getLog(TaskRecordUtil.class.getName());
+    private static final Log _log = LogFactoryUtil.getLog(TimetrackerUtil.class.getName());
 
 }

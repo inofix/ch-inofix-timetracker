@@ -94,7 +94,7 @@ import ch.inofix.timetracker.internal.exportimport.configuration.ExportImportTas
 import ch.inofix.timetracker.model.TaskRecord;
 import ch.inofix.timetracker.service.TaskRecordService;
 import ch.inofix.timetracker.service.TaskRecordServiceUtil;
-import ch.inofix.timetracker.service.util.TaskRecordUtil;
+import ch.inofix.timetracker.service.util.TimetrackerUtil;
 import ch.inofix.timetracker.web.configuration.ExportImportConfigurationConstants;
 import ch.inofix.timetracker.web.configuration.TimetrackerConfiguration;
 import ch.inofix.timetracker.web.internal.constants.TimetrackerWebKeys;
@@ -108,8 +108,8 @@ import ch.inofix.timetracker.web.internal.search.TaskRecordSearch;
  * @author Christian Berndt
  * @author Stefan Luebbers
  * @created 2013-10-07 10:47
- * @modified 2017-10-30 22:35
- * @version 1.9.1
+ * @modified 2017-11-10 15:20
+ * @version 1.9.2
  */
 @Component(
     configurationPid = "ch.inofix.timetracker.web.configuration.TimetrackerConfiguration",
@@ -185,20 +185,20 @@ public class TimetrackerPortlet extends MVCPortlet {
 
             } else if (cmd.equals(Constants.IMPORT)) {
 
-                hideDefaultSuccessMessage(actionRequest);
-                importTaskRecords(actionRequest, ExportImportHelper.TEMP_FOLDER_NAME);
-
-                Map<String, String[]> parameters = new HashMap<>();
-
-                String mvcPath = ParamUtil.getString(actionRequest, "mvcPath");
-                String tabs1 = ParamUtil.getString(actionRequest, "tabs1");
-                String tabs2 = ParamUtil.getString(actionRequest, "tabs2");
-
-                parameters.put("mvcPath", new String[] { mvcPath });
-                parameters.put("tabs1", new String[] { tabs1 });
-                parameters.put("tabs2", new String[] { tabs2 });
-
-                actionResponse.setRenderParameters(parameters);
+//                hideDefaultSuccessMessage(actionRequest);
+//                importTaskRecords(actionRequest, ExportImportHelper.TEMP_FOLDER_NAME);
+//
+//                Map<String, String[]> parameters = new HashMap<>();
+//
+//                String mvcPath = ParamUtil.getString(actionRequest, "mvcPath");
+//                String tabs1 = ParamUtil.getString(actionRequest, "tabs1");
+//                String tabs2 = ParamUtil.getString(actionRequest, "tabs2");
+//
+//                parameters.put("mvcPath", new String[] { mvcPath });
+//                parameters.put("tabs1", new String[] { tabs1 });
+//                parameters.put("tabs2", new String[] { tabs2 });
+//
+//                actionResponse.setRenderParameters(parameters);
 
             } else if (cmd.equals(Constants.UPDATE)) {
 
@@ -250,26 +250,26 @@ public class TimetrackerPortlet extends MVCPortlet {
         super.render(renderRequest, renderResponse);
     }
 
-    @Override
-    public void serveResource(ResourceRequest resourceRequest, ResourceResponse resourceResponse)
-            throws PortletException {
-
-        try {
-            String resourceID = resourceRequest.getResourceID();
-
-            if (resourceID.equals("download")) {
-                download(resourceRequest, resourceResponse);
-            } else if (resourceID.equals("getSum")) {
-                getSum(resourceRequest, resourceResponse);
-            } else if (resourceID.equals("importTaskRecords")) {
-                importTaskRecords(resourceRequest, resourceResponse);
-            } else {
-                super.serveResource(resourceRequest, resourceResponse);
-            }
-        } catch (Exception e) {
-            throw new PortletException(e);
-        }
-    }
+//    @Override
+//    public void serveResource(ResourceRequest resourceRequest, ResourceResponse resourceResponse)
+//            throws PortletException {
+//
+//        try {
+//            String resourceID = resourceRequest.getResourceID();
+//
+//            if (resourceID.equals("download")) {
+//                download(resourceRequest, resourceResponse);
+//            } else if (resourceID.equals("getSum")) {
+//                getSum(resourceRequest, resourceResponse);
+//            } else if (resourceID.equals("importTaskRecords")) {
+//                importTaskRecords(resourceRequest, resourceResponse);
+//            } else {
+//                super.serveResource(resourceRequest, resourceResponse);
+//            }
+//        } catch (Exception e) {
+//            throw new PortletException(e);
+//        }
+//    }
 
     @Activate
     @Modified
@@ -746,7 +746,7 @@ public class TimetrackerPortlet extends MVCPortlet {
                     start, end, sort);
         }
 
-        List<TaskRecord> taskRecords = TaskRecordUtil.getTaskRecords(hits);
+        List<TaskRecord> taskRecords = TimetrackerUtil.getTaskRecords(hits);
 
         return taskRecords;
 
@@ -772,49 +772,49 @@ public class TimetrackerPortlet extends MVCPortlet {
         ServletResponseUtil.write(response, String.valueOf(jsonObject.getInt("status")));
     }
 
-    protected void importTaskRecords(ActionRequest actionRequest, String folderName) throws Exception {
+//    protected void importTaskRecords(ActionRequest actionRequest, String folderName) throws Exception {
+//
+//        ThemeDisplay themeDisplay = (ThemeDisplay) actionRequest.getAttribute(WebKeys.THEME_DISPLAY);
+//
+//        long groupId = ParamUtil.getLong(actionRequest, "groupId");
+//
+//        FileEntry fileEntry = ExportImportHelperUtil.getTempFileEntry(groupId, themeDisplay.getUserId(), folderName);
+//
+//        InputStream inputStream = null;
+//
+//        try {
+//            inputStream = _dlFileEntryLocalService.getFileAsStream(fileEntry.getFileEntryId(), fileEntry.getVersion(),
+//                    false);
+//
+//            importTaskRecords(actionRequest, fileEntry.getTitle(), inputStream);
+//
+//            deleteTempFileEntry(groupId, folderName);
+//
+//        } finally {
+//            StreamUtil.cleanUp(inputStream);
+//        }
+//    }
 
-        ThemeDisplay themeDisplay = (ThemeDisplay) actionRequest.getAttribute(WebKeys.THEME_DISPLAY);
-
-        long groupId = ParamUtil.getLong(actionRequest, "groupId");
-
-        FileEntry fileEntry = ExportImportHelperUtil.getTempFileEntry(groupId, themeDisplay.getUserId(), folderName);
-
-        InputStream inputStream = null;
-
-        try {
-            inputStream = _dlFileEntryLocalService.getFileAsStream(fileEntry.getFileEntryId(), fileEntry.getVersion(),
-                    false);
-
-            importTaskRecords(actionRequest, fileEntry.getTitle(), inputStream);
-
-            deleteTempFileEntry(groupId, folderName);
-
-        } finally {
-            StreamUtil.cleanUp(inputStream);
-        }
-    }
-
-    protected void importTaskRecords(ActionRequest actionRequest, String fileName, InputStream inputStream)
-            throws Exception {
-
-        long groupId = ParamUtil.getLong(actionRequest, "groupId");
-
-        ExportImportConfiguration exportImportConfiguration = getExportImportConfiguration(actionRequest);
-
-        exportImportConfiguration.setName("TaskRecords");
-        exportImportConfiguration.setGroupId(groupId);
-
-        Map<String, Serializable> settingsMap = new HashMap<>();
-        settingsMap.put("targetGroupId", groupId);
-
-        String settings = JSONFactoryUtil.serialize(settingsMap);
-
-        exportImportConfiguration.setSettings(settings);
-
-        _taskRecordService.importTaskRecordsInBackground(exportImportConfiguration, inputStream);
-
-    }
+//    protected void importTaskRecords(ActionRequest actionRequest, String fileName, InputStream inputStream)
+//            throws Exception {
+//
+//        long groupId = ParamUtil.getLong(actionRequest, "groupId");
+//
+//        ExportImportConfiguration exportImportConfiguration = getExportImportConfiguration(actionRequest);
+//
+//        exportImportConfiguration.setName("TaskRecords");
+//        exportImportConfiguration.setGroupId(groupId);
+//
+//        Map<String, Serializable> settingsMap = new HashMap<>();
+//        settingsMap.put("targetGroupId", groupId);
+//
+//        String settings = JSONFactoryUtil.serialize(settingsMap);
+//
+//        exportImportConfiguration.setSettings(settings);
+//
+//        _taskRecordService.importTaskRecordsInBackground(exportImportConfiguration, inputStream);
+//
+//    }
 
     protected void importTaskRecords(ResourceRequest resourceRequest, ResourceResponse resourceResponse)
             throws Exception {

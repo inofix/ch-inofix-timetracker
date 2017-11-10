@@ -2,15 +2,15 @@
     add_button.jsp: create a new import process
     
     Created:    2017-06-08 00:32 by Christian Berndt
-    Modified:   2017-07-05 11:38 by Christian Berndt
-    Version:    1.0.3
+    Modified:   2017-11-10 15:36 by Christian Berndt
+    Version:    1.0.4
 --%>
 
 <%@ include file="/init.jsp"%>
 
 <%    
     boolean hasImportPermission = TimetrackerPortletPermission.contains(permissionChecker, scopeGroupId,
-            TaskRecordActionKeys.IMPORT_TASK_RECORDS);
+            TimetrackerActionKeys.IMPORT_TASK_RECORDS);
 %>
 
 <liferay-frontend:add-menu>

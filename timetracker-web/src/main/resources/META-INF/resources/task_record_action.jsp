@@ -2,13 +2,11 @@
     task_record_action.jsp: The action menu of the timetrackers's default view.
     
     Created:    2017-03-25 11:57 by Christian Berndt
-    Modified:   2017-06-15 16:18 by Christian Berndt
-    Version:    1.0.2
+    Modified:   2017-11-10 15:39 by Christian Berndt
+    Version:    1.0.3
 --%>
 
 <%@ include file="/init.jsp"%>
-
-<%@page import="com.liferay.portal.kernel.dao.search.ResultRow"%>
 
 <%
     ResultRow row = (ResultRow) request.getAttribute(WebKeys.SEARCH_CONTAINER_RESULT_ROW);
@@ -22,13 +20,13 @@
     viewURL = HttpUtil.setParameter(viewURL, renderResponse.getNamespace() + "taskRecordId", taskRecord.getTaskRecordId()); 
 
     boolean hasUpdatePermission = TaskRecordPermission.contains(permissionChecker, taskRecord,
-            TaskRecordActionKeys.UPDATE);
+            TimetrackerActionKeys.UPDATE);
     boolean hasViewPermission = TaskRecordPermission.contains(permissionChecker, taskRecord,
-            TaskRecordActionKeys.VIEW);
+            TimetrackerActionKeys.VIEW);
     boolean hasDeletePermission = TaskRecordPermission.contains(permissionChecker, taskRecord,
-            TaskRecordActionKeys.DELETE);
+            TimetrackerActionKeys.DELETE);
     boolean hasPermissionsPermission = TaskRecordPermission.contains(permissionChecker, taskRecord, 
-            TaskRecordActionKeys.PERMISSIONS);
+            TimetrackerActionKeys.PERMISSIONS);
 %>
 
 <liferay-ui:icon-menu showWhenSingleIcon="true">

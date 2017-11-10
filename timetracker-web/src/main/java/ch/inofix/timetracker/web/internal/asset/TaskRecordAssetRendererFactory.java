@@ -25,7 +25,7 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import ch.inofix.timetracker.constants.PortletKeys;
-import ch.inofix.timetracker.constants.TaskRecordActionKeys;
+import ch.inofix.timetracker.constants.TimetrackerActionKeys;
 import ch.inofix.timetracker.model.TaskRecord;
 import ch.inofix.timetracker.service.TaskRecordLocalService;
 import ch.inofix.timetracker.service.permission.TaskRecordPermission;
@@ -35,8 +35,8 @@ import ch.inofix.timetracker.service.permission.TimetrackerPortletPermission;
  *
  * @author Christian Berndt
  * @created 2017-03-21 13:52
- * @modified 2017-07-09 18:02
- * @version 1.0.2
+ * @modified 2017-11-10 15:31
+ * @version 1.0.3
  *
  */
 @Component(
@@ -121,7 +121,7 @@ public class TaskRecordAssetRendererFactory extends BaseAssetRendererFactory<Tas
     public boolean hasAddPermission(PermissionChecker permissionChecker, long groupId, long classTypeId)
             throws Exception {
 
-        return TimetrackerPortletPermission.contains(permissionChecker, groupId, TaskRecordActionKeys.ADD_TASK_RECORD);
+        return TimetrackerPortletPermission.contains(permissionChecker, groupId, TimetrackerActionKeys.ADD_TASK_RECORD);
     }
 
     @Override

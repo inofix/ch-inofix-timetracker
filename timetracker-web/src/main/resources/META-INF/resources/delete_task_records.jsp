@@ -2,15 +2,15 @@
     delete-task_records.jsp: Delete all task-records of this group
     
     Created:    2016-03-22 12:12 by Christian Berndt
-    Modified:   2017-07-05 11:47 by Christian Berndt
-    Version:    1.0.5
+    Modified:   2017-11-10 15:37 by Christian Berndt
+    Version:    1.0.6
 --%>
 
 <%@ include file="/init.jsp" %>
 
 <%
     boolean hasDeletePermission = TimetrackerPortletPermission.contains(permissionChecker, scopeGroupId,
-            TaskRecordActionKeys.DELETE_GROUP_TASK_RECORDS);
+            TimetrackerActionKeys.DELETE_GROUP_TASK_RECORDS);
 %>
 
 <portlet:actionURL var="deleteGroupRecordsURL">
