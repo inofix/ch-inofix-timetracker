@@ -2,16 +2,11 @@
     export_task_records_processes.jsp: list of export processes
     
     Created:    2017-06-06 23:36 by Christian Berndt
-    Modified:   2017-11-10 22:25 by Christian Berndt
-    Version:    1.0.6
+    Modified:   2017-11-10 23:24 by Christian Berndt
+    Version:    1.0.7
 --%>
 
 <%@ include file="/init.jsp" %>
-
-<%@page import="com.liferay.background.task.kernel.util.comparator.BackgroundTaskComparatorFactoryUtil"%>
-<%@page import="com.liferay.portal.kernel.portletfilerepository.PortletFileRepositoryUtil"%>
-<%@page import="com.liferay.portal.kernel.util.OrderByComparator"%>
-<%@page import="com.liferay.portal.kernel.util.StringBundler"%>
 
 <%
     long groupId = ParamUtil.getLong(request, "groupId");
