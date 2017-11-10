@@ -26,7 +26,7 @@
 <%@page import="ch.inofix.timetracker.service.permission.TaskRecordPermission"%>
 <%@page import="ch.inofix.timetracker.service.permission.TimetrackerPortletPermission"%>
 <%@page import="ch.inofix.timetracker.service.TaskRecordServiceUtil"%>
-<%@page import="ch.inofix.timetracker.service.util.TaskRecordUtil"%>
+<%@page import="ch.inofix.timetracker.service.util.TimetrackerUtil"%>
 <%@page import="ch.inofix.timetracker.web.internal.search.EntriesChecker"%>
 <%@page import="ch.inofix.timetracker.web.internal.search.TaskRecordDisplayTerms"%>
 <%@page import="ch.inofix.timetracker.web.internal.search.TaskRecordSearch"%>
