@@ -2,8 +2,8 @@
     view.jsp: Default view of Inofix' timetracker.
     
     Created:     2013-10-06 16:52 by Christian Berndt
-    Modified:    2017-11-10 22:24 by Christian Berndt
-    Version:     1.8.1
+    Modified:    2017-11-10 14:09 by Christian Berndt
+    Version:     1.8.2
 --%>
 
 <%@ include file="/init.jsp" %>
@@ -114,7 +114,9 @@
                     </div>
                 </c:if> 
                                     
-                <portlet:actionURL var="editSetURL"/>
+                <portlet:actionURL name="editTaskRecord" var="editSetURL">
+                    <portlet:param name="mvcRenderCommandName" value="editTaskRecord" />
+                </portlet:actionURL>
                 
                 <aui:form action="<%= editSetURL %>" name="fm" 
                     onSubmit='<%= "event.preventDefault(); " + renderResponse.getNamespace() + "editSet();" %>'>
