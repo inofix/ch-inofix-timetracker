@@ -2,8 +2,8 @@
     init.jsp: Common imports and initialization code.
 
     Created:     2014-02-01 15:31 by Christian Berndt
-    Modified:    2017-11-10 17:28 by Christian Berndt
-    Version:     1.2.5
+    Modified:    2017-11-11 13:32 by Christian Berndt
+    Version:     1.2.6
 --%>
 
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
@@ -103,10 +103,12 @@
 <%@page import="com.liferay.portal.kernel.workflow.WorkflowConstants"%>
 <%@page import="com.liferay.trash.kernel.util.TrashUtil"%>
 
+<%@page import="java.io.Serializable"%>
 <%@page import="java.text.DecimalFormatSymbols"%>
 <%@page import="java.util.Calendar"%>
 <%@page import="java.text.DateFormat"%>
 <%@page import="java.text.Format"%>
+<%@page import="java.util.Objects"%>
 <%@page import="java.text.ParseException"%>
 <%@page import="java.text.SimpleDateFormat"%>
 <%@page import="java.util.ArrayList"%>
@@ -114,6 +116,7 @@
 <%@page import="java.util.Date"%>
 <%@page import="java.util.HashMap"%>
 <%@page import="java.util.List"%>
+<%@page import="java.util.Map"%>
 <%@page import="java.util.Set"%>
 
 <%@page import="javax.portlet.PortletPreferences"%>
