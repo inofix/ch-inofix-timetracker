@@ -99,8 +99,7 @@
 <div class="container-fluid-1280">
 
     <portlet:actionURL name="editTaskRecord" var="updateTaskRecordURL">
-        <portlet:param name="mvcRenderCommandName"
-            value="editTaskRecord" />
+        <portlet:param name="mvcRenderCommandName" value="editTaskRecord" />
     </portlet:actionURL>
 
     <aui:form method="post" action="<%=updateTaskRecordURL%>" name="fm">

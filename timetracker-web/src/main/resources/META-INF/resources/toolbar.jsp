@@ -36,8 +36,6 @@
         />
     </liferay-frontend:management-bar-filters>
 
-
-
     <liferay-frontend:management-bar-buttons>
 
         <liferay-ui:icon-menu cssClass="pull-left" direction="down"
