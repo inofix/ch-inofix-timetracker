@@ -2,8 +2,8 @@
     view_task_records.jsp: search-container of Inofix' timetracker.
     
     Created:     2017-06-05 13:22 by Christian Berndt
-    Modified:    2017-11-10 16:45 by Christian Berndt
-    Version:     1.1.3
+    Modified:    2017-11-11 00:25 by Christian Berndt
+    Version:     1.1.4
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -30,17 +30,17 @@
         modelVar="taskRecord" keyProperty="taskRecordId">
 
         <portlet:renderURL var="editURL">
+            <portlet:param name="mvcRenderCommandName" value="editTaskRecord" />
             <portlet:param name="redirect" value="<%=currentURL%>" />
             <portlet:param name="taskRecordId"
                 value="<%=String.valueOf(taskRecord.getTaskRecordId())%>" />
-            <portlet:param name="mvcPath" value="/edit_task_record.jsp" />
         </portlet:renderURL>
 
         <portlet:renderURL var="viewURL">
+            <portlet:param name="mvcRenderCommandName" value="editTaskRecord" />
             <portlet:param name="redirect" value="<%=currentURL%>" />
             <portlet:param name="taskRecordId"
                 value="<%=String.valueOf(taskRecord.getTaskRecordId())%>" />
-            <portlet:param name="mvcPath" value="/edit_task_record.jsp" />
         </portlet:renderURL>
 
         <%

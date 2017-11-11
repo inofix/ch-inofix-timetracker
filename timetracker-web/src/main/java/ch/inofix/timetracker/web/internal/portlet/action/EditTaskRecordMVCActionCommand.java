@@ -3,20 +3,32 @@ package ch.inofix.timetracker.web.internal.portlet.action;
 import java.util.Date;
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
+import javax.portlet.PortletConfig;
+import javax.portlet.PortletRequest;
+
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.portlet.LiferayPortletURL;
+import com.liferay.portal.kernel.portlet.PortletURLFactoryUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextFactory;
 import com.liferay.portal.kernel.servlet.SessionErrors;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Constants;
+import com.liferay.portal.kernel.util.Http;
+import com.liferay.portal.kernel.util.JavaConstants;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.util.WebKeys;
 
 import ch.inofix.timetracker.constants.PortletKeys;
 import ch.inofix.timetracker.exception.NoSuchTaskRecordException;
@@ -24,14 +36,13 @@ import ch.inofix.timetracker.exception.TaskRecordFromDateException;
 import ch.inofix.timetracker.exception.TaskRecordUntilDateException;
 import ch.inofix.timetracker.model.TaskRecord;
 import ch.inofix.timetracker.service.TaskRecordService;
-import ch.inofix.timetracker.web.internal.constants.TimetrackerWebKeys;
 
 /**
  * 
  * @author Christian Berndt
  * @created 2017-11-10 19:09
- * @modified 2017-11-10 19:09
- * @version 1.0.0
+ * @modified 2017-11-11 13:28
+ * @version 1.0.1
  *
  */
 @Component(
@@ -74,14 +85,31 @@ public class EditTaskRecordMVCActionCommand extends BaseMVCActionCommand {
 
         String cmd = ParamUtil.getString(actionRequest, Constants.CMD);
 
+        _log.info("doProcessAction");
+        _log.info("cmd = " + cmd);
+
+        ThemeDisplay themeDisplay = (ThemeDisplay) actionRequest.getAttribute(WebKeys.THEME_DISPLAY);
+
+        TaskRecord taskRecord = null;
         try {
 
             if (cmd.equals(Constants.ADD) || cmd.equals(Constants.UPDATE)) {
-                updateTaskRecord(actionRequest);
+                taskRecord = updateTaskRecord(actionRequest);
             } else if (cmd.equals(Constants.DELETE)) {
                 deleteTaskRecords(actionRequest);
             } else if (cmd.equals("deleteGroupTaskRecords")) {
                 deleteGroupTaskRecords(actionRequest);
+            }
+
+            if (Validator.isNotNull(cmd)) {
+                String redirect = ParamUtil.getString(actionRequest, "redirect");
+                if (taskRecord != null) {
+
+                    redirect = getSaveAndContinueRedirect(actionRequest, taskRecord, themeDisplay.getLayout(),
+                            redirect);
+
+                    sendRedirect(actionRequest, actionResponse, redirect);
+                }
             }
 
         } catch (NoSuchTaskRecordException | PrincipalException e) {
@@ -98,13 +126,37 @@ public class EditTaskRecordMVCActionCommand extends BaseMVCActionCommand {
             SessionErrors.add(actionRequest, e.getClass());
         }
     }
+    
+    protected String getSaveAndContinueRedirect(
+            ActionRequest actionRequest, TaskRecord taskRecord, Layout layout, String redirect)
+        throws Exception {
+
+        PortletConfig portletConfig = (PortletConfig)actionRequest.getAttribute(
+            JavaConstants.JAVAX_PORTLET_CONFIG);
+        
+        LiferayPortletURL portletURL = PortletURLFactoryUtil.create(actionRequest, portletConfig.getPortletName(), layout, PortletRequest.RENDER_PHASE);
+
+        portletURL.setParameter("mvcRenderCommandName", "editTaskRecord");
+
+        portletURL.setParameter(Constants.CMD, Constants.UPDATE, false);
+        portletURL.setParameter("redirect", redirect, false);
+        portletURL.setParameter(
+            "groupId", String.valueOf(taskRecord.getGroupId()), false);
+        portletURL.setParameter(
+            "taskRecordId", String.valueOf(taskRecord.getTaskRecordId()), false);
+        portletURL.setWindowState(actionRequest.getWindowState());
+
+        return portletURL.toString();
+    }
 
     @Reference(unbind = "-")
     protected void setTaskRecordService(TaskRecordService taskRecordService) {
         this._taskRecordService = taskRecordService;
     }
 
-    protected void updateTaskRecord(ActionRequest actionRequest) throws Exception {
+    protected TaskRecord updateTaskRecord(ActionRequest actionRequest) throws Exception {
+        
+        _log.info("updateTaskRecord");
 
         long taskRecordId = ParamUtil.getLong(actionRequest, "taskRecordId");
 
@@ -180,12 +232,18 @@ public class EditTaskRecordMVCActionCommand extends BaseMVCActionCommand {
             taskRecord = _taskRecordService.updateTaskRecord(taskRecordId, workPackage, description, ticketURL,
                     untilDate, fromDate, status, duration, serviceContext);
         }
-
-        actionRequest.setAttribute(TimetrackerWebKeys.TASK_RECORD, taskRecord);
+                
+        return taskRecord;
     }
-
-    private TaskRecordService _taskRecordService;
     
+    @Reference
+    private Http _http;
+
+    @Reference
+    private Portal _portal;
+    
+    private TaskRecordService _taskRecordService;
+
     private static Log _log = LogFactoryUtil.getLog(EditTaskRecordMVCActionCommand.class.getName()); 
 
 }

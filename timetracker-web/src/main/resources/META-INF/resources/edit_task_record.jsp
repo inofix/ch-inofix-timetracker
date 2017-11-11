@@ -2,13 +2,15 @@
     edit_task_record.jsp: edit a single task-record.
 
     Created:     2013-10-07 10:41 by Christian Berndt
-    Modified:    2017-11-10 21:20 by Christian Berndt
-    Version:     1.7.3
+    Modified:    2017-11-10 23:23 by Christian Berndt
+    Version:     1.7.4
 --%>
 
 <%@ include file="/init.jsp"%>
 
 <%
+    String cmd = Constants.ADD; 
+
     String redirect = ParamUtil.getString(request, "redirect");
 
     TaskRecord taskRecord = (TaskRecord) request.getAttribute(TimetrackerWebKeys.TASK_RECORD);
@@ -38,6 +40,8 @@
     boolean hasPermissionsPermission = false;
 
     if (taskRecord != null) {
+        
+        cmd = Constants.UPDATE;
 
         durationInMinutes = String.valueOf(taskRecord.getDurationInMinutes());
 
@@ -95,114 +99,122 @@
 <div class="container-fluid-1280">
 
     <portlet:actionURL name="editTaskRecord" var="updateTaskRecordURL">
-        <portlet:param name="mvcPath" value="/edit_task_record.jsp" />
+        <portlet:param name="mvcRenderCommandName"
+            value="editTaskRecord" />
     </portlet:actionURL>
 
     <aui:form method="post" action="<%=updateTaskRecordURL%>" name="fm">
-    
-        <aui:input name="cmd" type="hidden" 
-            value="<%= Constants.UPDATE %>"/>
-        <aui:input name="redirect" type="hidden" 
-            value="<%= redirect %>" />
+
+        <aui:input name="<%=Constants.CMD%>" type="hidden"
+            value="<%=cmd%>" />
+
+        <aui:input name="redirect" type="hidden"
+            value="<%=redirect%>" />
         <aui:input name="userId" type="hidden"
             value="<%=String.valueOf(themeDisplay.getUserId())%>" />
-        
+
         <aui:model-context bean="<%=taskRecord%>"
             model="<%=TaskRecord.class%>" />
-    
+
         <div class="lfr-form-content">
-        
-            <liferay-ui:error exception="<%= TaskRecordDurationException.class %>" message="please-enter-a-valid-duration" />
-        
-            <aui:fieldset-group markupView="<%= markupView %>">
- 
+
+            <liferay-ui:error
+                exception="<%= TaskRecordDurationException.class %>"
+                message="please-enter-a-valid-duration" />
+
+            <aui:fieldset-group markupView="<%=markupView%>">
+
                 <aui:fieldset>
-    
+
                     <aui:input name="backURL" type="hidden"
                         value="<%=backURL%>" />
-    
+
                     <aui:input name="untilDate" type="hidden"
                         disabled="<%=!hasUpdatePermission%>" />
-    
+
                     <aui:input name="redirect" type="hidden"
                         value="<%=redirect%>" />
-    
+
                     <aui:input name="taskRecordId" type="hidden"
                         disabled="<%=!hasUpdatePermission%>" />
-    
+
                     <aui:input name="workPackage"
                         helpMessage="work-package-help"
                         cssClass="timetracker-input"
                         disabled="<%=!hasUpdatePermission%>" />
-    
+
                     <aui:input name="ticketURL" label="ticket-url"
                         helpMessage="ticket-url-help"
                         cssClass="timetracker-input"
                         disabled="<%=!hasUpdatePermission%>" />
-    
+
                     <aui:input name="description"
                         disabled="<%=!hasUpdatePermission%>"
                         helpMessage="description-help" />
-    
-    
-                    <aui:field-wrapper name="date" label="date" required="true" cssClass="col-sm-6">
-    
+
+
+                    <aui:field-wrapper name="date" label="date"
+                        required="true" cssClass="col-sm-6">
+
                         <liferay-ui:input-date name="fromDate"
-                            disabled="<%= !hasUpdatePermission %>"
+                            disabled="<%=!hasUpdatePermission%>"
                             dayParam="fromDateDay"
                             dayValue="<%=fromDateDay%>"
                             monthParam="fromDateMonth"
                             monthValue="<%=fromDateMonth%>"
                             yearParam="fromDateYear"
                             yearValue="<%=fromDateYear%>" />
-    
+
                     </aui:field-wrapper>
-    
+
                     <c:if test="<%=Validator.equals("from-until", timeFormat)%>">
-    
-                        <aui:field-wrapper cssClass="clearfix col-sm-6 from-until"
-                            label="from-until" name="from-until" required="true">
-    
+
+                        <aui:field-wrapper
+                            cssClass="clearfix col-sm-6 from-until"
+                            label="from-until" name="from-until"
+                            required="true">
+
                             <liferay-ui:input-time name="fromTime"
-                                disabled="<%= !hasUpdatePermission %>"
-                                minuteInterval="<%= 15 %>"
+                                disabled="<%=!hasUpdatePermission%>"
+                                minuteInterval="<%=15%>"
                                 minuteParam="fromDateMinute"
-                                minuteValue="<%= fromDateMinute %>"
+                                minuteValue="<%=fromDateMinute%>"
                                 amPmParam="fromDateAmPm"
                                 hourParam="fromDateHour"
-                                hourValue="<%= fromDateHour %>"
+                                hourValue="<%=fromDateHour%>"
                                 timeFormat="24-hour" />
-    
+
                             <liferay-ui:input-time name="untilTime"
-                                disabled="<%= !hasUpdatePermission %>"
-                                minuteInterval="<%= 15 %>"
+                                disabled="<%=!hasUpdatePermission%>"
+                                minuteInterval="<%=15%>"
                                 minuteParam="untilDateMinute"
-                                minuteValue="<%= untilDateMinute %>"
+                                minuteValue="<%=untilDateMinute%>"
                                 amPmParam="untilDateAmPm"
                                 hourParam="untilDateHour"
-                                hourValue="<%= untilDateHour %>"
+                                hourValue="<%=untilDateHour%>"
                                 timeFormat="24-hour" />
-    
+
                         </aui:field-wrapper>
-    
+
                     </c:if>
-    
+
                     <c:if test="<%=!Validator.equals("from-until", timeFormat)%>">
-    
+
                         <aui:field-wrapper label="duration"
                             helpMessage="duration-help">
-    
+
                             <%-- TODO: why this? --%>
                             <input name="<portlet:namespace/>duration"
                                 value="<%=durationInMinutes%>"
                                 class="aui-field-input aui-field-input-text lfr-input-text duration-in-minutes"
                                 disabled="<%=!hasUpdatePermission%>" />
-    
+
                         </aui:field-wrapper>
-    
+
                     </c:if>
-    
-                    <aui:select name="status" disabled="<%=!hasUpdatePermission%>">
+
+                    <aui:select name="status"
+                        disabled="<%=!hasUpdatePermission%>">
                         <aui:option
                             value="<%=WorkflowConstants.STATUS_APPROVED%>"
                             selected="<%=WorkflowConstants.STATUS_APPROVED == taskRecord.getStatus()%>">
@@ -234,16 +246,18 @@
                             <liferay-ui:message key="pending" />
                         </aui:option>
                     </aui:select>
-    
+
                 </aui:fieldset>
-        
+
             </aui:fieldset-group>
         </div>
-                           
+
         <aui:button-row>
-            <aui:button cssClass="btn-lg" disabled="<%= !hasUpdatePermission %>" type="submit" />           
-            <aui:button cssClass="btn-lg" href="<%= redirect %>" type="cancel" />
+            <aui:button cssClass="btn-lg"
+                disabled="<%=!hasUpdatePermission%>" type="submit" />
+            <aui:button cssClass="btn-lg" href="<%=redirect%>"
+                type="cancel" />
         </aui:button-row>
-        
+
     </aui:form>
 </div>
