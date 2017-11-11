@@ -6,7 +6,6 @@
     Version:     1.0.0
 --%>
 
-
 <%@ include file="/init.jsp" %>
 
 <%
@@ -78,14 +77,12 @@
         %>
 
         <c:choose>
-            <c:when
-                test="<%=Objects.equals(cmd, Constants.PUBLISH_TO_REMOTE) && (percentage == 100)%>">
+            <c:when test="<%=Objects.equals(cmd, Constants.PUBLISH_TO_REMOTE) && (percentage == 100)%>">
                 <div class="progress-current-item">
                     <strong><liferay-ui:message key="please-wait-as-the-publication-processes-on-the-remote-site" /></strong>
                 </div>
             </c:when>
-            <c:when
-                test="<%=Validator.isNotNull(stagedModelName) && Validator.isNotNull(stagedModelType)%>">
+            <c:when test="<%=Validator.isNotNull(stagedModelName) && Validator.isNotNull(stagedModelType)%>">
 
                 <%
                     String messageKey = "exporting";
