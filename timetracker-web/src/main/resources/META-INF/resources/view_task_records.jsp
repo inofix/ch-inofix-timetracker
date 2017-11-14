@@ -81,7 +81,7 @@
 <%
     ResourceURL resourceURL = liferayPortletResponse.createResourceURL();
 
-	resourceURL.setResourceID("viewTaskRecord");
+	resourceURL.setResourceID("exportTaskRecords");
 
     resourceURL.setParameter("cmd", "getSum");
     resourceURL.setParameter("start", "0");
