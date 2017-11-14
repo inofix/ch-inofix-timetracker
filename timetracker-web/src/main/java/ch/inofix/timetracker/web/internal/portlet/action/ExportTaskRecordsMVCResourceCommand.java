@@ -44,27 +44,26 @@ import ch.inofix.timetracker.web.internal.search.TaskRecordSearch;
  * 
  * @author Christian Berndt
  * @created 2017-11-10 16:36
- * @modified 2017-11-10 16:36
- * @version 1.0.0
+ * @modified 2017-11-14 23:42
+ * @version 1.0.1
  *
  */
 @Component(
     immediate = true,
     property = {
         "javax.portlet.name=" + PortletKeys.TIMETRACKER,
-        "mvc.command.name=viewTaskRecord"
+        "mvc.command.name=exportTaskRecords"
     },
     service = MVCResourceCommand.class
 )
-public class ViewTaskRecordMVCResourceCommand extends BaseMVCResourceCommand {
-    
+public class ExportTaskRecordsMVCResourceCommand extends BaseMVCResourceCommand {
+
     @Activate
     @Modified
     protected void activate(Map<Object, Object> properties) {
 
-        _timetrackerConfiguration = ConfigurableUtil.createConfigurable(
-                TimetrackerConfiguration.class, properties);
-        
+        _timetrackerConfiguration = ConfigurableUtil.createConfigurable(TimetrackerConfiguration.class, properties);
+
     }
 
     @Override
@@ -88,7 +87,7 @@ public class ViewTaskRecordMVCResourceCommand extends BaseMVCResourceCommand {
             getSum(resourceRequest, resourceResponse);
 
         } else {
-            
+
             portletRequestDispatcher = getPortletRequestDispatcher(resourceRequest, "/view.jsp");
 
             portletRequestDispatcher.include(resourceRequest, resourceResponse);
@@ -96,11 +95,11 @@ public class ViewTaskRecordMVCResourceCommand extends BaseMVCResourceCommand {
         }
 
     }
-    
+
     protected void download(ResourceRequest resourceRequest, ResourceResponse resourceResponse) throws Exception {
-        
-        int idx = ParamUtil.getInteger(resourceRequest, "idx"); 
-        
+
+        int idx = ParamUtil.getInteger(resourceRequest, "idx");
+
         _log.info("idx = " + idx);
 
         PortletPreferences portletPreferences = resourceRequest.getPreferences();
@@ -128,7 +127,7 @@ public class ViewTaskRecordMVCResourceCommand extends BaseMVCResourceCommand {
         PortletResponseUtil.sendFile(resourceRequest, resourceResponse, exportFileNames[idx], exportStr.getBytes());
 
     }
-    
+
     protected void getSum(ResourceRequest resourceRequest, ResourceResponse resourceResponse) throws Exception {
 
         List<TaskRecord> taskRecords = getTaskRecords(resourceRequest);
@@ -148,9 +147,9 @@ public class ViewTaskRecordMVCResourceCommand extends BaseMVCResourceCommand {
         PortletResponseUtil.write(resourceResponse, String.valueOf(hours));
 
     }
-    
+
     protected List<TaskRecord> getTaskRecords(PortletRequest request) throws Exception {
-        
+
         ThemeDisplay themeDisplay = (ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY);
 
         PortletURL iteratorURL = PortletURLFactoryUtil.create(request, PortletKeys.TIMETRACKER,
@@ -218,9 +217,9 @@ public class ViewTaskRecordMVCResourceCommand extends BaseMVCResourceCommand {
         return taskRecords;
 
     }
-    
+
     private volatile TimetrackerConfiguration _timetrackerConfiguration;
-    
-    private static Log _log = LogFactoryUtil.getLog(ViewTaskRecordMVCResourceCommand.class.getName());
+
+    private static Log _log = LogFactoryUtil.getLog(ExportTaskRecordsMVCResourceCommand.class.getName());
 
 }

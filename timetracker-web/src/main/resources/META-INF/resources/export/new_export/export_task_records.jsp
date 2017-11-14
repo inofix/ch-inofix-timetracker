@@ -32,7 +32,7 @@
     
     <portlet:actionURL name="exportTaskRecords" var="exportTaskRecordsURL">
         <portlet:param name="groupId" value="<%= String.valueOf(scopeGroupId) %>"/>
-        <portlet:param name="mvcPath" value="/view.jsp"/>
+<%--         <portlet:param name="mvcPath" value="/view.jsp"/> --%>
         <portlet:param name="tabs1" value="export-import" />
         <portlet:param name="tabs2" value="export" />
     </portlet:actionURL>

@@ -48,7 +48,7 @@
 
                     ResourceURL downloadURL = liferayPortletResponse.createResourceURL();
 
-                    downloadURL.setResourceID("viewTaskRecord");
+                    downloadURL.setResourceID("exportTaskRecords");
 
                     // Copy render parameters to resourceRequest
                     downloadURL.setParameters(renderRequest.getParameterMap());
