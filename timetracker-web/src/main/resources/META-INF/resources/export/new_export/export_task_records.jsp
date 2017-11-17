@@ -29,7 +29,8 @@
 %>
 
 <div class="container-fluid-1280">
-    
+
+   
     <portlet:actionURL name="exportTaskRecords" var="exportTaskRecordsURL">
         <portlet:param name="groupId" value="<%= String.valueOf(scopeGroupId) %>"/>
 <%--         <portlet:param name="mvcPath" value="/view.jsp"/> --%>
