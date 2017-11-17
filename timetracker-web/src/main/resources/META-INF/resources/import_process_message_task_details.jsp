@@ -1,11 +1,12 @@
 <%--
-    import_process_message.jsp: display the status of the respective background task.
+    import_process_message_task_details.jsp: display the status of the respective background task.
     
     Created:     2017-11-10 17:46 by Christian Berndt
     Modified:    2017-11-10 17:46 by Christian Berndt
     Version:     1.0.0
 --%>
 
+<%-- 
 <%@ include file="/init.jsp" %>
 
 <%
@@ -106,7 +107,7 @@
     </c:if>
 </c:if>
 
-<%-- <c:if test="<%=Validator.isNotNull(backgroundTask.getStatusMessage())%>"> --%>
+<c:if test="<%=Validator.isNotNull(backgroundTask.getStatusMessage())%>">
     <h5>
         <a href="javascript:Liferay.fire('<portlet:namespace />viewBackgroundTaskDetails', {nodeId: 'backgroundTaskStatusMessage<%=backgroundTask.getBackgroundTaskId()%>', title: $('#<portlet:namespace />backgroundTaskName<%=backgroundTask.getBackgroundTaskId()%>').text()}); void(0);"><liferay-ui:message
                 key="see-more-details" /></a>
@@ -121,4 +122,7 @@
                 value="<%=String.valueOf(backgroundTask.getBackgroundTaskId())%>" />
         </liferay-util:include>
     </div>
-<%-- </c:if> --%>
+</c:if>
+--%>
+TODO: re-enable import_process_message_task_details.jsp
+
