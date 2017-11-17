@@ -2,8 +2,8 @@
     import/view.jsp: default view of the taskRecords import
     
     Created:    2017-06-01 21:08 by Christian Berndt
-    Modified:   2017-11-10 22:25 by Christian Berndt
-    Version:    1.0.4
+    Modified:   2017-11-17 19:04 by Christian Berndt
+    Version:    1.0.5
 --%>
 
 <%@ include file="/init.jsp" %>
@@ -25,34 +25,11 @@
     tabs1 = ParamUtil.getString(request, "tabs1"); 
     tabs2 = ParamUtil.getString(request, "tabs2"); 
 
-    PortletURL portletURL = liferayPortletResponse.createRenderURL();
-
-    portletURL.setParameter("groupId", String.valueOf(groupId));
-    portletURL.setParameter("displayStyle", displayStyle);
-    portletURL.setParameter("mvcPath", "/import/view.jsp"); 
-    portletURL.setParameter("navigation", navigation);
-    portletURL.setParameter("orderByCol", orderByCol);
-    portletURL.setParameter("orderByType", orderByType);
-    portletURL.setParameter("searchContainerId", searchContainerId);
-    portletURL.setParameter("tabs1", tabs1);
-    portletURL.setParameter("tabs2", tabs2);
-
-//     OrderByComparator<BackgroundTask> orderByComparator = BackgroundTaskComparatorFactoryUtil
-//             .getBackgroundTaskOrderByComparator(orderByCol, orderByType);
-
-//     int backgroundTasksCount = 0;
-//     List<BackgroundTask> backgroundTasks = null;
-
     boolean completed = false;
 
     if ("completed".equals(navigation)) {
         completed = true;
     }
-
-//     backgroundTasks = BackgroundTaskManagerUtil.getBackgroundTasks(scopeGroupId,
-//             TaskRecordExportBackgroundTaskExecutor.class.getName(), 0, 20, orderByComparator);
-//     backgroundTasksCount = BackgroundTaskManagerUtil.getBackgroundTasksCount(scopeGroupId,
-//             TaskRecordExportBackgroundTaskExecutor.class.getName());
 %>
 
 <% // TODO: enable permission checks %>
@@ -84,8 +61,6 @@
     <portlet:param name="<%= Constants.CMD %>" value="<%= Constants.IMPORT %>" />
     <portlet:param name="<%= SearchContainer.DEFAULT_CUR_PARAM %>" value="<%= ParamUtil.getString(request, SearchContainer.DEFAULT_CUR_PARAM) %>" />
     <portlet:param name="<%= SearchContainer.DEFAULT_DELTA_PARAM %>" value="<%= ParamUtil.getString(request, SearchContainer.DEFAULT_DELTA_PARAM) %>" />
-<%--        <portlet:param name="groupId" value="<%= String.valueOf(groupDisplayContextHelper.getGroupId()) %>" /> --%>
-<%--        <portlet:param name="privateLayout" value="<%= String.valueOf(privateLayout) %>" /> --%>
     <portlet:param name="displayStyle" value="<%= displayStyle %>" />
     <portlet:param name="navigation" value="<%= navigation %>" />
     <portlet:param name="orderByCol" value="<%= orderByCol %>" />

@@ -16,9 +16,9 @@
 <%@page import="com.liferay.portal.kernel.dao.search.ResultRow"%>
 
 <%
-ResultRow row = (ResultRow)request.getAttribute(WebKeys.SEARCH_CONTAINER_RESULT_ROW);
+    ResultRow row = (ResultRow) request.getAttribute(WebKeys.SEARCH_CONTAINER_RESULT_ROW);
 
-BackgroundTask backgroundTask = (BackgroundTask)row.getObject();
+    BackgroundTask backgroundTask = (BackgroundTask) row.getObject();
 %>
 
 <h5 class="background-task-status-<%= BackgroundTaskConstants.getStatusLabel(backgroundTask.getStatus()) %> <%= BackgroundTaskConstants.getStatusCssClass(backgroundTask.getStatus()) %>">
@@ -28,7 +28,7 @@ BackgroundTask backgroundTask = (BackgroundTask)row.getObject();
 <c:if test="<%= backgroundTask.isInProgress() %>">
 
 	<%
-	BackgroundTaskStatus backgroundTaskStatus = BackgroundTaskStatusRegistryUtil.getBackgroundTaskStatus(backgroundTask.getBackgroundTaskId());
+    	BackgroundTaskStatus backgroundTaskStatus = BackgroundTaskStatusRegistryUtil.getBackgroundTaskStatus(backgroundTask.getBackgroundTaskId());
 	%>
 
 	<c:if test="<%= backgroundTaskStatus != null %>">
