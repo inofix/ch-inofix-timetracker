@@ -1,29 +1,22 @@
 package ch.inofix.timetracker.web.internal.portlet.action;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.Map;
-import java.util.Set;
+import java.util.TimeZone;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
-import javax.portlet.PortletRequest;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 import com.liferay.exportimport.kernel.configuration.ExportImportConfigurationConstants;
-import com.liferay.exportimport.kernel.configuration.ExportImportConfigurationSettingsMapFactory;
 import com.liferay.exportimport.kernel.exception.LARFileNameException;
-import com.liferay.exportimport.kernel.lar.ExportImportHelperUtil;
 import com.liferay.exportimport.kernel.model.ExportImportConfiguration;
 import com.liferay.exportimport.kernel.service.ExportImportConfigurationLocalService;
 import com.liferay.portal.kernel.exception.NoSuchBackgroundTaskException;
-import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
@@ -37,35 +30,35 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import ch.inofix.timetracker.constants.PortletKeys;
+import ch.inofix.timetracker.internal.exportimport.configuration.ExportImportTaskRecordsConfigurationSettingsMapFactory;
 import ch.inofix.timetracker.service.TaskRecordService;
 
 /**
  * 
  * @author Christian Berndt
  * @created 2017-11-14 18:10
- * @modified 2017-11-14 18:10
- * @version 1.0.0
+ * @modified 2017-11-17 22:30
+ * @version 1.0.1
  *
  */
 @Component(
-        immediate = true,
-        property = {
-            "javax.portlet.name=" + PortletKeys.TIMETRACKER,
-            "mvc.command.name=exportTaskRecords"
-        },
-        service = MVCActionCommand.class
-    )
+    immediate = true,
+    property = {
+        "javax.portlet.name=" + PortletKeys.TIMETRACKER,
+        "mvc.command.name=exportTaskRecords"
+    },
+    service = MVCActionCommand.class
+)
 public class ExportTaskRecordsMVCActionCommand extends BaseMVCActionCommand {
 
     @Override
     protected void doProcessAction(ActionRequest actionRequest, ActionResponse actionResponse) throws Exception {
 
+        _log.info("doProcessAction()");
+        
         String cmd = ParamUtil.getString(actionRequest, Constants.CMD);
 
-        _log.info("doProcessAction");
         _log.info("cmd = " + cmd);
-
-        // try {
 
         if (cmd.equals(Constants.DELETE)) {
             deleteBackgroundTasks(actionRequest, actionResponse);
@@ -73,32 +66,11 @@ public class ExportTaskRecordsMVCActionCommand extends BaseMVCActionCommand {
             exportTaskRecords(actionRequest, actionResponse);
         }
 
-        // if (Validator.isNotNull(cmd)) {
-        // String redirect = ParamUtil.getString(actionRequest, "redirect");
-        // if (taskRecord != null) {
-        //
-        // redirect = getSaveAndContinueRedirect(actionRequest, taskRecord,
-        // themeDisplay.getLayout(),
-        // redirect);
-        //
-        // sendRedirect(actionRequest, actionResponse, redirect);
-        // }
-        // }
+        String redirect = ParamUtil.getString(actionRequest, "redirect");
 
-        // } catch (NoSuchTaskRecordException | PrincipalException e) {
-        //
-        // SessionErrors.add(actionRequest, e.getClass());
-        //
-        // actionResponse.setRenderParameter("mvcPath", "/error.jsp");
-        //
-        // // TODO: Define set of exceptions reported back to user. For an
-        // // example, see EditCategoryMVCActionCommand.java.
-        //
-        // } catch (Exception e) {
-        //
-        // SessionErrors.add(actionRequest, e.getClass());
-        // }
-
+        if (Validator.isNotNull(redirect)) {
+            sendRedirect(actionRequest, actionResponse, redirect);
+        }
     }
 
     protected void deleteBackgroundTasks(ActionRequest actionRequest, ActionResponse actionResponse) throws Exception {
@@ -128,19 +100,13 @@ public class ExportTaskRecordsMVCActionCommand extends BaseMVCActionCommand {
             }
         }
 
-        String tabs1 = ParamUtil.getString(actionRequest, "tabs1");
-        String tabs2 = ParamUtil.getString(actionRequest, "tabs2");
-
-        actionResponse.setRenderParameter("tabs1", tabs1);
-        actionResponse.setRenderParameter("tabs2", tabs2);
-
         addSuccessMessage(actionRequest, actionResponse);
 
     }
 
     protected void exportTaskRecords(ActionRequest actionRequest, ActionResponse actionResponse) throws Exception {
-
-        _log.info("exportTaskRecords");
+        
+        _log.info("exportTaskRecords()");
 
         ThemeDisplay themeDisplay = (ThemeDisplay) actionRequest.getAttribute(WebKeys.THEME_DISPLAY);
 
@@ -161,25 +127,23 @@ public class ExportTaskRecordsMVCActionCommand extends BaseMVCActionCommand {
 
             ExportImportConfiguration exportImportConfiguration = getExportImportConfiguration(actionRequest);
 
-            _log.info("exportImportConfiguration = " + exportImportConfiguration);
-
             _taskRecordService.exportTaskRecordsAsFileInBackground(themeDisplay.getUserId(), exportImportConfiguration);
 
             sendRedirect(actionRequest, actionResponse);
 
         } catch (Exception e) {
             SessionErrors.add(actionRequest, e.getClass());
-
+            
+            // TODO: remove LARFileNameException dependency
             if (!(e instanceof LARFileNameException)) {
                 _log.error(e, e);
             }
         }
-
     }
 
     protected ExportImportConfiguration getExportImportConfiguration(ActionRequest actionRequest) throws Exception {
 
-        Map<String, Serializable> exportLayoutSettingsMap = null;
+        Map<String, Serializable> exportTaskRecordsSettingsMap = null;
 
         long exportImportConfigurationId = ParamUtil.getLong(actionRequest, "exportImportConfigurationId");
 
@@ -188,60 +152,29 @@ public class ExportTaskRecordsMVCActionCommand extends BaseMVCActionCommand {
                     .fetchExportImportConfiguration(exportImportConfigurationId);
 
             if (exportImportConfiguration != null) {
-                exportLayoutSettingsMap = exportImportConfiguration.getSettingsMap();
+                exportTaskRecordsSettingsMap = exportImportConfiguration.getSettingsMap();
             }
         }
 
         ThemeDisplay themeDisplay = (ThemeDisplay) actionRequest.getAttribute(WebKeys.THEME_DISPLAY);
 
-        boolean privateLayout = ParamUtil.getBoolean(actionRequest, "privateLayout");
+        if (exportTaskRecordsSettingsMap == null) {
 
-        if (exportLayoutSettingsMap == null) {
-            long groupId = ParamUtil.getLong(actionRequest, "groupId");
-            long[] layoutIds = getLayoutIds(actionRequest);
-
-            // TODO: build settingsMap without reference to layouts
-            exportLayoutSettingsMap = ExportImportConfigurationSettingsMapFactory.buildExportLayoutSettingsMap(
-                    themeDisplay.getUserId(), groupId, privateLayout, layoutIds, actionRequest.getParameterMap(),
-                    themeDisplay.getLocale(), themeDisplay.getTimeZone());
+            exportTaskRecordsSettingsMap = ExportImportTaskRecordsConfigurationSettingsMapFactory
+                    .buildExportTaskRecordsSettingsMap(themeDisplay.getCompanyId(), themeDisplay.getUserId(),
+                            themeDisplay.getPlid(), themeDisplay.getScopeGroupId(), PortletKeys.TIMETRACKER,
+                            actionRequest.getParameterMap(), themeDisplay.getLocale(), TimeZone.getDefault(), null);
         }
 
         String taskName = ParamUtil.getString(actionRequest, "name");
 
         if (Validator.isNull(taskName)) {
-            if (privateLayout) {
-                taskName = LanguageUtil.get(actionRequest.getLocale(), "private-pages");
-            } else {
-                taskName = LanguageUtil.get(actionRequest.getLocale(), "public-pages");
-            }
+            taskName = "task-records";
         }
 
+        // TODO: remove dependendency from ExportImportConfigurationConstants
         return _exportImportConfigurationLocalService.addDraftExportImportConfiguration(themeDisplay.getUserId(),
-                taskName, ExportImportConfigurationConstants.TYPE_EXPORT_LAYOUT, exportLayoutSettingsMap);
-    }
-
-    protected long[] getLayoutIds(PortletRequest portletRequest) throws Exception {
-
-        Set<Layout> layouts = new LinkedHashSet<>();
-
-        Map<Long, Boolean> layoutIdMap = ExportImportHelperUtil.getLayoutIdMap(portletRequest);
-
-        // for (Map.Entry<Long, Boolean> entry : layoutIdMap.entrySet()) {
-        // long plid = GetterUtil.getLong(String.valueOf(entry.getKey()));
-        // boolean includeChildren = entry.getValue();
-        //
-        // Layout layout = _layoutLocalService.getLayout(plid);
-        //
-        // if (!layouts.contains(layout)) {
-        // layouts.add(layout);
-        // }
-        //
-        // if (includeChildren) {
-        // layouts.addAll(layout.getAllChildren());
-        // }
-        // }
-
-        return ExportImportHelperUtil.getLayoutIds(new ArrayList<Layout>(layouts));
+                taskName, ExportImportConfigurationConstants.TYPE_EXPORT_LAYOUT, exportTaskRecordsSettingsMap);
     }
 
     @Reference(unbind = "-")
@@ -250,7 +183,7 @@ public class ExportTaskRecordsMVCActionCommand extends BaseMVCActionCommand {
 
         _exportImportConfigurationLocalService = exportImportConfigurationLocalService;
     }
-
+    
     @Reference(unbind = "-")
     protected void setTaskRecordService(TaskRecordService taskRecordService) {
         this._taskRecordService = taskRecordService;
@@ -259,10 +192,9 @@ public class ExportTaskRecordsMVCActionCommand extends BaseMVCActionCommand {
     private static final Log _log = LogFactoryUtil.getLog(ExportTaskRecordsMVCActionCommand.class);
 
     private ExportImportConfigurationLocalService _exportImportConfigurationLocalService;
-
     private TaskRecordService _taskRecordService;
 
     @Reference
     private Portal _portal;
-
+    
 }

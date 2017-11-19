@@ -2,8 +2,8 @@
     export_task_records_processes.jsp: list of export processes
     
     Created:    2017-06-06 23:36 by Christian Berndt
-    Modified:   2017-11-10 23:24 by Christian Berndt
-    Version:    1.0.7
+    Modified:   2017-11-17 23:42 by Christian Berndt
+    Version:    1.0.8
 --%>
 
 <%@ include file="/init.jsp" %>
@@ -28,14 +28,13 @@
     OrderByComparator<BackgroundTask> orderByComparator = BackgroundTaskComparatorFactoryUtil.getBackgroundTaskOrderByComparator(orderByCol, orderByType);
 %>
 
-<portlet:actionURL var="deleteBackgroundTasksURL"/>
+<portlet:actionURL name="exportTaskRecords" var="deleteBackgroundTasksURL">
+    <portlet:param name="redirect" value="<%= currentURL %>"/>
+</portlet:actionURL>
 
 <aui:form action="<%= deleteBackgroundTasksURL %>" method="get" name="fm">
-    <aui:input name="<%= Constants.CMD %>" value="deleteBackgroundTasks" type="hidden" />
-    <aui:input name="redirect" type="hidden" value="<%= currentURL.toString() %>" />
+    <aui:input name="<%= Constants.CMD %>" value="<%= Constants.DELETE %>" type="hidden" />
     <aui:input name="deleteBackgroundTaskIds" type="hidden" />
-    <aui:input name="tabs1" type="hidden" value="<%= tabs1 %>"/>
-    <aui:input name="tabs2" type="hidden" value="<%= tabs2 %>"/>
 
     <liferay-ui:search-container
         emptyResultsMessage="no-export-processes-were-found"
@@ -284,13 +283,14 @@
 
                         <liferay-ui:icon icon="reload" markupView="<%= markupView %>" message="relaunch" url="<%= relaunchURL %>" />
 
-                        <portlet:actionURL name="deleteBackgroundTasks" var="deleteBackgroundTaskURL">
-                            <portlet:param name="redirect" value="<%= portletURL.toString() %>" />
+                        <portlet:actionURL name="exportTaskRecords" var="deleteBackgroundTaskURL">
+                            <portlet:param name="<%= Constants.CMD %>" value="<%= Constants.DELETE %>" />
                             <portlet:param name="deleteBackgroundTaskIds" value="<%= String.valueOf(backgroundTask.getBackgroundTaskId()) %>" />
+                            <portlet:param name="redirect" value="<%= currentURL %>" />
                         </portlet:actionURL>
 
                         <%
-                        Date completionDate = backgroundTask.getCompletionDate();
+                            Date completionDate = backgroundTask.getCompletionDate();
                         %>
 
                         <liferay-ui:icon-delete
@@ -307,4 +307,3 @@
 <%--         <liferay-ui:search-iterator displayStyle="<%= displayStyle %>" markupView="lexicon" resultRowSplitter="<%= new ExportImportResultRowSplitter() %>" /> --%>
     </liferay-ui:search-container>
 </aui:form>
-
