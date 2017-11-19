@@ -2,8 +2,8 @@
     import_task_records_processes.jsp: list of import processes
     
     Created:    2017-06-08 00:21 by Christian Berndt
-    Modified:   2017-11-10 17:28 by Christian Berndt
-    Version:    1.0.5
+    Modified:   2017-11-19 13:32 by Christian Berndt
+    Version:    1.0.6
 --%>
 
 <%@ include file="/init.jsp" %>
@@ -28,15 +28,17 @@
     OrderByComparator<BackgroundTask> orderByComparator = BackgroundTaskComparatorFactoryUtil.getBackgroundTaskOrderByComparator(orderByCol, orderByType);
 %>
 
-<portlet:actionURL name="importTaskRecords" var="deleteBackgroundTasksURL"/>
+<portlet:actionURL name="importTaskRecords" var="deleteBackgroundTasksURL">
+    <portlet:param name="redirect" value="<%= currentURL %>"/>
+</portlet:actionURL>
 
 <aui:form action="<%= deleteBackgroundTasksURL %>" method="get" name="fm">
 
     <aui:input name="<%= Constants.CMD %>" type="hidden" />
     <aui:input name="deleteBackgroundTaskIds" type="hidden" />
-    <aui:input name="redirect" type="hidden" value="<%= currentURL.toString() %>" />
-    <aui:input name="tabs1" type="hidden" value="<%= tabs1 %>"/>
-    <aui:input name="tabs2" type="hidden" value="<%= tabs2 %>"/>
+<%--     <aui:input name="redirect" type="hidden" value="<%= currentURL.toString() %>" /> --%>
+<%--     <aui:input name="tabs1" type="hidden" value="<%= tabs1 %>"/> --%>
+<%--     <aui:input name="tabs2" type="hidden" value="<%= tabs2 %>"/> --%>
     
     <liferay-ui:search-container
         emptyResultsMessage="no-import-processes-were-found"
