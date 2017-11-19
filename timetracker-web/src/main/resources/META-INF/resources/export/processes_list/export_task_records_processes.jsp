@@ -2,7 +2,7 @@
     export_task_records_processes.jsp: list of export processes
     
     Created:    2017-06-06 23:36 by Christian Berndt
-    Modified:   2017-11-17 23:42 by Christian Berndt
+    Modified:   2017-11-19 18:52 by Christian Berndt
     Version:    1.0.8
 --%>
 
@@ -281,8 +281,10 @@
                             <portlet:param name="backgroundTaskId" value="<%= String.valueOf(backgroundTask.getBackgroundTaskId()) %>" />
                         </portlet:actionURL>
 
+                        <%-- MVC method not yet implemented 
                         <liferay-ui:icon icon="reload" markupView="<%= markupView %>" message="relaunch" url="<%= relaunchURL %>" />
-
+                        --%>
+                        
                         <portlet:actionURL name="exportTaskRecords" var="deleteBackgroundTaskURL">
                             <portlet:param name="<%= Constants.CMD %>" value="<%= Constants.DELETE %>" />
                             <portlet:param name="deleteBackgroundTaskIds" value="<%= String.valueOf(backgroundTask.getBackgroundTaskId()) %>" />
