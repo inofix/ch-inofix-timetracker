@@ -6,8 +6,6 @@ import javax.portlet.ResourceResponse;
 
 import org.osgi.service.component.annotations.Component;
 
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCResourceCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCResourceCommand;
 import com.liferay.portal.kernel.util.Constants;
@@ -19,8 +17,8 @@ import ch.inofix.timetracker.constants.PortletKeys;
  * 
  * @author Christian Berndt
  * @created 2017-11-10 15:15
- * @modified 2017-11-10 15:15
- * @version 1.0.0
+ * @modified 2017-11-17 19:16
+ * @version 1.0.1
  *
  */
 @Component(
@@ -37,11 +35,7 @@ public class ImportTaskRecordsMVCResourceCommand extends BaseMVCResourceCommand 
     protected void doServeResource(ResourceRequest resourceRequest, ResourceResponse resourceResponse)
             throws Exception {
         
-        _log.info("doServeResource()");
-
         String cmd = ParamUtil.getString(resourceRequest, Constants.CMD);
-
-        _log.info("cmd = " + cmd);
 
         PortletRequestDispatcher portletRequestDispatcher = null;
 
@@ -54,7 +48,4 @@ public class ImportTaskRecordsMVCResourceCommand extends BaseMVCResourceCommand 
 
         portletRequestDispatcher.include(resourceRequest, resourceResponse);
     }
-    
-    private static Log _log = LogFactoryUtil.getLog(ImportTaskRecordsMVCResourceCommand.class.getName());
-
 }
