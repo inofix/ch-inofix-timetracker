@@ -17,8 +17,6 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Modified;
 
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.PortletResponseUtil;
 import com.liferay.portal.kernel.portlet.PortletURLFactoryUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCResourceCommand;
@@ -44,8 +42,8 @@ import ch.inofix.timetracker.web.internal.search.TaskRecordSearch;
  * 
  * @author Christian Berndt
  * @created 2017-11-10 16:36
- * @modified 2017-11-14 23:42
- * @version 1.0.1
+ * @modified 2017-11-19 14:23
+ * @version 1.0.2
  *
  */
 @Component(
@@ -70,13 +68,7 @@ public class ExportTaskRecordsMVCResourceCommand extends BaseMVCResourceCommand 
     protected void doServeResource(ResourceRequest resourceRequest, ResourceResponse resourceResponse)
             throws Exception {
 
-        _log.info("doServeResource()");
-
         String cmd = ParamUtil.getString(resourceRequest, Constants.CMD);
-
-        _log.info("cmd = " + cmd);
-
-        PortletRequestDispatcher portletRequestDispatcher = null;
 
         if (cmd.equals("download")) {
 
@@ -88,10 +80,10 @@ public class ExportTaskRecordsMVCResourceCommand extends BaseMVCResourceCommand 
 
         } else {
 
-            portletRequestDispatcher = getPortletRequestDispatcher(resourceRequest, "/view.jsp");
+            PortletRequestDispatcher portletRequestDispatcher = getPortletRequestDispatcher(resourceRequest,
+                    "/export/processes_list/view.jsp");
 
             portletRequestDispatcher.include(resourceRequest, resourceResponse);
-
         }
 
     }
@@ -99,8 +91,6 @@ public class ExportTaskRecordsMVCResourceCommand extends BaseMVCResourceCommand 
     protected void download(ResourceRequest resourceRequest, ResourceResponse resourceResponse) throws Exception {
 
         int idx = ParamUtil.getInteger(resourceRequest, "idx");
-
-        _log.info("idx = " + idx);
 
         PortletPreferences portletPreferences = resourceRequest.getPreferences();
 
@@ -219,7 +209,5 @@ public class ExportTaskRecordsMVCResourceCommand extends BaseMVCResourceCommand 
     }
 
     private volatile TimetrackerConfiguration _timetrackerConfiguration;
-
-    private static Log _log = LogFactoryUtil.getLog(ExportTaskRecordsMVCResourceCommand.class.getName());
 
 }

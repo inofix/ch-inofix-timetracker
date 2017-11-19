@@ -25,8 +25,6 @@ import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.Layout;
-import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.util.DateRange;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.StringPool;
@@ -39,8 +37,8 @@ import ch.inofix.timetracker.service.TaskRecordLocalService;
 /**
  * @author Christian Berndt
  * @created 2017-04-21 19:23
- * @modified 2017-08-25 11:20
- * @version 1.0.4
+ * @modified 2017-11-17 22:39
+ * @version 1.0.5
  */
 @Component(
     immediate = true, 
@@ -95,13 +93,13 @@ public class TaskRecordExportController extends BaseExportImportController imple
     }
 
     protected File doExport(PortletDataContext portletDataContext) throws Exception {
-        
-         StopWatch stopWatch = new StopWatch();
 
-         stopWatch.start();
+        StopWatch stopWatch = new StopWatch();
+
+        stopWatch.start();
 
         final StringBuilder sb = new StringBuilder();
-        
+
         sb.append("<TaskRecords>");
         sb.append(StringPool.NEW_LINE);
 
@@ -110,7 +108,6 @@ public class TaskRecordExportController extends BaseExportImportController imple
         actionableDynamicQuery.setGroupId(portletDataContext.getGroupId());
 
         // TODO: process date-range of portletDataContext
-
         actionableDynamicQuery.setPerformActionMethod(new ActionableDynamicQuery.PerformActionMethod<TaskRecord>() {
 
             @Override
@@ -143,23 +140,17 @@ public class TaskRecordExportController extends BaseExportImportController imple
 
         Map<String, Serializable> settingsMap = exportImportConfiguration.getSettingsMap();
 
-        // String fileName = MapUtil.getString(settingsMap, "fileName");
-
-        long sourcePlid = MapUtil.getLong(settingsMap, "sourcePlid");
+        long companyId = MapUtil.getLong(settingsMap, "companyId");
         long sourceGroupId = MapUtil.getLong(settingsMap, "sourceGroupId");
         String portletId = MapUtil.getString(settingsMap, "portletId");
         Map<String, String[]> parameterMap = (Map<String, String[]>) settingsMap.get("parameterMap");
         DateRange dateRange = ExportImportDateUtil.getDateRange(exportImportConfiguration);
 
-        Layout layout = _layoutLocalService.getLayout(sourcePlid);
         ZipWriter zipWriter = ExportImportHelperUtil.getPortletZipWriter(portletId);
 
-        PortletDataContext portletDataContext = PortletDataContextFactoryUtil.createExportPortletDataContext(
-                layout.getCompanyId(), sourceGroupId, parameterMap, dateRange.getStartDate(), dateRange.getEndDate(),
-                zipWriter);
+        PortletDataContext portletDataContext = PortletDataContextFactoryUtil.createExportPortletDataContext(companyId,
+                sourceGroupId, parameterMap, dateRange.getStartDate(), dateRange.getEndDate(), zipWriter);
 
-        portletDataContext.setOldPlid(sourcePlid);
-        portletDataContext.setPlid(sourcePlid);
         portletDataContext.setPortletId(portletId);
 
         return portletDataContext;
@@ -175,11 +166,6 @@ public class TaskRecordExportController extends BaseExportImportController imple
     }
 
     @Reference(unbind = "-")
-    protected void setLayoutLocalService(LayoutLocalService layoutLocalService) {
-        _layoutLocalService = layoutLocalService;
-    }
-
-    @Reference(unbind = "-")
     protected void setTaskRecordLocalService(TaskRecordLocalService taskRecordLocalService) {
 
         _taskRecordLocalService = taskRecordLocalService;
@@ -188,7 +174,6 @@ public class TaskRecordExportController extends BaseExportImportController imple
     private static final Log _log = LogFactoryUtil.getLog(TaskRecordExportController.class);
 
     private ExportImportLifecycleManager _exportImportLifecycleManager;
-    private LayoutLocalService _layoutLocalService;
     private TaskRecordLocalService _taskRecordLocalService;
 
 }

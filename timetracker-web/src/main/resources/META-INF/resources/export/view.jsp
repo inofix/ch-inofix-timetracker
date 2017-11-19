@@ -2,8 +2,8 @@
     view.jsp: the export view.
     
     Created:    2017-04-18 23:11 by Christian Berndt
-    Modified:   2017-06-18 19:28 by Christian Berndt
-    Version:    1.0.7
+    Modified:   2017-11-19 13:45 by Christian Berndt
+    Version:    1.0.8
 --%>
 
 <%@ include file="/init.jsp"%>
@@ -15,20 +15,6 @@
     String orderByCol = ParamUtil.getString(request, "orderByCol", "create-date");
     String orderByType = ParamUtil.getString(request, "orderByType", "desc");
     String searchContainerId = "exportTaskRecordProcesses";
-    tabs1 = ParamUtil.getString(request, "tabs1"); 
-    tabs2 = ParamUtil.getString(request, "tabs2"); 
-
-    PortletURL portletURL = renderResponse.createRenderURL();
-
-    portletURL.setParameter("groupId", String.valueOf(groupId));
-    portletURL.setParameter("displayStyle", displayStyle);
-    portletURL.setParameter("mvcPath", "/export/view.jsp"); 
-    portletURL.setParameter("navigation", navigation);
-    portletURL.setParameter("orderByCol", orderByCol);
-    portletURL.setParameter("orderByType", orderByType);
-    portletURL.setParameter("searchContainerId", searchContainerId);
-    portletURL.setParameter("tabs1", tabs1);
-    portletURL.setParameter("tabs2", tabs2);
 
     boolean completed = false;
 
@@ -60,3 +46,28 @@
         </liferay-util:include>
     </c:otherwise>
 </c:choose>
+
+<aui:script use="liferay-export-import">
+
+    <liferay-portlet:resourceURL copyCurrentRenderParameters="<%= false %>" id="exportTaskRecords" var="exportProcessesURL">
+        <portlet:param name="<%= SearchContainer.DEFAULT_CUR_PARAM %>" value="<%= ParamUtil.getString(request, SearchContainer.DEFAULT_CUR_PARAM) %>" />
+        <portlet:param name="<%= SearchContainer.DEFAULT_DELTA_PARAM %>" value="<%= ParamUtil.getString(request, SearchContainer.DEFAULT_DELTA_PARAM) %>" />
+        <portlet:param name="displayStyle" value="<%= displayStyle %>" />
+        <portlet:param name="navigation" value="<%= navigation %>" />
+        <portlet:param name="orderByCol" value="<%= orderByCol %>" />
+        <portlet:param name="orderByType" value="<%= orderByType %>" />
+        <portlet:param name="searchContainerId" value="<%= searchContainerId %>" />
+        <portlet:param name="tabs1" value="<%= tabs1 %>" />
+    </liferay-portlet:resourceURL>
+
+    new Liferay.ExportImport(
+        {
+            exportLAR: true,
+            incompleteProcessMessageNode: '#<portlet:namespace />incompleteProcessMessage',
+            locale: '<%= locale.toLanguageTag() %>',
+            namespace: '<portlet:namespace />',
+            processesNode: '#exportProcessesSearchContainer',
+            processesResourceURL: '<%= HtmlUtil.escapeJS(exportProcessesURL.toString()) %>'
+        }
+    );
+</aui:script>

@@ -15,31 +15,35 @@ import com.liferay.portal.kernel.util.Validator;
  *
  * @author Christian Berndt
  * @created 2017-05-27 16:11
- * @modified 2017-05-27 16:11
- * @version 1.0.0
+ * @modified 2017-11-17 22:27
+ * @version 1.0.1
  *
  */
 public class ExportImportTaskRecordsConfigurationSettingsMapFactory {
 
-    public static Map<String, Serializable> buildExportTaskRecordsSettingsMap(long userId, long sourcePlid,
+    public static Map<String, Serializable> buildExportTaskRecordsSettingsMap(long companyId, long userId, long sourcePlid,
             long sourceGroupId, String portletId, Map<String, String[]> parameterMap, Locale locale, TimeZone timeZone,
             String fileName) {
 
-        return buildSettingsMap(userId, sourceGroupId, sourcePlid, 0, 0, portletId, null, null, null, parameterMap,
+        return buildSettingsMap(companyId, userId, sourceGroupId, sourcePlid, 0, 0, portletId, null, null, null, parameterMap,
                 StringPool.BLANK, 0, StringPool.BLANK, null, null, locale, timeZone, fileName);
     }
+    
+    // TODO: reduce settings to actually used parameters
 
     /**
      * From com.liferay.exportimport.kernel.configuration.
      * ExportImportConfigurationSettingsMapFactory.
      */
-    protected static Map<String, Serializable> buildSettingsMap(long userId, long sourceGroupId, long sourcePlid,
+    protected static Map<String, Serializable> buildSettingsMap(long companyId, long userId, long sourceGroupId, long sourcePlid,
             long targetGroupId, long targetPlid, String portletId, Boolean privateLayout,
             Map<Long, Boolean> layoutIdMap, long[] layoutIds, Map<String, String[]> parameterMap, String remoteAddress,
             int remotePort, String remotePathContext, Boolean secureConnection, Boolean remotePrivateLayout,
             Locale locale, TimeZone timeZone, String fileName) {
 
         Map<String, Serializable> settingsMap = new HashMap<>();
+        
+        settingsMap.put("companyId", companyId);
 
         if (Validator.isNotNull(fileName)) {
             settingsMap.put("fileName", fileName);
