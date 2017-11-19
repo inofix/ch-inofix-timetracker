@@ -60,8 +60,8 @@ import ch.inofix.timetracker.service.TaskRecordService;
  * 
  * @author Christian Berndt
  * @created 2017-11-10 15:13
- * @modified 2017-11-10 15:13
- * @version 1.0.0
+ * @modified 2017-11-19 19:26
+ * @version 1.0.1
  *
  */
 @Component(
@@ -142,7 +142,7 @@ public class ImportTaskRecordsMVCActionCommand extends BaseMVCActionCommand {
     }
     
     protected void deleteBackgroundTasks(ActionRequest actionRequest, ActionResponse actionResponse) throws Exception {
-        
+
         _log.info("deleteBackgroundTasks()");
 
         ThemeDisplay themeDisplay = (ThemeDisplay) actionRequest.getAttribute(WebKeys.THEME_DISPLAY);
@@ -167,12 +167,6 @@ public class ImportTaskRecordsMVCActionCommand extends BaseMVCActionCommand {
                 throw e;
             }
         }
-
-        String tabs1 = ParamUtil.getString(actionRequest, "tabs1");
-        String tabs2 = ParamUtil.getString(actionRequest, "tabs2");
-
-        actionResponse.setRenderParameter("tabs1", tabs1);
-        actionResponse.setRenderParameter("tabs2", tabs2);
 
         addSuccessMessage(actionRequest, actionResponse);
 
@@ -223,6 +217,10 @@ public class ImportTaskRecordsMVCActionCommand extends BaseMVCActionCommand {
 
         _log.info("cmd = " + cmd);
 
+        String redirect = ParamUtil.getString(actionRequest, "redirect");
+        
+        _log.info("redirect = " + redirect);
+
         try {
             if (cmd.equals(Constants.ADD_TEMP)) {
                 
@@ -230,23 +228,20 @@ public class ImportTaskRecordsMVCActionCommand extends BaseMVCActionCommand {
                 validateFile(actionRequest, actionResponse, ExportImportHelper.TEMP_FOLDER_NAME);
                 hideDefaultSuccessMessage(actionRequest);
                 
-            } else if (cmd.equals("deleteBackgroundTasks")) {
+            } else if (cmd.equals(Constants.DELETE)) {
                 
                 deleteBackgroundTasks(actionRequest, actionResponse);
-                hideDefaultSuccessMessage(actionRequest);
+                
+                sendRedirect(actionRequest, actionResponse, redirect);
                 
             } else if (cmd.equals(Constants.DELETE_TEMP)) {
                 
                 deleteTempFileEntry(actionRequest, actionResponse, ExportImportHelper.TEMP_FOLDER_NAME);
                 hideDefaultSuccessMessage(actionRequest);
-                
+                                               
             } else if (cmd.equals(Constants.IMPORT)) {
                 
-                hideDefaultSuccessMessage(actionRequest);
                 importData(actionRequest, ExportImportHelper.TEMP_FOLDER_NAME);
-                String redirect = ParamUtil.getString(actionRequest, "redirect");
-                
-                _log.info("redirect = " + redirect);
                 
                 sendRedirect(actionRequest, actionResponse, redirect);
                 
@@ -274,7 +269,6 @@ public class ImportTaskRecordsMVCActionCommand extends BaseMVCActionCommand {
                 }
             }
         }
-
     }
 
     protected void handleUploadException(ActionRequest actionRequest, ActionResponse actionResponse, String folderName,
@@ -343,18 +337,6 @@ public class ImportTaskRecordsMVCActionCommand extends BaseMVCActionCommand {
         ExportImportConfiguration exportImportConfiguration = _exportImportConfigurationLocalService
                 .addDraftExportImportConfiguration(themeDisplay.getUserId(),
                         ExportImportConfigurationConstants.TYPE_IMPORT_LAYOUT, importLayoutSettingsMap);
-        
-//        ExportImportConfiguration exportImportConfiguration = getExportImportConfiguration(actionRequest);
-//
-//        exportImportConfiguration.setName("TaskRecords");
-//        exportImportConfiguration.setGroupId(groupId);
-//
-//        Map<String, Serializable> settingsMap = new HashMap<>();
-//        settingsMap.put("targetGroupId", groupId);
-//
-//        String settings = JSONFactoryUtil.serialize(settingsMap);
-//
-//        exportImportConfiguration.setSettings(settings);
 
         _taskRecordService.importTaskRecordsInBackground(exportImportConfiguration, inputStream, extension);
 

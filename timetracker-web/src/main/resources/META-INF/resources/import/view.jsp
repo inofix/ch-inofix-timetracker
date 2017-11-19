@@ -2,8 +2,8 @@
     import/view.jsp: default view of the taskRecords import
     
     Created:    2017-06-01 21:08 by Christian Berndt
-    Modified:   2017-11-17 19:04 by Christian Berndt
-    Version:    1.0.5
+    Modified:   2017-11-19 19:24 by Christian Berndt
+    Version:    1.0.6
 --%>
 
 <%@ include file="/init.jsp" %>
@@ -22,8 +22,6 @@
     String orderByCol = ParamUtil.getString(request, "orderByCol", "create-date");
     String orderByType = ParamUtil.getString(request, "orderByType", "desc");
     String searchContainerId = "importTaskRecordProcesses";
-    tabs1 = ParamUtil.getString(request, "tabs1"); 
-    tabs2 = ParamUtil.getString(request, "tabs2"); 
 
     boolean completed = false;
 
@@ -66,6 +64,8 @@
     <portlet:param name="orderByCol" value="<%= orderByCol %>" />
     <portlet:param name="orderByType" value="<%= orderByType %>" />
     <portlet:param name="searchContainerId" value="<%= searchContainerId %>" />
+    <portlet:param name="tabs1" value="<%= tabs1 %>" />
+    <portlet:param name="tabs2" value="<%= tabs2 %>" />
 </liferay-portlet:resourceURL>
     
 <aui:script use="liferay-export-import">
