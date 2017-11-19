@@ -2,8 +2,8 @@
     export_import_toolbar.jsp: the export-import toolbar.
     
     Created:    2017-05-16 17:30 by Christian Berndt
-    Modified:   2017-11-10 16:59 by Christian Berndt
-    Version:    1.0.6
+    Modified:   2017-11-18 19:17 by Christian Berndt
+    Version:    1.0.7
 --%>
 
 <%@ include file="/init.jsp" %>
@@ -88,7 +88,7 @@
             var form = AUI.$(document.<portlet:namespace />fm);
 
             form.attr('method', 'post');
-            form.fm('<%= Constants.CMD %>').val('deleteBackgroundTasks');
+            form.fm('<%= Constants.CMD %>').val('<%= Constants.DELETE %>');
             form.fm('deleteBackgroundTaskIds').val(Liferay.Util.listCheckedExcept(form, '<portlet:namespace />allRowIds'));
 
             submitForm(form);
