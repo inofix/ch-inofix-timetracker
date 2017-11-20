@@ -218,8 +218,6 @@ public class ImportTaskRecordsMVCActionCommand extends BaseMVCActionCommand {
         _log.info("cmd = " + cmd);
 
         String redirect = ParamUtil.getString(actionRequest, "redirect");
-        
-        _log.info("redirect = " + redirect);
 
         try {
             if (cmd.equals(Constants.ADD_TEMP)) {
