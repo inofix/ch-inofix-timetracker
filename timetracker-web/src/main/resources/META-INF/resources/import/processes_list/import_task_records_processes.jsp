@@ -2,8 +2,8 @@
     import_task_records_processes.jsp: list of import processes
     
     Created:    2017-06-08 00:21 by Christian Berndt
-    Modified:   2017-11-19 19:03 by Christian Berndt
-    Version:    1.0.7
+    Modified:   2017-11-20 10:43 by Christian Berndt
+    Version:    1.0.8
 --%>
 
 <%@ include file="/init.jsp" %>
@@ -315,3 +315,13 @@
         <liferay-ui:search-iterator displayStyle="<%= displayStyle %>" markupView="<%= markupView %>" />
     </liferay-ui:search-container>
 </aui:form>
+
+<%
+    int incompleteBackgroundTaskCount = BackgroundTaskManagerUtil.getBackgroundTasksCount(groupId, TaskRecordExportBackgroundTaskExecutor.class.getName(), false);
+%>
+
+<div class="hide incomplete-process-message">
+    <liferay-util:include page="/incomplete_processes_message.jsp" servletContext="<%= application %>">
+        <liferay-util:param name="incompleteBackgroundTaskCount" value="<%= String.valueOf(incompleteBackgroundTaskCount) %>" />
+    </liferay-util:include>
+</div>
