@@ -2,24 +2,11 @@
     search.jsp: The extended search of the timetracker portlet.
 
     Created:     2017-06-05 22:04 by Christian Berndt
-    Modified:    2017-10-03 14:37 by Christian Berndt
-    Version:     1.0.8
+    Modified:    2017-11-22 23:34 by Christian Berndt
+    Version:     1.0.9
 --%>
 
 <%@ include file="/init.jsp" %>
-
-<%@page import="java.util.Collections"%>
-
-<%@page import="com.liferay.portal.kernel.search.facet.collector.FacetCollector"%>
-<%@page import="com.liferay.portal.kernel.search.facet.collector.TermCollector"%>
-<%@page import="com.liferay.portal.kernel.search.facet.Facet"%>
-<%@page import="com.liferay.portal.kernel.search.facet.MultiValueFacet"%>
-<%@page import="com.liferay.portal.kernel.search.IndexerRegistryUtil"%>
-<%@page import="com.liferay.portal.kernel.search.Indexer"%>
-<%@page import="com.liferay.portal.kernel.search.SearchContextFactory"%>
-<%@page import="com.liferay.portal.kernel.search.SearchContext"%>
-<%@page import="com.liferay.portal.kernel.service.UserServiceUtil"%>
-<%@page import="com.liferay.portal.kernel.util.comparator.UserLastNameComparator"%>
 
 <%
     TaskRecordDisplayTerms displayTerms = new TaskRecordDisplayTerms(renderRequest);
