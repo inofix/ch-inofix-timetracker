@@ -18,6 +18,10 @@ A timetracker plugin for Liferay.
 ### IDE
 
 1. Download latest IDE from Sourceforge: https://sourceforge.net/projects/lportal/files/Liferay%20IDE/3.1.2%20GA3/liferay-ide-eclipse-linux-x64-3.1.2-ga3-201709011126.tar.gz/download
+1. `tar -xvzf liferay-ide-eclipse-linux-x64-3.1.2-ga3-201709011126.tar.gz`
+1. `mv eclipse liferay-ide-3.1.2`
+1. Start IDE with: `./liferay-ide-3.1.2`
+
 
 ## How To Contribute
 1. Fork this repository to your individual github account.
