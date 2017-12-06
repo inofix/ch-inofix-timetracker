@@ -20,7 +20,12 @@ A timetracker plugin for Liferay.
 1. Download latest IDE from Sourceforge: https://sourceforge.net/projects/lportal/files/Liferay%20IDE/3.1.2%20GA3/liferay-ide-eclipse-linux-x64-3.1.2-ga3-201709011126.tar.gz/download
 1. `tar -xvzf liferay-ide-eclipse-linux-x64-3.1.2-ga3-201709011126.tar.gz`
 1. `mv eclipse liferay-ide-3.1.2`
-1. Start IDE with: `./liferay-ide-3.1.2`
+1. Start IDE with: `./liferay-ide-3.1.2/eclipse &`
+1. Create Eclipse Workspace: `~/workspace`
+1. Close welcome screen
+1. File -> New-> Project -> Liferay Workspace Project
+1. Project name: `my-liferay-project`, Use default location: yes (default), Build Type: Gradle (default) 
+1. Finish
 
 
 ## How To Contribute
