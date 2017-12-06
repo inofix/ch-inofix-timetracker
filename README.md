@@ -5,12 +5,19 @@
 A timetracker plugin for Liferay.
 
 ## How To Build
+
+### Commandline
+
 1. Install blade: `curl https://raw.githubusercontent.com/liferay/liferay-blade-cli/master/installers/local | sh`
 1. Create a liferay workspace: `WORKSPACE=my-workspace; blade init $WORKSPACE`
 1. Checkout timetracker sources to the workspace's module directory: `cd $WORKSPACE/modules; git clone https://github.com/inofix/ch-inofix-timetracker.git`
 1. Change working directory to ch-inofix-timetracker: `cd $WORKSPACE/modules/ch-inofix-timetracker`
 1. Run ServiceBuilder: `./gradlew buildService`
 1. Build: `./gradlew jar`
+
+### IDE
+
+1. Download latest IDE from Sourceforge: https://sourceforge.net/projects/lportal/files/Liferay%20IDE/3.1.2%20GA3/liferay-ide-eclipse-linux-x64-3.1.2-ga3-201709011126.tar.gz/download
 
 ## How To Contribute
 1. Fork this repository to your individual github account.
