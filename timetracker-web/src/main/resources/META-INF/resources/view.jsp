@@ -135,6 +135,7 @@
     </c:otherwise>
 </c:choose>
 
+
 <%!
     private static Log _log = LogFactoryUtil.getLog("ch_inofix_timetracker_web.view_jsp");
 %>
