@@ -26,6 +26,8 @@ A timetracker plugin for Liferay.
 1. File -> New-> Project -> Liferay Workspace Project
 1. Project name: `my-liferay-project`, Use default location: yes (default), Build Type: Gradle (default) 
 1. Finish
+1. Update liferay.workspace.bundle.url in gradle.properties. Use: liferay.workspace.bundle.url=https://cdn.lfrs.sl/releases.liferay.com/portal/7.0.4-ga5/liferay-ce-portal-tomcat-7.0-ga5-20171018150113838.zip
+
 
 
 ## How To Contribute
