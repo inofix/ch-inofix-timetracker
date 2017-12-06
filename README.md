@@ -5,6 +5,9 @@
 A timetracker plugin for Liferay.
 
 ## How To Build
+
+### Commandline
+
 1. Install blade: `curl https://raw.githubusercontent.com/liferay/liferay-blade-cli/master/installers/local | sh`
 1. Create a liferay workspace: `WORKSPACE=my-workspace; blade init $WORKSPACE`
 1. Checkout timetracker sources to the workspace's module directory: `cd $WORKSPACE/modules; git clone https://github.com/inofix/ch-inofix-timetracker.git`
@@ -12,9 +15,37 @@ A timetracker plugin for Liferay.
 1. Run ServiceBuilder: `./gradlew buildService`
 1. Build: `./gradlew jar`
 
+### IDE
+
+1. Download latest IDE from Sourceforge: https://sourceforge.net/projects/lportal/files/Liferay%20IDE/3.1.2%20GA3/liferay-ide-eclipse-linux-x64-3.1.2-ga3-201709011126.tar.gz/download
+1. `tar -xvzf liferay-ide-eclipse-linux-x64-3.1.2-ga3-201709011126.tar.gz`
+1. `mv eclipse liferay-ide-3.1.2`
+1. Start IDE with: `./liferay-ide-3.1.2/eclipse &`
+1. Create Eclipse Workspace: `~/workspace`
+1. Close welcome screen
+1. File -> New-> Project -> Liferay Workspace Project
+1. Project name: `my-liferay-project`, Use default location: yes (default), Build Type: Gradle (default) 
+1. Finish
+1. Update liferay.workspace.bundle.url in gradle.properties. Use: liferay.workspace.bundle.url=https://cdn.lfrs.sl/releases.liferay.com/portal/7.0.4-ga5/liferay-ce-portal-tomcat-7.0-ga5-20171018150113838.zip
+1. Switch to Gradle Tasks view
+1. Expand workspace node
+1. Expand bundle node
+1. run `initBundle`
+1. Switch to Servers view
+1. New Server -> Liferay 7.x -> Next
+1. Name: Liferay 7.x
+1. Liferay Portal Bundle Directory: $WORKSPACE/bundles
+1. Select runtime JRE: java-8-openjdk-amd64
+1. Finish
+1. Doubleclick configured server (Liferay 7.x., see above), edit Launch settings: 
+1. Liferay Launch: Custom Launche Settings: yes;  Use developer mode: yes
+1. Save
+1. Start server
+
 ## How To Contribute
 1. Fork this repository to your individual github account.
-1. Clone your personal fork to your local machine.
+1. Clone your personal fork to your local liferay worspace: `cd $WORKSPACE/modules/`
+1. `git clone https://github.com/<your-personal-github-account>/ch-inofix-timetracker`
 1. Use feature branches to work on new features or known issues.
 1. Merge finished features into your individual master branch and 
 1. create pull-requests, to contribute your solutions to the inofix master branch.
