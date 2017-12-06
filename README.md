@@ -27,6 +27,20 @@ A timetracker plugin for Liferay.
 1. Project name: `my-liferay-project`, Use default location: yes (default), Build Type: Gradle (default) 
 1. Finish
 1. Update liferay.workspace.bundle.url in gradle.properties. Use: liferay.workspace.bundle.url=https://cdn.lfrs.sl/releases.liferay.com/portal/7.0.4-ga5/liferay-ce-portal-tomcat-7.0-ga5-20171018150113838.zip
+1. Switch to Gradle Tasks view
+1. Expand workspace node
+1. Expand bundle node
+1. run `initBundle`
+1. Switch to Servers view
+1. New Server -> Liferay 7.x -> Next
+1. Name: Liferay 7.x
+1. Liferay Portal Bundle Directory: $WORKSPACE/bundles
+1. Select runtime JRE: java-8-openjdk-amd64
+1. Finish
+1. Doubleclick configured server (Liferay 7.x., see above), edit Launch settings: 
+1. Liferay Launch: Custom Launche Settings: yes;  Use developer mode: yes
+1. Save
+1. Start server
 
 
 
