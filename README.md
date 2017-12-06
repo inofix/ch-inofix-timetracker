@@ -42,11 +42,10 @@ A timetracker plugin for Liferay.
 1. Save
 1. Start server
 
-
-
 ## How To Contribute
 1. Fork this repository to your individual github account.
-1. Clone your personal fork to your local machine.
+1. Clone your personal fork to your local liferay worspace: `cd $WORKSPACE/modules/`
+1. `git clone https://github.com/<your-personal-github-account>/ch-inofix-timetracker`
 1. Use feature branches to work on new features or known issues.
 1. Merge finished features into your individual master branch and 
 1. create pull-requests, to contribute your solutions to the inofix master branch.
